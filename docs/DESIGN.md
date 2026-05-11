@@ -12,39 +12,39 @@ with you at UI/UX Checkpoint 1.
 
 **Tactical working‑dog field journal**, not a cutesy pet app. Dark, focused,
 confident; reads like a K9‑unit training log. Calm under the intensity — lots of
-black space, sharp type, restrained color used as *signal* (each training track
+black space, sharp type, restrained color used as _signal_ (each training track
 has its own accent). Mobile and web are siblings (`packages/ui` holds the
 tokens; mobile renders with RN, web with HTML/CSS).
 
 ## 2. Color tokens (from the artifact)
 
-| Token | Value | Use |
-| --- | --- | --- |
-| `--black` | `#0a0a0a` | app background |
-| `--steel` | `#2a2f3a` | card / surface |
-| `--steel-mid` | `#3d4455` | hover / raised surface, hairlines |
-| `--cream` | `#f5f0e8` | primary text |
-| `--text-muted` | `#8a8a8a` | secondary text |
-| `--tan` | `#c8a46e` | **primary accent** + the **Obedience** track |
-| `--tan-light` | `#e8c99a` | accent on dark cards / Obedience labels |
-| `--khaki` | `#8b7355` | tertiary accent |
-| `--accent` (orange‑red) | `#d4572a` / `#e8826a` | the **Protection / Bite‑Sport** track + warnings/emergencies |
-| teal | `#7ac5c5` | the **Advanced / Working** track |
-| violet | `#9b8fd4` / `#b8acdf` | the **Socialization & Life‑Skills** track |
-| near‑black hairlines | `#111` `#1a1a1a` `#1e1e1e` `#1f1f1f` | dividers |
+| Token                   | Value                                | Use                                                          |
+| ----------------------- | ------------------------------------ | ------------------------------------------------------------ |
+| `--black`               | `#0a0a0a`                            | app background                                               |
+| `--steel`               | `#2a2f3a`                            | card / surface                                               |
+| `--steel-mid`           | `#3d4455`                            | hover / raised surface, hairlines                            |
+| `--cream`               | `#f5f0e8`                            | primary text                                                 |
+| `--text-muted`          | `#8a8a8a`                            | secondary text                                               |
+| `--tan`                 | `#c8a46e`                            | **primary accent** + the **Obedience** track                 |
+| `--tan-light`           | `#e8c99a`                            | accent on dark cards / Obedience labels                      |
+| `--khaki`               | `#8b7355`                            | tertiary accent                                              |
+| `--accent` (orange‑red) | `#d4572a` / `#e8826a`                | the **Protection / Bite‑Sport** track + warnings/emergencies |
+| teal                    | `#7ac5c5`                            | the **Advanced / Working** track                             |
+| violet                  | `#9b8fd4` / `#b8acdf`                | the **Socialization & Life‑Skills** track                    |
+| near‑black hairlines    | `#111` `#1a1a1a` `#1e1e1e` `#1f1f1f` | dividers                                                     |
 
 > A light theme is a Phase‑5 nice‑to‑have; v1 ships dark only (the reference is
 > dark, and it suits the product).
 
 ## 3. Type
 
-| Role | Family | Notes |
-| --- | --- | --- |
-| Display / screen titles / big numbers | **Bebas Neue** (condensed) | huge, tight line‑height (`0.9`), wide letter‑spacing; e.g. `COMMAND / CURRICULUM`, the age numbers ("8–12", "3–4") |
-| Body / UI text | **DM Sans** (300/400/500/700) | the workhorse |
-| Labels / badges / command words / data | **Space Mono** (400/700) | uppercase, 1–3px letter‑spacing; e.g. `— OBEDIENCE`, `LEAVE IT`, the `K9 TRAINING ROADMAP · YEAR ONE` badge |
+| Role                                   | Family                        | Notes                                                                                                              |
+| -------------------------------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Display / screen titles / big numbers  | **Bebas Neue** (condensed)    | huge, tight line‑height (`0.9`), wide letter‑spacing; e.g. `COMMAND / CURRICULUM`, the age numbers ("8–12", "3–4") |
+| Body / UI text                         | **DM Sans** (300/400/500/700) | the workhorse                                                                                                      |
+| Labels / badges / command words / data | **Space Mono** (400/700)      | uppercase, 1–3px letter‑spacing; e.g. `— OBEDIENCE`, `LEAVE IT`, the `K9 TRAINING ROADMAP · YEAR ONE` badge        |
 
-(System fallbacks on mobile where loading the webfonts is costly; the *feel*
+(System fallbacks on mobile where loading the webfonts is costly; the _feel_
 — condensed display + mono labels — is what matters.)
 
 ## 4. Components (named from the artifact, generalized for the app)
@@ -55,10 +55,10 @@ tokens; mobile renders with RN, web with HTML/CSS).
   `--tan`), a `--text-muted` subtitle, optional **`TagRow`** of `breed-tag`
   chips (mono, on `--steel`).
 - **`Legend`** — small dots + labels; reused anywhere the track colors appear.
-- **`TimelinePhase`** — the signature unit: a left **`AgeMarker`** (Bebas number
-  + mono label like "WEEKS"/"MONTHS", a glowing `--tan` dot, the connecting
-  vertical line) and a **`PhaseContent`** card (Bebas `phase-title`, italic
-  muted `phase-desc`, the `command-groups`, a `TrainerNote`).
+- **`TimelinePhase`** — the signature unit: a left **`AgeMarker`** (a Bebas
+  number plus a mono label like "WEEKS"/"MONTHS", a glowing `--tan` dot, the
+  connecting vertical line) and a **`PhaseContent`** card (Bebas `phase-title`,
+  italic muted `phase-desc`, the `command-groups`, a `TrainerNote`).
 - **`TrackGroup`** — a `group-label` (mono, uppercase, 3px tracking, colored by
   track, hairline underline) over a wrap‑grid of cards.
 - **`CommandCard`** (`.cmd`) — the atom: the **command word** in mono‑bold caps
@@ -87,10 +87,10 @@ first‑class — every `skill` / `program_module` / `program_task` carries a
 3. **Advanced / Working** (teal) — off‑leash heel, long down, directed send,
    formal retrieve, jump, back, under, scent/nosework on‑ramp, agility on‑ramp,
    tracking, etc.
-4. **Protection / Bite Sport (IGP)** (`--accent`) — *optional, opt‑in,
-   gated track* — engagement/drive work (watch, tug, **out** — must be
+4. **Protection / Bite Sport (IGP)** (`--accent`) — _optional, opt‑in,
+   gated track_ — engagement/drive work (watch, tug, **out** — must be
    bomb‑proof), alert work (speak/alert, quiet, guard), and, only past explicit
-   readiness gates *and* a "confirm you're working with a certified decoy /
+   readiness gates _and_ a "confirm you're working with a certified decoy /
    IGP‑Schutzhund club" gate, the sport‑bite commands (fass/get‑it, out, pass,
    side/cover, search). Carries the artifact's footer warning prominently, and
    does **not** unlock unless the owner affirms professional supervision. See
@@ -100,7 +100,7 @@ The Today/Program screens, charts, filters, and Scout all key off `track`.
 
 ## 6. How it maps to the app's screens
 
-- **Program tab** — *is* the artifact: the vertical **timeline of phases**, each
+- **Program tab** — _is_ the artifact: the vertical **timeline of phases**, each
   expanding into track‑grouped `CommandCard`s, with the per‑phase `TrainerNote`.
   Difference from the static artifact: cards have **state** (locked → working →
   fluent), tapping a card opens its lesson, you can log reps, reschedule, and
@@ -120,7 +120,7 @@ The Today/Program screens, charts, filters, and Scout all key off `track`.
   grooming, activity & dog sports, toys/enrichment, socialization checklist
   (track‑violet), the profile (header + breed `TagRow`), settings — all in the
   same kit.
-- **Intake** — a stepper that *feels* like a briefing form: mono field labels,
+- **Intake** — a stepper that _feels_ like a briefing form: mono field labels,
   Bebas section headers, the Mal × Dutch Shepherd · Female · High Drive defaults
   prefilled (matching the artifact's `breed-tags`), ending with "Scout is
   building your curriculum…" → drops you on the freshly generated Program
@@ -133,7 +133,7 @@ GUARD, SPEAK/ALERT, FASS/GET‑IT, SEARCH, …) — heavily caveated ("only unde
 certified protection trainer / IGP‑Schutzhund club", "OUT must be bomb‑proof
 before any protection work", "improper bite training on high‑drive breeds creates
 dangerous dogs", "consult a professional experienced with Malinois specifically").
-That's consistent with how legitimate **IGP/Schutzhund** is run — a *sport* built
+That's consistent with how legitimate **IGP/Schutzhund** is run — a _sport_ built
 on rock‑solid obedience and a reliable out, not "aggression training" — so I'm
 **including it as an optional, opt‑in, professionally‑supervised track**, not
 cutting it. It does **not** change the app's default training philosophy, which
@@ -143,11 +143,11 @@ stays humane‑first / LIMA for everyday behavior (see `docs/PRODUCT.md` §17,
 - It's **off by default**; the owner opts in from the Program screen.
 - Sport‑bite modules are **gated** behind explicit prerequisites (a bomb‑proof
   `OUT`/release, solid foundational obedience, the dog's age, temperament notes)
-  **and** a hard gate where the owner affirms *"I am training this under a
-  certified decoy / IGP‑Schutzhund club."* Until then those modules show only
+  **and** a hard gate where the owner affirms _"I am training this under a
+  certified decoy / IGP‑Schutzhund club."_ Until then those modules show only
   the warning + "find a club/trainer" guidance.
-- **Scout** will coach the *foundation* (engagement, drive channeling, the out,
-  alert/quiet) and the sport's structure and *will not* coach personal‑protection
+- **Scout** will coach the _foundation_ (engagement, drive channeling, the out,
+  alert/quiet) and the sport's structure and _will not_ coach personal‑protection
   bite work in chat — it routes to a credentialed decoy/trainer, every time
   (same rule as aggression cases). Misuse questions ("train my dog to attack
   someone") get refused with an explanation.
@@ -162,7 +162,7 @@ either way.
 
 - Light theme — skip for v1? (my default: yes, skip)
 - Webfonts on mobile vs. close system substitutes (perf vs. fidelity)?
-- How "tactical" do you want the *health/diet* screens — same hard‑edged kit, or
+- How "tactical" do you want the _health/diet_ screens — same hard‑edged kit, or
   a slightly softer variant for the care‑side of the app?
 - Tab set: **Today · Program · Scout · Health · More** — keep, reorder, rename?
-- Should the Program timeline be the *home* screen (vs. a separate "Today")?
+- Should the Program timeline be the _home_ screen (vs. a separate "Today")?

@@ -26,7 +26,7 @@ canine-command-center/
 - **Node:** 22 LTS (pinned via `.nvmrc`; engines field enforces it).
 - **Language:** TypeScript everywhere, `strict` on. Shared types are the
   contract between API and both clients — no drift.
-- **Why a monorepo:** "both platforms, shared core" basically *requires* it —
+- **Why a monorepo:** "both platforms, shared core" basically _requires_ it —
   one source of truth for domain logic, schemas, and the API client; one CI;
   atomic changes across API + clients.
 
@@ -47,7 +47,7 @@ canine-command-center/
   providers (Google/Apple "sign in with") addable later. Every data route is
   scoped to the authenticated user; multi‑user‑per‑dog sharing comes in Phase 5
   via a `dog_members` join table.
-- **AI proxy:** the API is the *only* component that talks to Claude. It exposes
+- **AI proxy:** the API is the _only_ component that talks to Claude. It exposes
   an **SSE streaming** endpoint (`POST /v1/chat/:conversationId/messages`) that
   runs the tool‑use loop server‑side and streams text/tool events to the client.
   Auth to Anthropic prefers the **OAuth token from `claude setup-token`**
@@ -99,7 +99,7 @@ later, that's a connection‑string change.
   (it's an authed app, not a content site).
 - **Why a separate web app, not React‑Native‑Web:** RN‑Web is a tax (styling
   quirks, build complexity) for a project that wants a genuinely good desktop
-  layout. Sharing the *logic* (types, schemas, API client, calculators, even
+  layout. Sharing the _logic_ (types, schemas, API client, calculators, even
   domain hooks) in `packages/shared` gives us 80% of the DRY benefit with far
   less friction. `packages/ui` carries shared design tokens + a few primitives
   so the two clients stay visually consistent.
@@ -114,18 +114,18 @@ components, web with HTML/CSS. One source of truth for "what the app looks like.
 
 Core entities (all user‑scoped unless noted):
 
-- `user`, `session`, `account` *(Better Auth)*; later `dog_member` (user↔dog, role).
+- `user`, `session`, `account` _(Better Auth)_; later `dog_member` (user↔dog, role).
 - `dog` — the profile from intake (identity, origin/history, life situation,
   vet/insurance contacts, photos). `intake_response` — raw answers (JSONB),
   versioned.
-- `breed_profile` *(reference, not user‑scoped)* — traits, energy, trainability,
+- `breed_profile` _(reference, not user‑scoped)_ — traits, energy, trainability,
   size/weight ranges, lifespan, grooming needs, health predispositions, "bred
   for"; supports composites (e.g. Malinois × Dutch Shepherd) and "unknown mix".
 - `program` (1 per dog, regeneratable) → `program_phase` (life‑stage) →
   `program_module` → `program_task` (dated/age‑targeted, status, links to a
   `skill`). Curriculum trees also stored as JSONB snapshots for fast render +
   history.
-- `skill` *(reference + user overrides)* — obedience/trick building blocks: cue,
+- `skill` _(reference + user overrides)_ — obedience/trick building blocks: cue,
   shaping steps, fluency tests, prereqs, troubleshooting, difficulty, tags.
 - `training_session` — date, skill(s), duration, reps, success rating, mood,
   notes, media. Drives progress charts and Scout's history awareness.
@@ -204,12 +204,12 @@ Branch protection on `main`: green CI required to merge. Details in
 
 ## 9. Key decisions, restated for sign‑off
 
-| Decision | Choice | If you'd rather… |
-| --- | --- | --- |
-| Monorepo + pnpm | Yes | (no real alternative for "shared core, 2 clients") |
-| Backend | Fastify + Postgres + Drizzle + Better Auth, self‑hostable Docker | "use managed BaaS / Supabase functions" — say so, but I'd push back |
-| Mobile | Expo / React Native | "bare RN" / "native Swift+Kotlin" — much slower, not worth it for v1 |
-| Web | Vite + React (PWA), shares logic not RN‑Web | "use React‑Native‑Web for one codebase" — possible, I think it's a net loss |
-| Claude auth | `claude setup-token` OAuth, API‑key fallback | (this is your stated requirement) |
-| Hosting | Self‑host Docker primary, cloud path documented | "cloud‑first" — easy switch in Phase 6 |
-| License | unset (TBD) | tell me MIT / Apache‑2.0 / proprietary |
+| Decision        | Choice                                                           | If you'd rather…                                                            |
+| --------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| Monorepo + pnpm | Yes                                                              | (no real alternative for "shared core, 2 clients")                          |
+| Backend         | Fastify + Postgres + Drizzle + Better Auth, self‑hostable Docker | "use managed BaaS / Supabase functions" — say so, but I'd push back         |
+| Mobile          | Expo / React Native                                              | "bare RN" / "native Swift+Kotlin" — much slower, not worth it for v1        |
+| Web             | Vite + React (PWA), shares logic not RN‑Web                      | "use React‑Native‑Web for one codebase" — possible, I think it's a net loss |
+| Claude auth     | `claude setup-token` OAuth, API‑key fallback                     | (this is your stated requirement)                                           |
+| Hosting         | Self‑host Docker primary, cloud path documented                  | "cloud‑first" — easy switch in Phase 6                                      |
+| License         | unset (TBD)                                                      | tell me MIT / Apache‑2.0 / proprietary                                      |

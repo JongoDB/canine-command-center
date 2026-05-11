@@ -1,0 +1,21 @@
+{
+  "name": "@ccc/api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Canine Command Center — backend (Fastify + Postgres + Drizzle + Better Auth + Claude SSE proxy). The only component that holds secrets or talks to Claude.",
+  "scripts": {
+    "dev": "echo 'The API dev server is implemented in milestone M0.3.' && exit 0",
+    "build": "echo 'The API build is implemented in milestone M0.3.'",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@ccc/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "typescript": "^5.7.3",
+    "vitest": "^2.1.8"
+  }
+}

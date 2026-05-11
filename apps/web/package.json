@@ -1,0 +1,21 @@
+{
+  "name": "@ccc/web",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Canine Command Center — web client (Vite + React + React Router, installable PWA). Shares domain logic with mobile via @ccc/shared and design tokens via @ccc/ui.",
+  "scripts": {
+    "dev": "echo 'The web app is implemented in milestone M0.6.' && exit 0",
+    "build": "echo 'The web build is implemented in milestone M0.6.'",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@ccc/shared": "workspace:*",
+    "@ccc/ui": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3",
+    "vitest": "^2.1.8"
+  }
+}

@@ -1,0 +1,44 @@
+// Flat ESLint config (ESLint 9). One config for the whole monorepo; `pnpm lint`
+// runs `eslint .` from the root. Per-app refinements (browser globals for web,
+// React Native globals for mobile) are added in their own milestones (M0.6).
+import js from '@eslint/js';
+import tseslint from 'typescript-eslint';
+import prettier from 'eslint-config-prettier';
+import globals from 'globals';
+
+export default tseslint.config(
+  {
+    ignores: [
+      '**/dist/**',
+      '**/build/**',
+      '**/.expo/**',
+      '**/coverage/**',
+      '**/node_modules/**',
+      '**/*.tsbuildinfo',
+      'docs/design/reference/**',
+      'apps/mobile/ios/**',
+      'apps/mobile/android/**',
+    ],
+  },
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
+  {
+    languageOptions: {
+      ecmaVersion: 2022,
+      sourceType: 'module',
+      globals: { ...globals.node },
+    },
+  },
+  {
+    files: ['**/*.{ts,tsx,mts,cts}'],
+    rules: {
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' },
+      ],
+      '@typescript-eslint/consistent-type-imports': ['error', { fixStyle: 'inline-type-imports' }],
+      '@typescript-eslint/no-explicit-any': 'warn',
+    },
+  },
+  prettier,
+);
