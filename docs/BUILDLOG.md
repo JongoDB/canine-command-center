@@ -93,29 +93,41 @@ Status key: ✅ merged · 🚧 in flight · ⏳ pending · 🧪 awaiting your UI
 
 ## Phase 1 — MVP: the dog + Scout 🚧 _in progress_
 
-- 🚧 **M1.1a — Dog data model + API** — _in flight_ (branch `feat/m1.1a-dog-data-model`).
-  `apps/api`: `dog` + `intake_response` tables + the pgEnums (`breed_kind`,
-  `dog_sex`, `neuter_status`, `dog_source`) + migration `0001_dog_intake.sql`;
-  dogs routes — `GET/POST /dogs`, `GET/PATCH/DELETE /dogs/:id` (DELETE =
-  soft-delete via `archived_at`), `GET /dogs/:id/intake` (latest version),
-  `PUT /dogs/:id/intake` (new version, in a transaction, optionally patching the
-  dog) — all `requireSession`-gated and scoped to the requester; Zod-validated
-  via `src/lib/validate.ts` (`parsed()` → 400 `{ error: { code: 'VALIDATION', … } }`).
+- 🚧 **M1.1b — Web intake UI + dog list/profile** — _in flight_ (branch
+  `feat/m1.1b-web-intake-ui`). `apps/web`: a real **Home** (lists the user's dogs
+  as cards or shows the empty-state CTA → `/onboard`); **`/onboard`** — the
+  five-section intake stepper (A identity → B history → C living → D current →
+  E goals; Belgian Malinois × Dutch Shepherd × female × high-drive prefilled by
+  default, "Start fresh" button; Next/Back navigation; on submit
+  `POST /dogs` + `PUT /dogs/:id/intake`); **`/dogs/:id`** profile view
+  (identity rows + the stored intake payload + Edit / Archive); **`/dogs/:id/edit`**
+  (Section A only → `PATCH`). Hand-managed form state — no `react-hook-form`.
+  Components in `src/components/intake/IntakeForm.tsx` (state, defaults, the 5
+  section panels, the `IntakeStepper`); `src/lib/dogs.ts` (typed wrappers around
+  the `ApiClient` for the dogs endpoints). _(M1.1c — the mobile mirror — is the
+  next PR; M1.1d adds media/photos to both clients.)_
+- ✅ **M1.1a — Dog data model + API** — PR #15, merged. `apps/api`: `dog` +
+  `intake_response` tables + the pgEnums (`breed_kind`, `dog_sex`,
+  `neuter_status`, `dog_source`) + migration `0001_dog_intake.sql`; dogs routes
+  — `GET/POST /dogs`, `GET/PATCH/DELETE /dogs/:id` (DELETE = soft-delete via
+  `archived_at`), `GET /dogs/:id/intake` (latest version), `PUT /dogs/:id/intake`
+  (new version, in a transaction, optionally patching the dog) — all
+  `requireSession`-gated and scoped to the requester; Zod-validated via
+  `src/lib/validate.ts` (`parsed()` → 400 `{ error: { code: 'VALIDATION', … } }`).
   `@ccc/shared` gained `dog.ts` — the Zod schemas (breed/sex/neuter/source enums,
   `IntakeAnswers` covering PRODUCT §4's sections B–E, `DogProfileInput`,
   `UpdateDogInput`, `SubmitIntakeInput`) + the `Dog`/`IntakeResponse` response
   types + `ageMonthsFrom`/`breedLabel` helpers (`zod` is now a `@ccc/shared`
-  dep). `src/test-helpers.ts` (`createTestUser`, via the real
-  sign-up→verify→sign-in flow); `dogs.test.ts` — DB-backed: create the Mal ×
-  Dutch Shepherd default, list/get/patch/archive, ownership scoping (a 2nd user
-  can't see/touch the first's dogs), intake versioning. Verified: full gate
-  green; all 14 API tests pass against a Dockerised Postgres; migrations apply +
-  re-apply cleanly. (M1.1b — media/photos + the intake stepper UI + profile
-  screen on web + mobile — is the next PR.)
-- ⏳ **M1.1b — Intake UI + photos** · ⏳ M1.2 — Breed library v1 · ⏳ M1.3 —
-  Claude (Scout) integration · ⏳ M1.4 — Scout chat UI · ⏳ M1.5 — onboarding
-  glue → then **🧪 UI/UX Checkpoint 1** (deploy to staging; first owner hands-on
-  review of both clients + the Scout persona).
+  dep). `src/test-helpers.ts` (`createTestUser` via the real auth flow);
+  `dogs.test.ts` — DB-backed: create the Mal × Dutch Shepherd default, list/
+  get/patch/archive, ownership scoping (a 2nd user can't see/touch the first's
+  dogs), intake versioning. 14 API tests pass against Postgres.
+- ⏳ **M1.1c — Mobile intake UI + dog list/profile** (mirrors M1.1b on Expo) ·
+  ⏳ **M1.1d — Media / photos** (storage provider + upload route + photo display
+  on both clients) · ⏳ M1.2 — Breed library v1 · ⏳ M1.3 — Claude (Scout)
+  integration · ⏳ M1.4 — Scout chat UI · ⏳ M1.5 — onboarding glue → then
+  **🧪 UI/UX Checkpoint 1** (deploy to staging; first owner hands-on review of
+  both clients + the Scout persona).
 
 ## Decisions
 
