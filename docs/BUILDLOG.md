@@ -93,16 +93,27 @@ Status key: ✅ merged · 🚧 in flight · ⏳ pending · 🧪 awaiting your UI
 
 ## Phase 1 — MVP: the dog + Scout 🚧 _in progress_
 
-- 🚧 **M1.4a — Web Scout chat UI** — _in flight_ (branch `feat/m1.4a-web-scout-chat`).
-  `apps/web`: `/scout` (conversation list + new-chat) and `/scout/:id` (the chat
-  — streamed text, anchored-dog pill, suggested prompts when empty, send box,
-  optimistic user-message bubble, Stop while streaming, tool-use indicator on
-  the assistant bubble). `lib/conversations.ts` (typed wrappers + `streamScout()`
-  — fetches the SSE endpoint, parses `data:` frames into `ChatEvent`s via
+- 🚧 **M1.5 — Onboarding glue (web) → UI/UX Checkpoint 1** — _in flight_ (branch
+  `feat/m1.5-onboarding-glue`). `apps/web`: a brand-new owner now flows
+  **sign up → (Home detects zero dogs → redirects to) `/onboard` → intake → "meet
+  Scout"** (lands straight in `/scout/:id`, a conversation anchored to the new
+  dog with suggested prompts ready). New **`/settings`** screen (profile read-
+  only, notifications stub, sign out, **delete account** — `apps/api` enabled
+  Better Auth's `user.deleteUser`, so the row + all FK-cascaded data goes).
+  `Home`'s email link now opens `/settings`. → **🧪 UI/UX Checkpoint 1**: the
+  owner runs intake (default + a custom breed/age), chats with Scout, pokes the
+  unsafe prompts; this is also where we reconcile the interface reference. _(The
+  mobile chat — M1.4b — and photos — M1.1d — are the remaining Phase-1 items;
+  the `0.1.0` tag lands once mobile chat is in.)_
+- ✅ **M1.4a — Web Scout chat UI** — PR #20, merged. `apps/web`: `/scout`
+  (conversation list + new-chat) and `/scout/:id` (the chat — streamed text,
+  anchored-dog pill, suggested prompts when empty, send box, optimistic
+  user-message bubble, Stop while streaming, tool-use caption on the assistant
+  bubble). `lib/conversations.ts` (typed wrappers + `streamScout()` — fetches the
+  SSE endpoint and parses `data:` frames into `ChatEvent`s via the
   `ReadableStream`). `DogProfile` gained a **"Talk to Scout about <name>"**
-  button — `POST /v1/conversations { dogId }` → routes to `/scout/:id` so the
-  chat opens already-anchored. `Home` gained an "Open Scout chats →" link.
-  Mobile chat is **M1.4b**.
+  button (`POST /v1/conversations { dogId }` → `/scout/:id`, opening
+  already-anchored); `Home` gained an "Open Scout chats →" link.
 - ✅ **M1.3 — Claude (Scout) integration** — PR #19, merged. `apps/api`: + `@anthropic-ai/sdk`; `conversation` +
   `message` tables (with the `message_role` enum) + migration
   `0003_conversation_message.sql`. `src/ai/`: **`persona.ts`** assembles the

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ApiError, BRANDING } from '@ccc/shared';
+import { conversations } from '../lib/conversations';
 import { dogs } from '../lib/dogs';
 import { EMPTY_DEFAULT, IntakeStepper, MAL_DUTCH_DEFAULT } from '../components/intake/IntakeForm';
 
@@ -76,7 +77,13 @@ export function Onboard() {
                 try {
                   const dog = await dogs.create(profile);
                   await dogs.submitIntake(dog.id, { answers });
-                  navigate(`/dogs/${dog.id}`, { replace: true });
+                  // "Meet Scout" — drop the new owner straight into a chat
+                  // anchored to their dog, suggested prompts ready.
+                  const convo = await conversations.create({
+                    dogId: dog.id,
+                    title: `Getting started with ${dog.name}`,
+                  });
+                  navigate(`/scout/${convo.id}`, { replace: true });
                 } catch (e) {
                   if (e instanceof ApiError) throw new Error(`${e.code}: ${e.message}`);
                   throw e;

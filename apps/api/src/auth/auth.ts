@@ -68,6 +68,13 @@ export const auth = betterAuth({
     updateAge: 60 * 60 * 24, // refresh the cookie at most once a day
   },
 
+  // Let an authenticated user delete their account + all their data (the dog /
+  // intake / conversation / message rows cascade via FKs). No email
+  // confirmation step for v1 — a fresh password challenge is enough; M6 hardens.
+  user: {
+    deleteUser: { enabled: true },
+  },
+
   advanced: {
     // The web client may run on a different origin in dev — keep cookies usable
     // there; only mark them Secure in production (HTTPS).
