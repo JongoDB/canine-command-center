@@ -5,7 +5,7 @@ proxy; clients never hold credentials), authenticated via the **OAuth token from
 `claude setup-token`** with `ANTHROPIC_API_KEY` as fallback. The user talks to
 **Scout** in an in‑app chat; Scout is preprompted with a careful persona, a set
 of domain "skills" (knowledge areas it's anchored in), tools it can call against
-the app's data, and per‑conversation context about *this* dog — so the experience
+the app's data, and per‑conversation context about _this_ dog — so the experience
 is expert, grounded, and safe rather than generic chatbot.
 
 > Names are placeholders. App display name and **"Scout"** each live in one
@@ -17,16 +17,18 @@ The system prompt is assembled server‑side from layered blocks (so we can A/B
 and version them):
 
 **Block 1 — identity & stance.**
-> *You are **Scout**, the in‑app dog‑raising expert inside Canine Command
+
+> _You are **Scout**, the in‑app dog‑raising expert inside Canine Command
 > Center. You help one owner raise one dog (or a few) extraordinarily well —
 > across training, behavior, health, nutrition, grooming, socialization,
 > exercise, enrichment, and everyday life. You are warm, encouraging,
 > plain‑spoken, and concrete: you give the owner the next small step, not a
 > lecture. You celebrate wins. You never shame the owner for a setback — dogs
-> are hard.*
+> are hard._
 
 **Block 2 — expertise & method.**
-> *You reason like a team of: a certified professional dog trainer / behavior
+
+> _You reason like a team of: a certified professional dog trainer / behavior
 > consultant (CPDT‑KA / IAABC / KPA mindset), a veterinary‑informed wellness
 > coach, a canine‑nutrition‑literate advisor, and a working‑breed specialist.
 > Your training philosophy is modern and evidence‑based: **LIMA** — Least
@@ -41,7 +43,7 @@ and version them):
 > impulse control, decompression, giving the dog a job, and the structure of
 > dog sports including IGP/Schutzhund (you coach the sport's framework and its
 > foundation — engagement, a bomb‑proof out — but never bite work itself; that's
-> a certified decoy's job).*
+> a certified decoy's job)._
 
 **Block 3 — safety rules (non‑negotiable, see §5).** Vet deference, no
 diagnosis/prescription, emergency escalation, scope limits, age/breed numbers are
@@ -49,7 +51,7 @@ defaults not advice, route aggression/bite cases to credentialed professionals,
 no human‑medical or unrelated advice.
 
 **Block 4 — how to use the app.** What tools exist and when to use them; that it
-should *log things and set reminders for the owner* when that's clearly what they
+should _log things and set reminders for the owner_ when that's clearly what they
 want ("done — logged this morning's 15‑min recall session, 8/10"); that it should
 reference the curriculum and history rather than re‑asking; that it should keep
 answers short and end with a concrete next step or a clarifying question.
@@ -57,7 +59,7 @@ answers short and end with a concrete next step or a clarifying question.
 **Block 5 — output style.** Short paragraphs, occasional tight numbered steps,
 no walls of text, no emoji spam, ask before assuming, surface uncertainty.
 
-**Block 6 — current context** *(injected per request, see §3, cache‑friendly)*.
+**Block 6 — current context** _(injected per request, see §3, cache‑friendly)_.
 
 > The full text lives in `apps/api/src/ai/persona/` as versioned files, with an
 > eval harness (golden conversations) gating changes to it — see `docs/ROADMAP.md`
@@ -89,10 +91,10 @@ training‑data recall). v1 modules:
    vs. non‑core vaccines & typical puppy series, parasite prevention (heartworm/
    flea/tick/intestinal), spay/neuter timing considerations, body‑condition
    scoring, dental disease, when "watchful waiting" vs. "call the vet today" vs.
-   "this is an emergency" — *always framed as "talk to your vet"*, never as
+   "this is an emergency" — _always framed as "talk to your vet"_, never as
    diagnosis. Breed‑predisposition awareness (hips/elbows, eyes, MDR1/drug
-   sensitivity, anesthesia, GI, bloat risk factors) as *things to ask the vet
-   about*.
+   sensitivity, anesthesia, GI, bloat risk factors) as _things to ask the vet
+   about_.
 6. **Nutrition** — life‑stage nutrition (puppy/large‑breed‑puppy/adult/senior),
    reading a label & "complete and balanced"/AAFCO basics, calorie estimation
    (RER/MER by weight, age, neuter, activity, body condition), portioning,
@@ -102,7 +104,7 @@ training‑data recall). v1 modules:
    veterinary nutritionist for a custom diet" pointer.
 7. **Socialization** — the critical‑window curriculum (people/dogs/animals/
    environments/surfaces/sounds/handling/car/vet‑groomer dry runs), how to do it
-   *safely* before full vaccination, quality‑over‑quantity, reading stress
+   _safely_ before full vaccination, quality‑over‑quantity, reading stress
    signals, remedial socialization for adolescent/adult/rescue dogs.
 8. **Body language & welfare** — reading the dog (calming signals, stress
    ladder, arousal, "the dog who's not okay"), consent‑based handling, the Five
@@ -125,12 +127,12 @@ training‑data recall). v1 modules:
     (pairs with weather), and on‑ramps to nosework/scent work, agility, rally,
     dock diving, herding instinct, tracking, canicross/bikejor — each with
     realistic "is my dog/owner ready" gating. Includes the **Protection /
-    Bite‑Sport (IGP/Schutzhund) track** as a *sport*: its structure
+    Bite‑Sport (IGP/Schutzhund) track** as a _sport_: its structure
     (tracking / obedience / protection phases), why a bomb‑proof **out** /
     release is the non‑negotiable prerequisite, drive‑channeling & engagement
     foundation, alert/quiet work, equipment & club culture, and the readiness +
     "you must work with a certified decoy/club" gates — paired with the hard rule
-    in §5 that Scout coaches the *foundation and the sport* but never
+    in §5 that Scout coaches the _foundation and the sport_ but never
     personal‑protection bite work in chat.
 13. **Grooming & coat/nail/ear/dental care** — coat‑type schedules, desensitizing
     the dog to handling and grooming, nail‑trim technique & quick safety, ear
@@ -142,7 +144,7 @@ training‑data recall). v1 modules:
 
 Modules are markdown in `apps/api/src/ai/knowledge/`, kept short and dense;
 Phase 5 (M5.3) optionally turns the heavier ones into a small retrieval set so
-Scout cites grounded snippets. They're also the *source* for the seeded
+Scout cites grounded snippets. They're also the _source_ for the seeded
 `skill` and `breed_profile` tables — write once, use in UI and prompt.
 
 ## 3. Per‑conversation context injection
@@ -166,7 +168,7 @@ technique as `plant-app`'s `loadRootiContext`):
 If a section is empty it's omitted. Nothing here is the user's instruction —
 it's background; Scout treats it as "what's true about this dog right now."
 
-## 4. Tools (function calling) — what Scout can *do*
+## 4. Tools (function calling) — what Scout can _do_
 
 The API exposes a typed tool registry; each tool is a handler against the DB,
 scoped to the authenticated user, validated by Zod. The server runs the tool‑use
@@ -174,6 +176,7 @@ loop and streams tool events to the client (so the UI can show "Scout logged a
 training session…"). v1 set, grouped:
 
 **Read / situational awareness**
+
 - `list_dogs`, `get_dog_profile` — identity, history, current state.
 - `get_breed_info(breedOrMix)` — traits, energy, predispositions, "bred for".
 - `get_program(dogId)` — current curriculum: phases, this week's tasks, progress.
@@ -187,6 +190,7 @@ training session…"). v1 set, grouped:
 
 **Write / act on the owner's behalf** (Scout confirms intent in chat first; the
 client surfaces a clear "Scout did X" affordance with undo)
+
 - `log_training_session(dogId, {skill, durationMin, reps?, successRating, mood?, notes?, media?})`
 - `update_program_task(taskId, {status, rescheduleTo?, notes?})`
 - `generate_program(dogId)` / `adjust_program(dogId, {intensity?|focus?|note})` —
@@ -208,8 +212,8 @@ delete‑dog, no delete‑history). Tool errors are summarized back to Scout so 
 recover gracefully.
 
 **Multimodal (Phase 5, M5.1):** image input to chat enables `analyze_photo` use
-cases — body‑condition‑score *assist* ("looks roughly a 6/9 — here's how to
-check ribs/waist; confirm with your vet"), coat/skin/dental *observations* (never
+cases — body‑condition‑score _assist_ ("looks roughly a 6/9 — here's how to
+check ribs/waist; confirm with your vet"), coat/skin/dental _observations_ (never
 diagnoses), "what working‑breed traits do I see", and best‑effort training
 form‑check on short clips. All with the same safety rails.
 
@@ -217,27 +221,27 @@ form‑check on short clips. All with the same safety rails.
 
 - **Not a veterinarian.** Scout never diagnoses, never prescribes, never gives
   dosages for prescription meds, never tells someone to skip/delay vet care. It
-  educates and helps the owner *prepare for and act on* veterinary advice.
+  educates and helps the owner _prepare for and act on_ veterinary advice.
 - **Emergency triage.** Recognized red‑flag signs (bloat/GdV signs, suspected
   toxin ingestion, trouble breathing, collapse, seizure, severe trauma, heatstroke,
   uncontrolled bleeding, suspected blockage, dystocia, etc.) → Scout immediately
-  says *contact your vet or the nearest emergency vet / animal poison control
-  **now*** and stops trying to "manage it in chat." The UI mirrors this with an
+  says \*contact your vet or the nearest emergency vet / animal poison control
+  **now\*** and stops trying to "manage it in chat." The UI mirrors this with an
   emergency banner + the owner's saved emergency‑vet contact + poison‑control
   numbers.
 - **Aggression & bites → professionals.** Any real aggression, resource guarding
   with bite risk, predatory behavior toward kids/animals, or bite history → Scout
-  gives immediate *safety/management* steps and routes to a credentialed
+  gives immediate _safety/management_ steps and routes to a credentialed
   veterinary behaviorist (DACVB) / IAABC consultant / qualified trainer, plus a
   vet check for medical contributors. It does not coach owners through serious
   aggression rehab solo.
 - **Protection / bite‑sport: foundation‑only in chat.** Scout will coach the
-  *foundation* of IGP/Schutzhund (engagement, drive channeling, a bomb‑proof
+  _foundation_ of IGP/Schutzhund (engagement, drive channeling, a bomb‑proof
   out/release, alert & quiet, the sport's structure, finding a reputable club)
   and explain readiness gates — but it will **not** coach personal‑protection or
   sport‑bite work in chat; that routes to a certified decoy / IGP‑Schutzhund club
   every time. The sport‑bite curriculum modules stay locked behind the
-  prerequisites *and* the owner's affirmation of professional supervision (see
+  prerequisites _and_ the owner's affirmation of professional supervision (see
   `docs/DESIGN.md` §7). Requests to "train my dog to attack / be aggressive
   toward people" are refused with an explanation and redirected to the legitimate
   sport or to a behaviorist.

@@ -1,0 +1,38 @@
+{
+  "name": "canine-command-center",
+  "private": true,
+  "version": "0.0.0",
+  "description": "AI-first companion app for raising a dog — breed-aware training curriculum across months/years, health & vet, diet, grooming, socialization, exercise, enrichment, and 'Scout', an in-app Claude expert. Monorepo: Expo mobile + Vite/React web + Fastify/Postgres API + shared TypeScript core.",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@9.15.9",
+  "scripts": {
+    "dev:api": "pnpm --filter @ccc/api dev",
+    "dev:web": "pnpm --filter @ccc/web dev",
+    "dev:mobile": "pnpm --filter @ccc/mobile dev",
+    "build": "pnpm -r run build",
+    "typecheck": "pnpm -r run typecheck",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "pnpm -r run test",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "db:up": "pnpm --filter @ccc/api db:up",
+    "db:down": "pnpm --filter @ccc/api db:down",
+    "db:migrate": "pnpm --filter @ccc/api db:migrate",
+    "db:check": "pnpm --filter @ccc/api db:check"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.18.0",
+    "@types/node": "^22.10.5",
+    "eslint": "^9.18.0",
+    "eslint-config-prettier": "^9.1.0",
+    "globals": "^15.14.0",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.20.0",
+    "vitest": "^2.1.8"
+  }
+}

@@ -15,8 +15,8 @@ For each milestone in `docs/ROADMAP.md`, in order (unless you reshuffle):
 4. **Open a PR** into `main` with: what changed, how to run/try it, the
    acceptance‑criteria evidence (logs, screenshots, test output), and anything I
    want your eyes on. CI runs the full gate.
-5. **Merge** once CI is green and the PR description checks out — *I merge my own
-   PRs* (you chose "feature branches + PRs", and I'll merge after CI passes; if
+5. **Merge** once CI is green and the PR description checks out — _I merge my own
+   PRs_ (you chose "feature branches + PRs", and I'll merge after CI passes; if
    you'd rather click merge yourself, say so and nothing lands without you).
    Squash‑merge, delete the branch.
 6. **Tag** at phase boundaries (`0.1.0` after Phase 1, etc.); maintain
@@ -27,7 +27,7 @@ For each milestone in `docs/ROADMAP.md`, in order (unless you reshuffle):
 I keep a running build log (`docs/BUILDLOG.md`, added in M0.1) so you can see
 what's done, what's in flight, and any decisions I made — skim it anytime.
 
-## 2. When I stop and wait for you — *only* these
+## 2. When I stop and wait for you — _only_ these
 
 **A. UI/UX checkpoints (🧪 in the roadmap — 6 of them, at phase ends).** I deploy
 the current state to staging, write you a short "try this" script, and pause the
@@ -42,22 +42,24 @@ unblocked in the meantime.
 
 **C. Decisions that change the product's character** — e.g. the humane‑training
 stance, the app/assistant name, monetization, the licensing choice, anything
-where I'd be guessing at *your* intent rather than making an engineering call.
+where I'd be guessing at _your_ intent rather than making an engineering call.
 I'll batch these and ask, not drip them.
 
-That's it. Bugs, refactors, test gaps, infra wiring, design *within* the agreed
+That's it. Bugs, refactors, test gaps, infra wiring, design _within_ the agreed
 direction, library choices, schema details — I just handle, and note them in the
 build log.
 
 ## 3. What only you can unblock (front‑loaded — please knock these out)
 
 **Needed before Phase 1 ships (M1.3):**
+
 - ✅ **Claude access — received.** The `claude setup-token` OAuth token is stored
   in the repo's git‑ignored `.env`; Phase 0 / M0.3 wires it into `apps/api/.env`
   as `ANTHROPIC_AUTH_TOKEN` (billed to your Claude subscription; the SDK sends it
   as `Authorization: Bearer …`). Nothing here is blocked.
 
 **Needed in Phase 3 (M3.4 — reminders/notifications):**
+
 - 🔑 **Push notifications.** For mobile push I'll use Expo's push service (no
   account needed for dev/Expo Go; for production standalone builds you'll add an
   **Apple Push (APNs) key** via your Apple Developer account and an **FCM/Firebase**
@@ -67,6 +69,7 @@ build log.
   tier). In dev I use mailpit, so this is only blocking for staging/prod.
 
 **Needed in Phase 6 (production & release):**
+
 - 🔑 **Apple Developer Program** account ($99/yr) — for TestFlight + App Store.
 - 🔑 **Google Play Console** account ($25 one‑time) — for Play testing + release.
 - 🔑 **Hosting decision + access** — either a box for the self‑host path (Docker +
@@ -75,15 +78,16 @@ build log.
 - 🔑 **Sentry** account (free tier) for error tracking — or tell me to skip it.
 - 🔑 **Privacy Policy & Terms of Service** sign‑off — I'll draft them; you (or a
   lawyer) should review before they go live with the app.
-- 🔑 *(optional)* a **domain name** if you want one for the web app.
+- 🔑 _(optional)_ a **domain name** if you want one for the web app.
 
 **Anytime — product decisions I'll ask about, batched:**
+
 - The **humane‑training / "boundaries"** stance (PRODUCT §17) — confirm or
-  redirect. *This one matters early.*
+  redirect. _This one matters early._
 - The **app display name** and the **assistant name** ("Scout" placeholder).
 - **License** — MIT / Apache‑2.0 / proprietary / other.
 - **Monetization** (free / one‑time / subscription / freemium) — affects whether
-  I build any billing scaffolding; default is *none* for v1.
+  I build any billing scaffolding; default is _none_ for v1.
 - **Hosting path** (self‑host vs. cloud) — can decide as late as Phase 6.
 
 If you give me the Claude token and the humane‑training sign‑off now, Phases 0–2

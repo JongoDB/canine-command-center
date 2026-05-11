@@ -2,7 +2,7 @@
 
 ## 1. The idea in one paragraph
 
-Raising a dog *well* is a multi‑year project with dozens of moving parts —
+Raising a dog _well_ is a multi‑year project with dozens of moving parts —
 training, health, diet, grooming, socialization, exercise, behavior — and most
 owners juggle it with scattered notes, half‑remembered vet advice, and YouTube.
 This app turns it into **one coherent program**: you tell it about your dog
@@ -10,7 +10,7 @@ This app turns it into **one coherent program**: you tell it about your dog
 puppyhood → adolescence → adulthood → senior years, it tracks everything you do,
 it reminds you what's due, and **Scout** — Claude on the backend, preprompted as
 an expert — is in the app to coach you through any of it, in plain language,
-with full knowledge of *your* dog.
+with full knowledge of _your_ dog.
 
 ## 2. Who it's for
 
@@ -35,14 +35,14 @@ own slice of the curriculum, and its own Claude tools (see `docs/AI.md`).
 2. **Breed intelligence** — a curated breed library (traits, temperament,
    energy & exercise needs, trainability, common health predispositions,
    grooming needs, size/weight ranges, lifespan, "what this breed was bred to
-   do"), including composite profiles for mixes (e.g. *Malinois × Dutch
-   Shepherd*). Drives curriculum defaults; Claude can also reason about it.
+   do"), including composite profiles for mixes (e.g. _Malinois × Dutch
+   Shepherd_). Drives curriculum defaults; Claude can also reason about it.
 3. **Training program / curriculum** — the spine of the app. A generated,
    editable plan: **Phases** (life‑stage chunks) → **Modules** (e.g. "Recall",
    "Crate", "Loose‑leash") → **Lessons / Tasks** (dated or age‑targeted, with
    step‑by‑step shaping plans, success criteria, prerequisites, troubleshooting).
-   Every module/task carries a **track** — *Obedience · Socialization & Life
-   Skills · Advanced / Working · Protection / Bite‑Sport (opt‑in, gated)* — which
+   Every module/task carries a **track** — _Obedience · Socialization & Life
+   Skills · Advanced / Working · Protection / Bite‑Sport (opt‑in, gated)_ — which
    the timeline, filters, progress charts and Scout all key off (these are the
    colored command‑groups in your reference artifact; see `docs/DESIGN.md` §5).
 4. **Obedience & skills catalog** — the building blocks the curriculum draws
@@ -81,7 +81,7 @@ own slice of the curriculum, and its own Claude tools (see `docs/AI.md`).
 13. **Potty / house training** — schedule, potty log, accident log, regression
     handling, crate‑and‑routine method, marking issues.
 14. **Leash manners** — loose‑leash protocol, equipment guidance (flat collar /
-    harness / long line — and an explicit, reasoned stance *away from* aversive
+    harness / long line — and an explicit, reasoned stance _away from_ aversive
     tools like prong/e‑collar for the typical pet owner), engagement on walks,
     intro to reactivity management, hands the harder cases to Scout + "see a
     qualified trainer/behaviorist."
@@ -92,22 +92,22 @@ own slice of the curriculum, and its own Claude tools (see `docs/AI.md`).
     instinct, tracking, and an **optional, opt‑in, professionally‑supervised
     Protection / Bite‑Sport (IGP/Schutzhund) track** (it's in your reference
     artifact) — engagement & drive channeling, a bomb‑proof "out", alert/quiet,
-    and sport‑bite work *only* behind explicit readiness gates and the owner's
+    and sport‑bite work _only_ behind explicit readiness gates and the owner's
     affirmation that they're training under a certified decoy/club; guardrails in
     `docs/DESIGN.md` §5/§7 and `docs/AI.md` §5. Scout coaches the foundation and
     the sport's structure, never personal‑protection bite work in chat.
 16. **Enrichment & toys** — toy inventory (chew / puzzle / tug / fetch / plush /
     chase), durability notes ("will it survive a Malinois?"), a rotation
     scheduler, puzzle‑feeder ideas, snuffle mats, DIY enrichment, chew safety.
-17. **Boundaries & humane correction** *(this is the reinterpretation of your
-    "healthy punishment" — please read & confirm)* — modern, ethics‑first
+17. **Boundaries & humane correction** _(this is the reinterpretation of your
+    "healthy punishment" — please read & confirm)_ — modern, ethics‑first
     behavior management built on **LIMA** ("Least Intrusive, Minimally
     Aversive") and the consensus of veterinary behavior bodies:
     **management & prevention first**, generous **positive reinforcement**,
     teaching **incompatible behaviors**, **redirection**, **no‑reward markers**,
     **structured time‑outs / loss of access**, calm consistency, and clear
-    house rules — *not* physical corrections, alpha‑rolls, intimidation, shock,
-    prong/choke, or "dominance" frameworks, with the *why* explained so owners
+    house rules — _not_ physical corrections, alpha‑rolls, intimidation, shock,
+    prong/choke, or "dominance" frameworks, with the _why_ explained so owners
     of a powerful, smart dog buy in. Includes resource‑guarding and bite‑
     prevention safety content, and a hard rule that aggression cases get routed
     to "work with a credentialed veterinary behaviorist / IAABC / KPA‑class
@@ -129,9 +129,9 @@ own slice of the curriculum, and its own Claude tools (see `docs/AI.md`).
 A short, friendly questionnaire on first run (and re‑runnable / addable later).
 It produces the **Dog profile** and seeds **curriculum generation**.
 
-**Section A — identity:** name, photo, breed(s) *(prefilled example: **Belgian
+**Section A — identity:** name, photo, breed(s) _(prefilled example: **Belgian
 Malinois × Dutch Shepherd mix · female · high‑drive**, matching the reference
-artifact's breed tags)*, "is this a guess?" toggle, DOB or estimated age, sex,
+artifact's breed tags)_, "is this a guess?" toggle, DOB or estimated age, sex,
 spay/neuter status & date, weight, color/coat, microchip.
 
 **Section B — origin & history:** source (breeder / shelter / rescue / stray /
@@ -164,17 +164,17 @@ Prefilled as the example so a new user can tap through intake and immediately se
 a realistic program; also a seeded entry in the breed library:
 
 - **Bred for:** herding/tending and military/police/protection work — built to
-  *work all day with a handler*. Translation for a pet home: needs **substantial
+  _work all day with a handler_. Translation for a pet home: needs **substantial
   daily physical exercise + structured mental work + a job**, or it invents one
   (and you won't like its choices).
 - **Temperament:** extremely intelligent, intense, driven, loyal, sensitive to
   the handler, "velcro", high prey drive, strong nerves, can be wary of
-  strangers — *early, heavy, positive socialization is non‑negotiable*.
+  strangers — _early, heavy, positive socialization is non‑negotiable_.
 - **Curriculum emphasis:** impulse control & "off‑switch"/settle training from
   day one, rock‑solid recall, engagement & focus games, channeling drive into
   legal outlets (flirt pole, tug with rules, fetch with rules, scent work),
   decompression walks, crate as a calm den, loose‑leash early, redirected
-  mouthing/biting (puppy land‑shark phase is real), and a *lot* of socialization.
+  mouthing/biting (puppy land‑shark phase is real), and a _lot_ of socialization.
 - **Health watch‑list (informs checkup/screening defaults; Scout always defers
   to the vet):** hip & elbow dysplasia, certain eye conditions, some
   herding‑breed drug sensitivities (e.g. MDR1 — worth a test), anesthesia
@@ -182,11 +182,11 @@ a realistic program; also a seeded entry in the breed library:
   athletic body condition is the goal. Lifespan ~12–14 yrs.
 - **Grooming:** short double coat — easy; weekly brush, seasonal sheds, routine
   nails/ears/teeth.
-- **Exercise target (adult, healthy):** think *hours*, not minutes — a brisk
+- **Exercise target (adult, healthy):** think _hours_, not minutes — a brisk
   structured walk/run **plus** training **plus** a drive outlet **plus** a
   decompression sniff walk on a long line, daily; mental work counts double.
 
-> All breed numbers are *defaults to anchor the plan*, not medical advice — the
+> All breed numbers are _defaults to anchor the plan_, not medical advice — the
 > app and Scout always tell the user to confirm with their own veterinarian, and
 > the user can override anything.
 
@@ -199,7 +199,7 @@ Mono; black + tan/khaki + steel + orange palette; a vertical **timeline of
 phases** (age‑staged: 8–12 wk → 3–4 mo → 4–6 mo → 6–9 mo → 9–12 mo), each phase
 expanding into **track‑grouped command cards** (Obedience / Socialization /
 Advanced / Protection) plus a per‑phase **"Trainer's Note"** and a footer safety
-warning. That one screen *is* the app's **Program** tab, and it sets the whole
+warning. That one screen _is_ the app's **Program** tab, and it sets the whole
 app's visual personality. The full design system (tokens, components, the
 four‑track model, screen‑by‑screen mapping, and the protection‑sport
 reconciliation) is in [`docs/DESIGN.md`](DESIGN.md). Navigation: bottom tabs —
