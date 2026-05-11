@@ -93,8 +93,17 @@ Status key: ✅ merged · 🚧 in flight · ⏳ pending · 🧪 awaiting your UI
 
 ## Phase 1 — MVP: the dog + Scout 🚧 _in progress_
 
-- 🚧 **M1.3 — Claude (Scout) integration** — _in flight_ (branch
-  `feat/m1.3-scout-claude`). `apps/api`: + `@anthropic-ai/sdk`; `conversation` +
+- 🚧 **M1.4a — Web Scout chat UI** — _in flight_ (branch `feat/m1.4a-web-scout-chat`).
+  `apps/web`: `/scout` (conversation list + new-chat) and `/scout/:id` (the chat
+  — streamed text, anchored-dog pill, suggested prompts when empty, send box,
+  optimistic user-message bubble, Stop while streaming, tool-use indicator on
+  the assistant bubble). `lib/conversations.ts` (typed wrappers + `streamScout()`
+  — fetches the SSE endpoint, parses `data:` frames into `ChatEvent`s via
+  `ReadableStream`). `DogProfile` gained a **"Talk to Scout about <name>"**
+  button — `POST /v1/conversations { dogId }` → routes to `/scout/:id` so the
+  chat opens already-anchored. `Home` gained an "Open Scout chats →" link.
+  Mobile chat is **M1.4b**.
+- ✅ **M1.3 — Claude (Scout) integration** — PR #19, merged. `apps/api`: + `@anthropic-ai/sdk`; `conversation` +
   `message` tables (with the `message_role` enum) + migration
   `0003_conversation_message.sql`. `src/ai/`: **`persona.ts`** assembles the
   6-block system prompt from `docs/AI.md` (identity → expertise → 14 knowledge

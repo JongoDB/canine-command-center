@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ApiError, BRANDING, type Dog, type IntakeResponse, breedLabel } from '@ccc/shared';
+import { conversations } from '../lib/conversations';
 import { dogs } from '../lib/dogs';
 import { nameToSlug } from '../lib/breeds';
 import { signOut, useSession } from '../lib/auth-client';
@@ -183,6 +184,21 @@ export function DogProfile() {
         </div>
 
         {error && <div className="error">{error}</div>}
+
+        <button
+          onClick={async () => {
+            if (!dog) return;
+            try {
+              const c = await conversations.create({ dogId: dog.id });
+              navigate(`/scout/${c.id}`);
+            } catch (e) {
+              setError(e instanceof Error ? e.message : 'Could not start a chat.');
+            }
+          }}
+          style={{ width: '100%' }}
+        >
+          Talk to {BRANDING.assistantName} about {dog.name}
+        </button>
 
         <div style={{ display: 'flex', gap: 12 }}>
           <Link to={`/dogs/${dog.id}/edit`} style={{ flex: 1 }}>
