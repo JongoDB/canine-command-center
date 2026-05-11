@@ -1,0 +1,11 @@
+{
+  "name": "Canine Command Center",
+  "short_name": "Command Center",
+  "description": "Raise your dog like a pro — breed-aware training, health, diet, and Scout, your in-app expert.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "icons": []
+}

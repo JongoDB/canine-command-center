@@ -1,10 +1,15 @@
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { BRANDING } from '@ccc/shared';
-import { appBaseUrl, corsOrigins, env, isProd } from '../config/env';
+import { appBaseUrl, corsOrigins, env, isProd, webBaseUrl } from '../config/env';
 import { getDb } from '../db/client';
 import * as schema from '../db/schema';
 import { sendEmail } from '../lib/email';
+
+/** Build a link into the web client (verification / password-reset land there). */
+function webLink(path: string, token: string): string {
+  return `${webBaseUrl}${path}?token=${encodeURIComponent(token)}`;
+}
 
 /**
  * Better Auth instance. Email/password with email verification and password
@@ -35,11 +40,13 @@ export const auth = betterAuth({
     enabled: true,
     requireEmailVerification: true,
     minPasswordLength: 8,
-    sendResetPassword: async ({ user, url }) => {
+    sendResetPassword: async ({ user, token }) => {
       await sendEmail({
         to: user.email,
         subject: `Reset your ${BRANDING.appName} password`,
-        text: `Reset your password:\n\n${url}\n\nIf you didn't request this, you can ignore this email.`,
+        text:
+          `Reset your password:\n\n${webLink('/reset-password', token)}\n\n` +
+          `If you didn't request this, you can safely ignore this email.`,
       });
     },
   },
@@ -47,11 +54,11 @@ export const auth = betterAuth({
   emailVerification: {
     sendOnSignUp: true,
     autoSignInAfterVerification: true,
-    sendVerificationEmail: async ({ user, url }) => {
+    sendVerificationEmail: async ({ user, token }) => {
       await sendEmail({
         to: user.email,
         subject: `Verify your email for ${BRANDING.appName}`,
-        text: `Welcome to ${BRANDING.appName}! Confirm your email address:\n\n${url}`,
+        text: `Welcome to ${BRANDING.appName}! Confirm your email address:\n\n${webLink('/verify-email', token)}`,
       });
     },
   },

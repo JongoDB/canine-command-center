@@ -1,0 +1,197 @@
+/* Web theme — the "tactical K9 field journal" language (docs/DESIGN.md).
+   Values mirror @ccc/ui's tokens; keep them in sync (a generated theme comes
+   later). Webfonts are loaded here; system stacks fall back. */
+
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap');
+
+:root {
+  --black: #0a0a0a;
+  --steel: #2a2f3a;
+  --steel-mid: #3d4455;
+  --cream: #f5f0e8;
+  --text-muted: #8a8a8a;
+  --tan: #c8a46e;
+  --tan-light: #e8c99a;
+  --khaki: #8b7355;
+  --accent: #d4572a;
+  --accent-light: #e8826a;
+  --hairline: #1f1f1f;
+
+  --font-display: 'Bebas Neue', 'Arial Narrow', sans-serif;
+  --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  background: var(--black);
+  color: var(--cream);
+  font-family: var(--font-body);
+  font-weight: 300;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--tan);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: 2px;
+  line-height: 0.95;
+}
+
+h1 {
+  font-size: clamp(40px, 7vw, 72px);
+}
+h2 {
+  font-size: 28px;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--tan);
+}
+
+/* layout */
+.screen {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.center {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.card {
+  background: var(--steel);
+  border: 1px solid var(--hairline);
+  padding: 28px;
+  width: 100%;
+  max-width: 420px;
+}
+.stack > * + * {
+  margin-top: 14px;
+}
+.muted {
+  color: var(--text-muted);
+}
+.error {
+  color: var(--accent-light);
+  font-size: 13px;
+}
+.notice {
+  border-left: 3px solid var(--tan);
+  background: var(--steel);
+  padding: 12px 16px;
+  font-size: 13px;
+}
+
+/* form controls */
+label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  display: block;
+  margin-bottom: 6px;
+}
+input {
+  width: 100%;
+  background: var(--black);
+  border: 1px solid var(--steel-mid);
+  color: var(--cream);
+  font-family: var(--font-body);
+  font-size: 15px;
+  padding: 10px 12px;
+}
+input:focus {
+  outline: none;
+  border-color: var(--tan);
+}
+button {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  background: var(--tan);
+  color: var(--black);
+  border: none;
+  padding: 11px 16px;
+  cursor: pointer;
+  width: 100%;
+}
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+button.ghost {
+  background: transparent;
+  color: var(--tan);
+  border: 1px solid var(--tan);
+}
+
+/* the authed app shell */
+.appbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--hairline);
+}
+.appbar .brand {
+  font-family: var(--font-display);
+  font-size: 22px;
+  letter-spacing: 2px;
+}
+.appbar .right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 13px;
+}
+.content {
+  padding: 28px 20px;
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+}
+.pill {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1px;
+  padding: 3px 8px;
+  border: 1px solid var(--steel-mid);
+  color: var(--text-muted);
+}
+.pill.ok {
+  color: var(--tan-light);
+  border-color: var(--tan);
+}
+.pill.down {
+  color: var(--accent-light);
+  border-color: var(--accent);
+}

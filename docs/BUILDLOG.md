@@ -9,21 +9,39 @@ Status key: ✅ merged · 🚧 in flight · ⏳ pending · 🧪 awaiting your UI
 
 ## Phase 0 — Foundations
 
-- 🚧 **M0.4 — Auth (+ M0.5 increment)** — _in flight_ (branch `feat/m0.4-auth`).
-  Better Auth 1.6 (email/password + email verification + password reset) on the
-  API, mounted at `/api/auth/*` (a Fastify ↔ Fetch bridge that special-cases
-  `Set-Cookie`); `requireSession` preHandler (decorates `request.auth`, 401s the
-  envelope without a session) + `attachSession`; `GET /me`; `src/lib/email.ts`
-  (SMTP/mailpit in dev, log if unset, captured in tests); web uses the session
-  cookie, mobile bearer tokens land in M0.6. Tests: `auth.test.ts` exercises
-  sign-up → (verification email captured) → verify-email → sign-in → `/me` →
-  sign-out, plus the password-reset request — DB-backed, so it self-skips when no
-  Postgres is reachable and runs against the CI service. Also advances **M0.5**:
-  `@ccc/shared` gains `types.ts` (`User`, `ApiErrorResponse`, `HealthStatus`,
-  `ReadyStatus`) + `api-client.ts` (typed `ApiClient` — fetch wrapper, `ApiError`,
-  `health`/`ready`/`me`) + tests. CI: the `Test` step now runs with `DATABASE_URL`
-  pointing at the Postgres service. _Note: Better Auth 1.6 dropped
-  `/forget-password` — the reset-request endpoint is `/request-password-reset`._
+- 🚧 **M0.6a — Web client skeleton** — _in flight_ (branch `feat/m0.6a-web-client`).
+  `apps/web`: Vite 6 + React 18 + React Router 6; static PWA manifest; the Better
+  Auth browser client (cookie sessions) + the `@ccc/shared` `ApiClient`; auth
+  screens — sign up / sign in / `/verify-email` (the email-link landing page,
+  hands the token to the API and lands the user back home auto-signed-in) /
+  forgot + reset password; an empty authenticated `/` (app shell + an API-health
+  pill + sign-out); dark "K9 field journal" theme (mirrors `@ccc/ui` tokens). Dev
+  proxy (`/api`, `/health`, `/me` → the Fastify server) so it's same-origin (no
+  CORS, cookie works). Touches `apps/api`: added `WEB_BASE_URL` so verification /
+  reset emails link to the web app, not the API. Removed unused `declaration`/
+  `declarationMap` from `tsconfig.base.json` (fixed TS2742 on the Better Auth
+  client). Verified: full gate green; built bundle (~66 KB gz JS); dev server +
+  API + proxy + mailpit smoke-tested (signup → verification email links to
+  `http://localhost:5173/verify-email?token=…`). _(M0.6b — the Expo mobile
+  client plus the shared `@ccc/ui` primitives — follows.)_
+- ✅ **M0.5 — Shared package v1** — delivered incrementally (not a standalone
+  PR). The v1 cut — `BRANDING` (M0.1), `@ccc/ui` design tokens (M0.1), the
+  auth-adjacent types + the typed `ApiClient` (M0.4, PR #12) — is in. The
+  remaining domain schemas (dog / breed / program / conversation / …) land with
+  their features from M1.1 onward.
+- ✅ **M0.4 — Auth** — PR #12, merged. Better Auth 1.6 (email/password + email
+  verification + password reset) on the API, mounted at `/api/auth/*` (a Fastify
+  ↔ Fetch bridge that special-cases `Set-Cookie`); `requireSession` preHandler
+  (decorates `request.auth`, 401s the envelope without a session) +
+  `attachSession`; `GET /me`; `src/lib/email.ts` (SMTP/mailpit in dev, logs if
+  unset, captured in tests); web uses the session cookie, mobile bearer tokens in
+  M0.6b. `auth.test.ts` exercises sign-up → (verification email captured) →
+  verify-email → sign-in → `/me` → sign-out + password-reset — DB-backed, self-
+  skips without Postgres, runs against the CI service. CI `Test` step now runs
+  with `DATABASE_URL` → the Postgres service. `zod` bumped monorepo-wide to `^4`
+  (better-auth peer dep); `nodemailer` `^7.0.11` (GHSA-rcmh-qjqh-p98v). _Note:
+  Better Auth 1.6 dropped `/forget-password` — the reset-request endpoint is
+  `/request-password-reset`._
 - ✅ **M0.3 — API skeleton + DB** — PR #11, merged. `apps/api`: Fastify 5
   server (`buildServer()` — helmet, CORS, `{ error: {…} }` envelope, graceful
   shutdown) with `GET /health` (liveness; DB sub-status) and `GET /health/ready`
@@ -49,9 +67,7 @@ Status key: ✅ merged · 🚧 in flight · ⏳ pending · 🧪 awaiting your UI
   build log. `packages/shared` seeded with `BRANDING` constants; `packages/ui`
   seeded with the design tokens from `docs/DESIGN.md`. App packages are stubs
   (real API in M0.3, clients in M0.6). Gate green on a clean checkout.
-- ⏳ **M0.4 — Auth**
-- ⏳ **M0.5 — Shared package v1** (started in M0.1; extended alongside M0.3/M0.4)
-- ⏳ **M0.6 — Client skeletons (mobile + web)**
+- ⏳ **M0.6b — Mobile client skeleton (Expo)** + the shared `@ccc/ui` primitives.
 
 ## Decisions
 

@@ -18,8 +18,6 @@
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",
-    "declaration": true,
-    "declarationMap": true,
     "sourceMap": true
   }
 }
