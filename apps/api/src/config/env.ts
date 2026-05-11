@@ -18,10 +18,16 @@ const EnvSchema = z.object({
   DATABASE_URL: z.string().min(1),
 
   /**
-   * Public origin of the API itself (for building absolute URLs, CORS, and —
-   * from M0.4 — Better Auth). Defaults to http://localhost:<PORT>.
+   * Public origin of the API itself (for building absolute URLs, CORS, and
+   * Better Auth). Defaults to http://localhost:<PORT>.
    */
   APP_BASE_URL: z.string().url().optional(),
+
+  /**
+   * Public origin of the **web client** — where verification / password-reset
+   * email links should land. Defaults to the first CORS origin.
+   */
+  WEB_BASE_URL: z.string().url().optional(),
 
   /**
    * Comma-separated list of browser origins allowed to call the API (the web
@@ -80,3 +86,6 @@ export const corsOrigins: string[] = env.CORS_ORIGINS.split(',')
 
 /** Public base URL of the API, with a sensible localhost default. */
 export const appBaseUrl: string = env.APP_BASE_URL ?? `http://localhost:${env.PORT}`;
+
+/** Public base URL of the web client (where auth email links should land). */
+export const webBaseUrl: string = env.WEB_BASE_URL ?? corsOrigins[0] ?? appBaseUrl;
