@@ -2,3 +2,5 @@
 // Grows over the milestones: domain types, Zod schemas, the typed API client,
 // and pure calculators (calorie/portion, age-stage, vaccine schedule, …).
 export { BRANDING, type Branding } from './branding';
+export type { ApiErrorResponse, HealthStatus, ReadyStatus, User } from './types';
+export { ApiClient, ApiError, type ApiClientOptions } from './api-client';

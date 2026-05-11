@@ -29,6 +29,22 @@ const EnvSchema = z.object({
    */
   CORS_ORIGINS: z.string().default('http://localhost:5173,http://localhost:4173'),
 
+  /** Better Auth signing secret. Required everywhere; never commit a real one. */
+  BETTER_AUTH_SECRET: z.string().min(16, 'must be at least 16 characters'),
+
+  // Outbound email (verification, password reset, later digests). When MAIL_HOST
+  // is unset, emails are logged instead of sent (dev without mailpit). In dev,
+  // point these at the mailpit container (host=localhost, port=1025).
+  MAIL_HOST: z.string().optional(),
+  MAIL_PORT: z.coerce.number().int().positive().default(1025),
+  MAIL_SECURE: z
+    .enum(['true', 'false'])
+    .default('false')
+    .transform((v) => v === 'true'),
+  MAIL_USER: z.string().optional(),
+  MAIL_PASSWORD: z.string().optional(),
+  MAIL_FROM: z.string().default('Canine Command Center <no-reply@localhost>'),
+
   // Claude access for "Scout" — wired into the SSE proxy in M1.3. Optional until
   // then; exactly one of these should be set when the chat feature ships.
   ANTHROPIC_AUTH_TOKEN: z.string().optional(),

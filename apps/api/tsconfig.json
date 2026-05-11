@@ -3,8 +3,7 @@
   "compilerOptions": {
     "noEmit": true,
     "types": ["node"],
-    "resolveJsonModule": true,
-    "allowImportingTsExtensions": true
+    "resolveJsonModule": true
   },
-  "include": ["src", "drizzle.config.ts", "tsup.config.ts", "vitest.config.ts"]
+  "include": ["src", "drizzle.config.ts", "tsup.config.ts", "vitest.config.ts", "vitest.setup.ts"]
 }

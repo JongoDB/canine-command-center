@@ -3,9 +3,11 @@ import helmet from '@fastify/helmet';
 import sensible from '@fastify/sensible';
 import Fastify, { type FastifyError, type FastifyInstance } from 'fastify';
 import { BRANDING } from '@ccc/shared';
+import { authPlugin } from './auth/plugin';
 import { corsOrigins, env, isDev, isTest } from './config/env';
 import { closeDb } from './db/client';
 import { healthRoutes } from './routes/health';
+import { meRoutes } from './routes/me';
 
 /**
  * Build a fully-wired Fastify instance (without listening). Used by `index.ts`
@@ -63,9 +65,13 @@ export async function buildServer(): Promise<FastifyInstance> {
     });
   });
 
+  // Auth — mounts Better Auth at /api/auth/* (sign-up/in/out, verify, reset, …).
+  await app.register(authPlugin);
+
   // Routes. Domain routes (dogs, breeds, program, health, chat, …) register
   // here as they land in later milestones.
   await app.register(healthRoutes);
+  await app.register(meRoutes);
 
   app.addHook('onClose', async () => {
     await closeDb();
