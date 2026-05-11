@@ -3,18 +3,38 @@
   "version": "0.0.0",
   "private": true,
   "description": "Canine Command Center — mobile client (Expo / React Native, iOS + Android). Shares domain logic with web via @ccc/shared and design tokens via @ccc/ui.",
-  "main": "src/index.ts",
+  "main": "expo-router/entry",
   "scripts": {
-    "dev": "echo 'The mobile app is implemented in milestone M0.6.' && exit 0",
-    "build": "echo 'The mobile build (EAS) is implemented in milestone M0.6.'",
+    "dev": "expo start",
+    "start": "expo start",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "native:prebuild": "expo prebuild",
     "typecheck": "tsc --noEmit",
+    "build": "tsc --noEmit",
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
+    "@babel/runtime": "^7.26.0",
+    "@better-auth/expo": "^1.6.0",
     "@ccc/shared": "workspace:*",
-    "@ccc/ui": "workspace:*"
+    "@ccc/ui": "workspace:*",
+    "better-auth": "^1.6.0",
+    "expo": "~55.0.0",
+    "expo-constants": "~55.0.0",
+    "expo-linking": "~55.0.0",
+    "expo-network": "~55.0.0",
+    "expo-router": "~55.0.0",
+    "expo-secure-store": "~55.0.0",
+    "expo-status-bar": "~55.0.0",
+    "react": "19.2.0",
+    "react-native": "~0.83.6",
+    "react-native-safe-area-context": "~5.6.2",
+    "react-native-screens": "~4.23.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.26.0",
+    "@types/react": "~19.2.0",
     "typescript": "^5.7.3",
     "vitest": "^2.1.8"
   }

@@ -12,11 +12,16 @@ node_modules/
 dist/
 build/
 .next/
-.expo/
 .turbo/
 *.tsbuildinfo
 coverage/
 .eslintcache
+
+# Expo / React Native (generated)
+.expo/
+apps/mobile/ios/
+apps/mobile/android/
+apps/mobile/web-build/
 
 # data / uploads (local dev volumes)
 data/
