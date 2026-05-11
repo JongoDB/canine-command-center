@@ -11,7 +11,8 @@
     "./types": "./src/types.ts",
     "./api-client": "./src/api-client.ts",
     "./dog": "./src/dog.ts",
-    "./breed": "./src/breed.ts"
+    "./breed": "./src/breed.ts",
+    "./conversation": "./src/conversation.ts"
   },
   "scripts": {
     "build": "tsc --noEmit",

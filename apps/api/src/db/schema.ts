@@ -204,9 +204,51 @@ export const breedProfile = pgTable('breed_profile', {
     .$onUpdate(() => new Date()),
 });
 
+// ---------------------------------------------------------------------------
+// Conversations + messages (M1.3 — Scout chat)
+// ---------------------------------------------------------------------------
+
+export const messageRoleEnum = pgEnum('message_role', ['user', 'assistant', 'system']);
+
+export const conversation = pgTable('conversation', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: text('user_id')
+    .notNull()
+    .references(() => user.id, { onDelete: 'cascade' }),
+  /** Optional anchor — if set, Scout's context centres on this dog. */
+  dogId: uuid('dog_id').references(() => dog.id, { onDelete: 'set null' }),
+  title: text('title').notNull().default('New chat'),
+  archivedAt: timestamp('archived_at'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at')
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
+});
+
+export const message = pgTable('message', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  conversationId: uuid('conversation_id')
+    .notNull()
+    .references(() => conversation.id, { onDelete: 'cascade' }),
+  userId: text('user_id')
+    .notNull()
+    .references(() => user.id, { onDelete: 'cascade' }),
+  role: messageRoleEnum('role').notNull(),
+  /** Plain text — multimodal content blocks come in M5.1 (image input). */
+  content: text('content').notNull().default(''),
+  /** Tool-use record(s) the assistant emitted on this turn (jsonb array). */
+  toolCalls: jsonb('tool_calls').notNull().default([]),
+  /** Token-usage tally for the LLM call that produced this row, if any. */
+  usage: jsonb('usage'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+});
+
 export type User = typeof user.$inferSelect;
 export type DogRow = typeof dog.$inferSelect;
 export type NewDogRow = typeof dog.$inferInsert;
 export type IntakeResponseRow = typeof intakeResponse.$inferSelect;
 export type BreedProfileRow = typeof breedProfile.$inferSelect;
 export type NewBreedProfileRow = typeof breedProfile.$inferInsert;
+export type ConversationRow = typeof conversation.$inferSelect;
+export type MessageRow = typeof message.$inferSelect;

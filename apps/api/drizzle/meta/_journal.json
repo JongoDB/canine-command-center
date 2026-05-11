@@ -22,6 +22,13 @@
       "when": 1778537600136,
       "tag": "0002_breed_profile",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1778538506277,
+      "tag": "0003_conversation_message",
+      "breakpoints": true
     }
   ]
 }

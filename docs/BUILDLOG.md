@@ -93,7 +93,39 @@ Status key: ✅ merged · 🚧 in flight · ⏳ pending · 🧪 awaiting your UI
 
 ## Phase 1 — MVP: the dog + Scout 🚧 _in progress_
 
-- 🚧 **M1.2 — Breed library v1** — _in flight_ (branch `feat/m1.2-breed-library`).
+- 🚧 **M1.3 — Claude (Scout) integration** — _in flight_ (branch
+  `feat/m1.3-scout-claude`). `apps/api`: + `@anthropic-ai/sdk`; `conversation` +
+  `message` tables (with the `message_role` enum) + migration
+  `0003_conversation_message.sql`. `src/ai/`: **`persona.ts`** assembles the
+  6-block system prompt from `docs/AI.md` (identity → expertise → 14 knowledge
+  modules → safety rules → tool guidance → output style → per-conversation
+  context); **`knowledge.ts`** = the 14 lean module summaries (M5.3 expands
+  them); **`tools.ts`** = the read-tool registry (`list_dogs`,
+  `get_dog_profile`, `get_breed_info`) — Zod-validated input, owner-scoped DB
+  lookups, errors return strings the model recovers from; **`context.ts`** =
+  per-conversation context builder (anchored dog + the matching `breed_profile`
+  entry + the latest intake answers + the brief catalogue of the owner's other
+  dogs); **`llm.ts`** = the Anthropic streaming wrapper — OAuth-token preferred
+  / API-key fallback, `cache_control: ephemeral` on the system block plus
+  top-level (so the cached prefix grows turn by turn), exposes a typed
+  `LlmStreamFn` for DI; **`scout.ts`** = the orchestrator (persists the user
+  message, runs the tool-use loop with a 6-iteration cap, persists each
+  assistant turn with text + tool_calls + token usage, yields `ChatEvent`s).
+  **`routes/chat.ts`**: `POST /v1/conversations`, `GET /v1/conversations`,
+  `GET /v1/conversations/:id` (with messages), `DELETE /v1/conversations/:id`,
+  and **`POST /v1/conversations/:id/messages`** as a real **SSE stream** — all
+  `requireSession`-gated and owner-scoped; returns a clean **503
+  `NO_LLM_CREDENTIALS`** when neither env var is set. **`chat.test.ts`**
+  (DB-backed, with the LLM mocked via DI in `buildServer({ llm })` so CI
+  doesn't burn tokens): unauthed → 401, single-turn text streams end-to-end +
+  the persona system prompt + per-conversation context were assembled and the
+  message rows persist, a tool-use round-trip (assistant → `list_dogs` →
+  `tool_result` → text answer) wires through, the no-credentials path returns 503. **`scripts/ai-smoke.ts`** (manual: `pnpm ai:smoke`) hits the real
+  Anthropic API. Also: `server.ts`'s DB-pool `onClose` hook is now skipped in
+  tests so the suites can build/close many app instances against one shared
+  pool. Verified: full gate green; **all 24 API tests pass against Postgres**
+  (server 4 + auth 4 + dogs 6 + breeds 6 + chat 4).
+- ✅ **M1.2 — Breed library v1** — PR #18, merged. `apps/api`: `breed_profile`
   `apps/api`: `breed_profile` table + the `breed_profile_kind`/`energy_level`/
   `trainability` pgEnums + migration `0002_breed_profile.sql`; **10 seeded
   breeds** in `src/data/breeds.ts` — Belgian Malinois, Dutch Shepherd, the

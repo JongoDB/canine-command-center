@@ -51,10 +51,15 @@ const EnvSchema = z.object({
   MAIL_PASSWORD: z.string().optional(),
   MAIL_FROM: z.string().default('Canine Command Center <no-reply@localhost>'),
 
-  // Claude access for "Scout" — wired into the SSE proxy in M1.3. Optional until
-  // then; exactly one of these should be set when the chat feature ships.
+  // Claude access for "Scout" — set exactly one (the OAuth token from
+  // `claude setup-token` is preferred — billed to the owner's Claude
+  // subscription — with the API key as fallback). Optional only so the API can
+  // boot for non-chat work; the chat endpoint surfaces a friendly error if
+  // neither is present.
   ANTHROPIC_AUTH_TOKEN: z.string().optional(),
   ANTHROPIC_API_KEY: z.string().optional(),
+  /** Override the default Claude model (defaults to claude-opus-4-7). */
+  ANTHROPIC_MODEL: z.string().optional(),
 });
 
 export type Env = z.infer<typeof EnvSchema>;
