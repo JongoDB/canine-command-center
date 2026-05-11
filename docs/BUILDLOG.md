@@ -93,19 +93,33 @@ Status key: ✅ merged · 🚧 in flight · ⏳ pending · 🧪 awaiting your UI
 
 ## Phase 1 — MVP: the dog + Scout 🚧 _in progress_
 
-- 🚧 **M1.1b — Web intake UI + dog list/profile** — _in flight_ (branch
-  `feat/m1.1b-web-intake-ui`). `apps/web`: a real **Home** (lists the user's dogs
-  as cards or shows the empty-state CTA → `/onboard`); **`/onboard`** — the
-  five-section intake stepper (A identity → B history → C living → D current →
-  E goals; Belgian Malinois × Dutch Shepherd × female × high-drive prefilled by
-  default, "Start fresh" button; Next/Back navigation; on submit
-  `POST /dogs` + `PUT /dogs/:id/intake`); **`/dogs/:id`** profile view
-  (identity rows + the stored intake payload + Edit / Archive); **`/dogs/:id/edit`**
-  (Section A only → `PATCH`). Hand-managed form state — no `react-hook-form`.
-  Components in `src/components/intake/IntakeForm.tsx` (state, defaults, the 5
-  section panels, the `IntakeStepper`); `src/lib/dogs.ts` (typed wrappers around
-  the `ApiClient` for the dogs endpoints). _(M1.1c — the mobile mirror — is the
-  next PR; M1.1d adds media/photos to both clients.)_
+- 🚧 **M1.1c — Mobile intake UI + dog list/profile** — _in flight_ (branch
+  `feat/m1.1c-mobile-intake-ui`). `apps/mobile`: home rewritten as a dog list
+  (or empty-state CTA → `/onboard`), refreshing on focus; `app/onboard.tsx` — RN
+  intake form (Section A / identity, in full; the richer B–E sections are on web
+  for the skeleton — the data model supports them and the user can re-run intake
+  there); `app/dogs/[id].tsx` profile (identity rows + intake payload + Edit /
+  Archive); `app/dogs/[id]/edit.tsx` (Section A → `PATCH`). RN UI helpers:
+  `src/components/intake-section-a.tsx` (Field/Toggle/OptionRow primitives + the
+  Section A panel — no native picker dep, options are tappable pills), reused by
+  Onboard + EditDog. `src/lib/dogs.ts` (typed wrappers around the `ApiClient`).
+  `src/lib/api.ts` now forwards the stored session token via
+  `authClient.getCookie()` for authed routes (the M1.1 follow-up). The Mal × Dutch
+  Shepherd default + the empty profile moved into `@ccc/shared/dog.ts` so both
+  clients share them. Verified: full gate green; `expo export --platform android`
+  bundles the whole app (entry → Expo Router → home/onboard/dogs[id]/edit →
+  IntakeSectionA → `@ccc/*`) to a 3.7 MB Hermes bundle. _(M1.1d adds
+  media/photos to both clients.)_
+- ✅ **M1.1b — Web intake UI + dog list/profile** — PR #16, merged. `apps/web`:
+  a real **Home** (lists the user's dogs as cards or shows the empty-state CTA →
+  `/onboard`); **`/onboard`** — the five-section intake stepper (A identity → B
+  history → C living → D current → E goals; Belgian Malinois × Dutch Shepherd ×
+  female × high-drive prefilled by default, "Start fresh" button; Next/Back
+  navigation; on submit `POST /dogs` + `PUT /dogs/:id/intake`); **`/dogs/:id`**
+  profile view (identity rows + the stored intake payload + Edit / Archive);
+  **`/dogs/:id/edit`** (Section A only → `PATCH`). Hand-managed form state — no
+  `react-hook-form`. Components in `src/components/intake/IntakeForm.tsx`;
+  `src/lib/dogs.ts` typed wrappers. Web bundle ~105 KB gz.
 - ✅ **M1.1a — Dog data model + API** — PR #15, merged. `apps/api`: `dog` +
   `intake_response` tables + the pgEnums (`breed_kind`, `dog_sex`,
   `neuter_status`, `dog_source`) + migration `0001_dog_intake.sql`; dogs routes
@@ -122,8 +136,7 @@ Status key: ✅ merged · 🚧 in flight · ⏳ pending · 🧪 awaiting your UI
   `dogs.test.ts` — DB-backed: create the Mal × Dutch Shepherd default, list/
   get/patch/archive, ownership scoping (a 2nd user can't see/touch the first's
   dogs), intake versioning. 14 API tests pass against Postgres.
-- ⏳ **M1.1c — Mobile intake UI + dog list/profile** (mirrors M1.1b on Expo) ·
-  ⏳ **M1.1d — Media / photos** (storage provider + upload route + photo display
+- ⏳ **M1.1d — Media / photos** (storage provider + upload route + photo display
   on both clients) · ⏳ M1.2 — Breed library v1 · ⏳ M1.3 — Claude (Scout)
   integration · ⏳ M1.4 — Scout chat UI · ⏳ M1.5 — onboarding glue → then
   **🧪 UI/UX Checkpoint 1** (deploy to staging; first owner hands-on review of
