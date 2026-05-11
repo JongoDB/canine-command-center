@@ -1,7 +1,10 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { RequireAuth } from './components/RequireAuth';
+import { DogProfile } from './screens/DogProfile';
+import { EditDog } from './screens/EditDog';
 import { ForgotPassword } from './screens/ForgotPassword';
 import { Home } from './screens/Home';
+import { Onboard } from './screens/Onboard';
 import { ResetPassword } from './screens/ResetPassword';
 import { SignIn } from './screens/SignIn';
 import { SignUp } from './screens/SignUp';
@@ -20,6 +23,30 @@ export function App() {
         element={
           <RequireAuth>
             <Home />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/onboard"
+        element={
+          <RequireAuth>
+            <Onboard />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/dogs/:id"
+        element={
+          <RequireAuth>
+            <DogProfile />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/dogs/:id/edit"
+        element={
+          <RequireAuth>
+            <EditDog />
           </RequireAuth>
         }
       />
