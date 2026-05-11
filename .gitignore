@@ -1,0 +1,31 @@
+# dependencies
+node_modules/
+.pnp.*
+.yarn/*
+
+# env / secrets
+.env
+.env.*
+!.env.example
+
+# builds / caches
+dist/
+build/
+.next/
+.expo/
+.turbo/
+*.tsbuildinfo
+coverage/
+.eslintcache
+
+# data / uploads (local dev volumes)
+data/
+uploads/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.log
+.idea/
+.vscode/*
+!.vscode/extensions.json
