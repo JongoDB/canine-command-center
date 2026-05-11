@@ -1,12 +1,14 @@
 import { type ReactNode, useState } from 'react';
-import type {
-  Breed,
-  DogProfileInput,
-  DogSex,
-  DogSource,
-  IntakeAnswers,
-  NeuterStatus,
-  SubmitIntakeInput,
+import {
+  type Breed,
+  type DogProfileInput,
+  type DogSex,
+  type DogSource,
+  EMPTY_DEFAULT_PROFILE,
+  type IntakeAnswers,
+  MAL_DUTCH_DEFAULT_PROFILE,
+  type NeuterStatus,
+  type SubmitIntakeInput,
 } from '@ccc/shared';
 
 // ---------------------------------------------------------------------------
@@ -18,23 +20,9 @@ export interface IntakeFormState {
   answers: IntakeAnswers;
 }
 
-/** Belgian Malinois × Dutch Shepherd × female × high-drive (PRODUCT.md §5). */
+/** The web stepper default: shared profile + a couple of intake-answers seeds. */
 export const MAL_DUTCH_DEFAULT: IntakeFormState = {
-  profile: {
-    name: 'Sentry',
-    breed: { kind: 'mix', primary: 'Belgian Malinois', secondary: 'Dutch Shepherd', isGuess: true },
-    sex: 'female',
-    neuterStatus: 'intact',
-    birthDate: null,
-    birthDateIsEstimate: false,
-    weightKg: null,
-    color: null,
-    microchip: null,
-    source: 'breeder',
-    acquiredOn: null,
-    acquiredAtAgeWeeks: null,
-    notes: null,
-  },
+  profile: MAL_DUTCH_DEFAULT_PROFILE,
   answers: {
     living: { ownerActivityLevel: 'high', ownerDogExperience: 'experienced' },
     goals: { focusAreas: ['off-leash recall', 'calm settle'], minutesPerDay: 90 },
@@ -43,21 +31,7 @@ export const MAL_DUTCH_DEFAULT: IntakeFormState = {
 
 /** A blank form, for users who don't want the example. */
 export const EMPTY_DEFAULT: IntakeFormState = {
-  profile: {
-    name: '',
-    breed: { kind: 'unknown', isGuess: false },
-    sex: 'unknown',
-    neuterStatus: 'unknown',
-    birthDate: null,
-    birthDateIsEstimate: false,
-    weightKg: null,
-    color: null,
-    microchip: null,
-    source: 'unknown',
-    acquiredOn: null,
-    acquiredAtAgeWeeks: null,
-    notes: null,
-  },
+  profile: EMPTY_DEFAULT_PROFILE,
   answers: {},
 };
 

@@ -190,6 +190,50 @@ export interface IntakeResponse {
   createdAt: string;
 }
 
+// ---------------------------------------------------------------------------
+// Defaults (shared by web + mobile intake forms)
+// ---------------------------------------------------------------------------
+
+/**
+ * Belgian Malinois × Dutch Shepherd × female × high-drive — the prefilled
+ * example from PRODUCT.md §5. A new user can tap through intake and immediately
+ * see a realistic program for a working-breed mix.
+ */
+export const MAL_DUTCH_DEFAULT_PROFILE: DogProfileInput = {
+  name: 'Sentry',
+  breed: { kind: 'mix', primary: 'Belgian Malinois', secondary: 'Dutch Shepherd', isGuess: true },
+  sex: 'female',
+  neuterStatus: 'intact',
+  birthDate: null,
+  birthDateIsEstimate: false,
+  weightKg: null,
+  color: null,
+  microchip: null,
+  source: 'breeder',
+  acquiredOn: null,
+  acquiredAtAgeWeeks: null,
+  notes: null,
+};
+
+/** A blank profile, for users who don't want the example. */
+export const EMPTY_DEFAULT_PROFILE: DogProfileInput = {
+  name: '',
+  breed: { kind: 'unknown', isGuess: false },
+  sex: 'unknown',
+  neuterStatus: 'unknown',
+  birthDate: null,
+  birthDateIsEstimate: false,
+  weightKg: null,
+  color: null,
+  microchip: null,
+  source: 'unknown',
+  acquiredOn: null,
+  acquiredAtAgeWeeks: null,
+  notes: null,
+};
+
+// ---------------------------------------------------------------------------
+
 /** Compute whole months between an ISO `YYYY-MM-DD` and now (clamped at 0). */
 export function ageMonthsFrom(birthDate: string | null, now: Date = new Date()): number | null {
   if (!birthDate) return null;
