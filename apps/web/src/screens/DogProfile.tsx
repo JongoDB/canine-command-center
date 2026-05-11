@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ApiError, BRANDING, type Dog, type IntakeResponse, breedLabel } from '@ccc/shared';
 import { dogs } from '../lib/dogs';
+import { nameToSlug } from '../lib/breeds';
 import { signOut, useSession } from '../lib/auth-client';
 
 function pretty(value: unknown): string {
@@ -131,6 +132,17 @@ export function DogProfile() {
               ? ` · ${Math.floor(dog.ageMonths / 12)}y ${dog.ageMonths % 12}mo`
               : ''}
           </p>
+          {dog.breed.kind === 'mix' && dog.breed.primary && dog.breed.secondary ? (
+            <p style={{ fontSize: 13, marginTop: 4 }}>
+              <Link to={`/breeds/${nameToSlug(`${dog.breed.primary} x ${dog.breed.secondary}`)}`}>
+                View breed profile →
+              </Link>
+            </p>
+          ) : dog.breed.primary ? (
+            <p style={{ fontSize: 13, marginTop: 4 }}>
+              <Link to={`/breeds/${nameToSlug(dog.breed.primary)}`}>View breed profile →</Link>
+            </p>
+          ) : null}
         </div>
 
         <div className="card stack">

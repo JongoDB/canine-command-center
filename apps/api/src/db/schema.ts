@@ -158,7 +158,55 @@ export const intakeResponse = pgTable(
   (t) => [unique('intake_dog_version_unique').on(t.dogId, t.version)],
 );
 
+// ---------------------------------------------------------------------------
+// Breed library (M1.2 — reference data, not user-scoped)
+// ---------------------------------------------------------------------------
+
+export const breedKindRefEnum = pgEnum('breed_profile_kind', ['pure', 'composite', 'unknown']);
+export const energyLevelEnum = pgEnum('energy_level', ['low', 'moderate', 'high', 'very_high']);
+export const trainabilityEnum = pgEnum('trainability', ['moderate', 'high', 'very_high']);
+
+export const breedProfile = pgTable('breed_profile', {
+  /** URL-safe slug, e.g. "belgian-malinois" or "belgian-malinois-x-dutch-shepherd". */
+  slug: text('slug').primaryKey(),
+  name: text('name').notNull(),
+  /** Pure breed, a documented composite mix, or the "unknown mix" placeholder. */
+  kind: breedKindRefEnum('kind').notNull().default('pure'),
+  /** Other names this breed goes by (e.g. ["Mal", "Mali"]). */
+  aka: jsonb('aka').notNull().default([]),
+  /** AKC/UKC group — "Herding", "Working", … (null for mixes). */
+  groupName: text('group_name'),
+  /** Plain-English "bred for" summary. */
+  bredFor: text('bred_for'),
+  /** Trait words: ["intelligent", "intense", "driven", …]. */
+  temperament: jsonb('temperament').notNull().default([]),
+  energyLevel: energyLevelEnum('energy_level').notNull().default('moderate'),
+  trainability: trainabilityEnum('trainability').notNull().default('high'),
+  /** Adult weight range in kg, e.g. { min: 25, max: 35 }. */
+  weightKgRange: jsonb('weight_kg_range'),
+  /** Adult shoulder height in cm, e.g. { min: 56, max: 62 }. */
+  heightCmRange: jsonb('height_cm_range'),
+  /** Lifespan in years, e.g. { min: 12, max: 14 }. */
+  lifespanYearsRange: jsonb('lifespan_years_range'),
+  groomingNotes: text('grooming_notes'),
+  /** Conditions to ask the vet about (Scout cites these). */
+  healthPredispositions: jsonb('health_predispositions').notNull().default([]),
+  /** Daily exercise reality (plain English). */
+  dailyExerciseTarget: text('daily_exercise_target'),
+  /** Owner-facing prose summary. */
+  notes: text('notes'),
+  /** For composite mixes — the parent breed slugs. */
+  parentSlugs: jsonb('parent_slugs').notNull().default([]),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at')
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
+});
+
 export type User = typeof user.$inferSelect;
 export type DogRow = typeof dog.$inferSelect;
 export type NewDogRow = typeof dog.$inferInsert;
 export type IntakeResponseRow = typeof intakeResponse.$inferSelect;
+export type BreedProfileRow = typeof breedProfile.$inferSelect;
+export type NewBreedProfileRow = typeof breedProfile.$inferInsert;

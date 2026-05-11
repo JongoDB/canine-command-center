@@ -6,6 +6,7 @@ import { BRANDING } from '@ccc/shared';
 import { authPlugin } from './auth/plugin';
 import { corsOrigins, env, isDev, isTest } from './config/env';
 import { closeDb } from './db/client';
+import { breedRoutes } from './routes/breeds';
 import { dogRoutes } from './routes/dogs';
 import { healthRoutes } from './routes/health';
 import { meRoutes } from './routes/me';
@@ -74,6 +75,7 @@ export async function buildServer(): Promise<FastifyInstance> {
   await app.register(healthRoutes);
   await app.register(meRoutes);
   await app.register(dogRoutes);
+  await app.register(breedRoutes);
 
   app.addHook('onClose', async () => {
     await closeDb();

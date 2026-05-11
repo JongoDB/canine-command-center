@@ -15,6 +15,13 @@
       "when": 1778535385892,
       "tag": "0001_dog_intake",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1778537600136,
+      "tag": "0002_breed_profile",
+      "breakpoints": true
     }
   ]
 }
