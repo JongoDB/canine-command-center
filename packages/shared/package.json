@@ -7,7 +7,9 @@
   "types": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts",
-    "./branding": "./src/branding.ts"
+    "./branding": "./src/branding.ts",
+    "./types": "./src/types.ts",
+    "./api-client": "./src/api-client.ts"
   },
   "scripts": {
     "build": "tsc --noEmit",

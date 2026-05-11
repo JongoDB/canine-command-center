@@ -54,12 +54,6 @@ jobs:
       - name: Format check
         run: pnpm format:check
 
-      - name: Test
-        run: pnpm test
-
-      - name: Build
-        run: pnpm build
-
       - name: DB migrations apply on a fresh database
         env:
           DATABASE_URL: postgres://ccc:ccc_ci@localhost:5432/ccc_ci
@@ -67,6 +61,17 @@ jobs:
           pnpm --filter @ccc/api db:check
           # Run again — migrations must be idempotent.
           pnpm --filter @ccc/api db:check
+
+      - name: Test
+        env:
+          # Point the API tests at the Postgres service so the DB-backed suites
+          # (auth) run; without this they self-skip.
+          DATABASE_URL: postgres://ccc:ccc_ci@localhost:5432/ccc_ci
+          BETTER_AUTH_SECRET: ci-only-better-auth-secret-0123456789abcdef
+        run: pnpm test
+
+      - name: Build
+        run: pnpm build
 
   audit:
     name: audit
