@@ -57,6 +57,9 @@ jobs:
       - name: DB migrations apply on a fresh database
         env:
           DATABASE_URL: postgres://ccc:ccc_ci@localhost:5432/ccc_ci
+          # env.ts validates the whole config on import; the migrate script
+          # transitively pulls it in, so it needs every required var present.
+          BETTER_AUTH_SECRET: ci-only-better-auth-secret-0123456789abcdef
         run: |
           pnpm --filter @ccc/api db:check
           # Run again — migrations must be idempotent.
