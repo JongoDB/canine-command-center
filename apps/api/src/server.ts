@@ -6,6 +6,7 @@ import { BRANDING } from '@ccc/shared';
 import { authPlugin } from './auth/plugin';
 import { corsOrigins, env, isDev, isTest } from './config/env';
 import { closeDb } from './db/client';
+import { dogRoutes } from './routes/dogs';
 import { healthRoutes } from './routes/health';
 import { meRoutes } from './routes/me';
 
@@ -68,10 +69,11 @@ export async function buildServer(): Promise<FastifyInstance> {
   // Auth — mounts Better Auth at /api/auth/* (sign-up/in/out, verify, reset, …).
   await app.register(authPlugin);
 
-  // Routes. Domain routes (dogs, breeds, program, health, chat, …) register
-  // here as they land in later milestones.
+  // Routes. Domain routes (breeds, program, health, chat, …) register here as
+  // they land in later milestones.
   await app.register(healthRoutes);
   await app.register(meRoutes);
+  await app.register(dogRoutes);
 
   app.addHook('onClose', async () => {
     await closeDb();

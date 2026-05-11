@@ -4,3 +4,4 @@
 export { BRANDING, type Branding } from './branding';
 export type { ApiErrorResponse, HealthStatus, ReadyStatus, User } from './types';
 export { ApiClient, ApiError, type ApiClientOptions } from './api-client';
+export * from './dog';
