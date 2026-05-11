@@ -4,18 +4,25 @@ import sensible from '@fastify/sensible';
 import Fastify, { type FastifyError, type FastifyInstance } from 'fastify';
 import { BRANDING } from '@ccc/shared';
 import { authPlugin } from './auth/plugin';
+import type { LlmStreamFn } from './ai/llm';
 import { corsOrigins, env, isDev, isTest } from './config/env';
 import { closeDb } from './db/client';
 import { breedRoutes } from './routes/breeds';
+import { chatRoutes } from './routes/chat';
 import { dogRoutes } from './routes/dogs';
 import { healthRoutes } from './routes/health';
 import { meRoutes } from './routes/me';
+
+export interface BuildServerOpts {
+  /** Optional LLM stream override — tests inject a fake; production uses the real Anthropic client. */
+  llm?: LlmStreamFn;
+}
 
 /**
  * Build a fully-wired Fastify instance (without listening). Used by `index.ts`
  * to start the server and by tests via `app.inject(...)`.
  */
-export async function buildServer(): Promise<FastifyInstance> {
+export async function buildServer(opts: BuildServerOpts = {}): Promise<FastifyInstance> {
   const app = Fastify({
     logger: isTest
       ? false
@@ -76,10 +83,16 @@ export async function buildServer(): Promise<FastifyInstance> {
   await app.register(meRoutes);
   await app.register(dogRoutes);
   await app.register(breedRoutes);
+  await app.register(chatRoutes(opts.llm ? { llm: opts.llm } : {}));
 
-  app.addHook('onClose', async () => {
-    await closeDb();
-  });
+  // Close the shared DB pool when the server shuts down. Skipped in tests
+  // because suites build/close many app instances against one shared pool — the
+  // test files' afterAll closes it once at the end.
+  if (!isTest) {
+    app.addHook('onClose', async () => {
+      await closeDb();
+    });
+  }
 
   app.log.info(`${BRANDING.appName} API ready`);
   return app;
