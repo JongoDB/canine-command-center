@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>K9 Training Roadmap</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0a;
+    --tan: #c8a46e;
+    --tan-light: #e8c99a;
+    --khaki: #8b7355;
+    --cream: #f5f0e8;
+    --steel: #2a2f3a;
+    --steel-mid: #3d4455;
+    --accent: #d4572a;
+    --text-muted: #8a8a8a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    color: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* HEADER */
+  .header {
+    position: relative;
+    padding: 60px 40px 40px;
+    overflow: hidden;
+    border-bottom: 1px solid #1f1f1f;
+  }
+
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(200,164,110,0.12), transparent 70%);
+    pointer-events: none;
+  }
+
+  .paw-bg {
+    position: absolute;
+    top: 20px; right: 40px;
+    font-size: 140px;
+    opacity: 0.04;
+    line-height: 1;
+    user-select: none;
+  }
+
+  .badge {
+    display: inline-block;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--tan);
+    border: 1px solid var(--tan);
+    padding: 4px 12px;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(52px, 8vw, 96px);
+    line-height: 0.9;
+    color: var(--cream);
+    letter-spacing: 2px;
+  }
+
+  h1 span {
+    color: var(--tan);
+    display: block;
+  }
+
+  .subtitle {
+    margin-top: 16px;
+    font-size: 14px;
+    color: var(--text-muted);
+    font-weight: 300;
+    letter-spacing: 1px;
+    max-width: 480px;
+  }
+
+  .breed-tags {
+    display: flex;
+    gap: 8px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+
+  .breed-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    background: var(--steel);
+    padding: 5px 10px;
+    color: var(--tan-light);
+    letter-spacing: 1px;
+  }
+
+  /* TIMELINE LAYOUT */
+  .timeline {
+    padding: 40px 40px 80px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .phase {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 0 40px;
+    margin-bottom: 0;
+    position: relative;
+  }
+
+  .phase:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 180px;
+    top: 60px;
+    bottom: -1px;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--steel-mid), transparent);
+  }
+
+  /* AGE MARKER */
+  .age-marker {
+    padding-top: 32px;
+    text-align: right;
+    position: relative;
+  }
+
+  .age-marker::after {
+    content: '';
+    position: absolute;
+    right: -40px;
+    top: 46px;
+    width: 40px;
+    height: 1px;
+    background: var(--steel-mid);
+  }
+
+  .age-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    color: var(--tan);
+    line-height: 1;
+    display: block;
+  }
+
+  .age-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+
+  .dot {
+    position: absolute;
+    right: -44px;
+    top: 43px;
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--tan);
+    box-shadow: 0 0 12px rgba(200,164,110,0.6);
+    z-index: 1;
+  }
+
+  /* PHASE CONTENT */
+  .phase-content {
+    padding: 32px 0 48px;
+    border-bottom: 1px solid #1a1a1a;
+  }
+
+  .phase:last-child .phase-content {
+    border-bottom: none;
+  }
+
+  .phase-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 2px;
+    color: var(--cream);
+    margin-bottom: 4px;
+  }
+
+  .phase-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+    font-style: italic;
+    letter-spacing: 0.3px;
+  }
+
+  .command-groups {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .group-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #1e1e1e;
+  }
+
+  .group-label.obedience { color: var(--tan); }
+  .group-label.protection { color: var(--accent); }
+  .group-label.advanced { color: #7ac5c5; }
+  .group-label.social { color: #9b8fd4; }
+
+  .commands-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .cmd {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: var(--steel);
+    padding: 10px 14px;
+    min-width: 160px;
+    flex: 0 0 auto;
+    transition: background 0.2s;
+    cursor: default;
+  }
+
+  .cmd:hover { background: var(--steel-mid); }
+
+  .cmd-word {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    white-space: nowrap;
+  }
+
+  .cmd-word.obedience { color: var(--tan-light); }
+  .cmd-word.protection { color: #e8826a; }
+  .cmd-word.advanced { color: #7ac5c5; }
+  .cmd-word.social { color: #b8acdf; }
+
+  .cmd-note {
+    font-size: 10px;
+    color: var(--text-muted);
+    line-height: 1.4;
+    margin-top: 1px;
+  }
+
+  /* TIPS SECTION */
+  .tips-bar {
+    background: var(--steel);
+    border-left: 3px solid var(--tan);
+    padding: 16px 20px;
+    margin-top: 24px;
+    font-size: 12px;
+    color: #aaa;
+    line-height: 1.6;
+  }
+
+  .tips-bar strong {
+    color: var(--tan-light);
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  /* LEGEND */
+  .legend {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    padding: 20px 40px;
+    border-top: 1px solid #1a1a1a;
+    margin-top: 0;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .legend-dot {
+    width: 8px; height: 8px;
+    border-radius: 1px;
+  }
+
+  /* FOOTER NOTE */
+  .footer-note {
+    padding: 24px 40px 40px;
+    font-size: 11px;
+    color: #444;
+    font-style: italic;
+    line-height: 1.7;
+    border-top: 1px solid #111;
+    max-width: 700px;
+  }
+
+  @media (max-width: 640px) {
+    .phase { grid-template-columns: 1fr; }
+    .age-marker { text-align: left; padding-top: 16px; }
+    .age-marker::after, .dot { display: none; }
+    .phase::after { display: none; }
+    .phase-content { padding-top: 12px; }
+    .header, .timeline, .legend { padding-left: 20px; padding-right: 20px; }
+    .cmd { min-width: 140px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="paw-bg">🐾</div>
+  <div class="badge">K9 Training Roadmap · Year One</div>
+  <h1>COMMAND<span>CURRICULUM</span></h1>
+  <p class="subtitle">A structured 12-month command development plan for your working-breed female puppy.</p>
+  <div class="breed-tags">
+    <span class="breed-tag">Belgian Malinois Mix</span>
+    <span class="breed-tag">Dutch Shepherd Mix</span>
+    <span class="breed-tag">Female · High Drive</span>
+  </div>
+</div>
+
+<div class="legend" style="padding-top:16px; padding-bottom:16px;">
+  <div class="legend-item"><div class="legend-dot" style="background:var(--tan)"></div> Obedience</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#e8826a"></div> Protection / Bite Sport Foundation</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#7ac5c5"></div> Advanced / Working</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#b8acdf"></div> Socialization & Life Skills</div>
+</div>
+
+<div class="timeline">
+
+  <!-- PHASE 1 -->
+  <div class="phase">
+    <div class="age-marker">
+      <span class="age-num">8–12</span>
+      <span class="age-label">Weeks</span>
+      <div class="dot"></div>
+    </div>
+    <div class="phase-content">
+      <div class="phase-title">Foundation & Imprinting</div>
+      <div class="phase-desc">Short 3–5 min sessions, positive reinforcement only. Build name recognition and focus first.</div>
+      <div class="command-groups">
+        <div>
+          <div class="group-label obedience">— Obedience</div>
+          <div class="commands-grid">
+            <div class="cmd"><div><div class="cmd-word obedience">NAME</div><div class="cmd-note">Eye contact = reward. Foundation of all commands.</div></div></div>
+            <div class="cmd"><div><div class="cmd-word obedience">SIT</div><div class="cmd-note">First formal position. Lure with treat over nose.</div></div></div>
+            <div class="cmd"><div><div class="cmd-word obedience">NO / AH-AH</div><div class="cmd-note">Interruption marker. Keep calm, redirect.</div></div></div>
+            <div class="cmd"><div><div class="cmd-word obedience">YES / GOOD</div><div class="cmd-note">Reward marker word. Must be consistent.</div></div></div>
+            <div class="cmd"><div><div class="cmd-word obedience">COME</div><div class="cmd-note">Recall foundation. Never punish a puppy for coming.</div></div></div>
+            <div class="cmd"><div><div class="cmd-word obedience">OFF</div><div class="cmd-note">Four paws on floor. Important early habit.</div></div></div>
+          </div>
+        </div>
+        <div>
+          <div class="group-label social">— Socialization & Life Skills</div>
+          <div class="commands-grid">
+            <div class="cmd"><div><div class="cmd-word social">CRATE</div><div class="cmd-note">Crate = safe den. Never use as punishment.</div></div></div>
+            <div class="cmd"><div><div class="cmd-word social">GENTLE</div><div class="cmd-note">Soft mouth for taking treats. Critical for this breed.</div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="tips-bar"><strong>Trainer's Note</strong>Malinois and Dutch Shepherds imprint rapidly at this stage. Expose her to surfaces, sounds, people, and handling (ears, paws, mouth) daily. Socialization IS training right now.</div>
+    </div>
+  </div>
+
+  <!-- PHASE 2 -->
+  <div class="phase">
+    <div class="age-marker">
+      <span class="age-num">3–4</span>
+      <span class="age-label">Months</span>
+      <div class="dot"></div>
+    </div>
+    <div class="phase-content">
+      <div class="phase-title">Core Obedience</div>
+      <div class="phase-desc">Build the 6 essential commands with duration, distance, and distraction. Introduce leash skills.</div>
+      <div class="command-groups">
+        <div>
+          <div class="group-label obedience">— Obedience</div>
+          <div class="commands-grid">
+            <div class="cmd"><div><div class="cmd-word obedience">DOWN</div><div class="cmd-note">Full prone position. Builds impulse control.</div></div></div>
+            <div class="cmd"><div><div class="cmd-word obedience">STAY</div><div class="cmd-note">Duration + distance. Build 3 D's gradually.</div></div></div>
+            <div class="cmd"><div><div class="cmd-word obedience">PLACE</div><div class="cmd-note">Go to designated mat/bed and stay. Very useful command.</div></div></div>
+            <div class="cmd"><div><div class="cmd-word obedience">HEEL</div><div class="cmd-note">Loose-leash walking at your left side.</div></div></div>
+            <div class="cmd"><div><div class="cmd-word obedience">LEAVE IT</div><div class="cmd-note">Ignore object on cue. Safety command.</div></div></div>
+            <div class="cmd"><div><div class="cmd-word obedience">DROP IT</div><div class="cmd-note">Release item from mouth on command.</div></div></div>
+            <div class="cmd"><div><div class="cmd-word obedience">WAIT</div><div class="cmd-note">Pause at threshold. Door/gate manners.</div></div></div>
+          </div>
+        </div>
+        <div>
+          <div class="group-label social">— Socialization & Life Skills</div>
+          <div class="commands-grid">
+            <div class="cmd"><div><div class="cmd-word social">LOAD UP</div><div class="cmd-note">Enter vehicle on command.</div></div></div>
+            <div class="cmd"><div><div class="cmd-word social">KENNEL</div><div class="cmd-note">Enter crate/run on cue (different from crate at home).</div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="tips-bar"><strong>Trainer's Note</strong>Begin introducing a tug toy as a reward for drive-building. For working breeds, prey drive is a powerful training currency. Keep sessions under 10 min — end on success, always.</div>
+    </div>
+  </div>
+
+  <!-- PHASE 3 -->
+  <div class="phase">
+    <div class="age-marker">
+      <span class="age-num">4–6</span>
+      <span class="age-label">Months</span>
+      <div class="dot"></div>
+    </div>
+    <div class="phase-content">
+      <div class="phase-title">Solidifying & Proofing</div>
+      <div class="phase-desc">Generalize commands across all environments. Begin introducing handler focus and engagement work.</div>
+      <div class="command-groups">
+        <div>
+          <div class="group-label obedience">— Obedience (Proofing)</div>
+          <div class="commands-grid">
+            <div class="cmd"><div><div class="cmd-word obedience">FRONT</div><div class="cmd-note">Recall to sit directly in front of handler.</div></div></div>
+            <div class="cmd"><div><div class="cmd-word obedience">FINISH</div><div class="cmd-note">Return to heel position from front.</div></div></div>
+            <div class="cmd"><div><div class="cmd-word obedience">FREE / BREAK</div><div class="cmd-note">Release from all commands. Important for mental rest.</div></div></div>
+            <div class="cmd"><div><div class="cmd-word obedience">STAND</div><div class="cmd-note">Stand still for examination. Vet/grooming essential.</div></div></div>
+          </div>
+        </div>
+        <div>
+          <div class="group-label protection">— Protection Foundation (Prey Drive Only)</div>
+          <div class="commands-grid">
+            <div class="cmd"><div><div class="cmd-word protection">TUG</div><div class="cmd-note">Engage tug on command. Channel drive purposefully.</div></div></div>
+            <div class="cmd"><div><div class="cmd-word protection">OUT</div><div class="cmd-note">Release bite/tug on command. Foundation of all protection work.</div></div></div>
+            <div class="cmd"><div><div class="cmd-word protection">WATCH</div><div class="cmd-note">Eyes on handler. Engagement / focus command.</div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="tips-bar"><strong>Trainer's Note</strong>"OUT" (release) must be bomb-proof before any protection work advances. A dog that won't release on command is not a protection dog — it's a liability. Practice it hundreds of times with the tug.</div>
+    </div>
+  </div>
+
+  <!-- PHASE 4 -->
+  <div class="phase">
+    <div class="age-marker">
+      <span class="age-num">6–9</span>
+      <span class="age-label">Months</span>
+      <div class="dot"></div>
+    </div>
+    <div class="phase-content">
+      <div class="phase-title">Intermediate & Drive Development</div>
+      <div class="phase-desc">Adolescence phase — be patient and consistent. Drive work deepens. Begin bark/alert training if protection is the goal.</div>
+      <div class="command-groups">
+        <div>
+          <div class="group-label obedience">— Obedience</div>
+          <div class="commands-grid">
+            <div class="cmd"><div><div class="cmd-word obedience">GO TO BED</div><div class="cmd-note">Long-duration place command. 20–30 min stays.</div></div></div>
+            <div class="cmd"><div><div class="cmd-word obedience">BACK</div><div class="cmd-note">Move backward on command. Spatial awareness.</div></div></div>
+            <div class="cmd"><div><div class="cmd-word obedience">SPIN / TURN</div><div class="cmd-note">Directional spins. Builds body awareness & bonding.</div></div></div>
+            <div class="cmd"><div><div class="cmd-word obedience">UNDER</div><div class="cmd-note">Go under table/bench. Public access skill.</div></div></div>
+          </div>
+        </div>
+        <div>
+          <div class="group-label protection">— Protection / Alert Training</div>
+          <div class="commands-grid">
+            <div class="cmd"><div><div class="cmd-word protection">SPEAK / ALERT</div><div class="cmd-note">Bark on command. Foundation of perimeter alerting.</div></div></div>
+            <div class="cmd"><div><div class="cmd-word protection">QUIET</div><div class="cmd-note">Cease barking on command. Equally important as speak.</div></div></div>
+            <div class="cmd"><div><div class="cmd-word protection">GUARD</div><div class="cmd-note">Alert posture at location. Hold and bark, no bite yet.</div></div></div>
+            <div class="cmd"><div><div class="cmd-word protection">WITH ME</div><div class="cmd-note">Handler-focused movement in protection context.</div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="tips-bar"><strong>Trainer's Note</strong>Adolescence (5–9 months) is often the hardest phase — she may "forget" known commands. This is normal. Stay consistent. Do NOT start formal bite work before 9–12 months and only with a professional decoy/trainer.</div>
+    </div>
+  </div>
+
+  <!-- PHASE 5 -->
+  <div class="phase">
+    <div class="age-marker">
+      <span class="age-num">9–12</span>
+      <span class="age-label">Months</span>
+      <div class="dot"></div>
+    </div>
+    <div class="phase-content">
+      <div class="phase-title">Advanced & Working Level</div>
+      <div class="phase-desc">Refine everything. If pursuing protection sport (IGP/Schutzhund) or personal protection, work with a certified trainer/club.</div>
+      <div class="command-groups">
+        <div>
+          <div class="group-label advanced">— Advanced Obedience</div>
+          <div class="commands-grid">
+            <div class="cmd"><div><div class="cmd-word advanced">HEEL OFF-LEASH</div><div class="cmd-note">Competition-level heeling without leash.</div></div></div>
+            <div class="cmd"><div><div class="cmd-word advanced">LONG DOWN</div><div class="cmd-note">Remain in down while handler is out of sight.</div></div></div>
+            <div class="cmd"><div><div class="cmd-word advanced">DIRECTED SEND</div><div class="cmd-note">Go to a marked location on hand signal.</div></div></div>
+            <div class="cmd"><div><div class="cmd-word advanced">RETRIEVE</div><div class="cmd-note">Fetch and return to front with hold. IGP foundation.</div></div></div>
+            <div class="cmd"><div><div class="cmd-word advanced">JUMP</div><div class="cmd-note">Clear obstacle on command.</div></div></div>
+          </div>
+        </div>
+        <div>
+          <div class="group-label protection">— Personal Protection (Trainer-Guided Only)</div>
+          <div class="commands-grid">
+            <div class="cmd"><div><div class="cmd-word protection">FASS / GET IT</div><div class="cmd-note">Engage threat on command. Must only be with trainer.</div></div></div>
+            <div class="cmd"><div><div class="cmd-word protection">OUT</div><div class="cmd-note">Immediate release — re-proof constantly.</div></div></div>
+            <div class="cmd"><div><div class="cmd-word protection">PASS</div><div class="cmd-note">Ignore a person/dog that is NOT a threat.</div></div></div>
+            <div class="cmd"><div><div class="cmd-word protection">SIDE / COVER</div><div class="cmd-note">Position beside/behind handler for escort work.</div></div></div>
+            <div class="cmd"><div><div class="cmd-word protection">SEARCH</div><div class="cmd-note">Search a defined area for a hidden person.</div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="tips-bar"><strong>Trainer's Note</strong>At 1 year she's still maturing mentally — Malinois and Dutch Shepherds don't fully mature until 2–3 years. Think of year one as building a world-class foundation, not completing the structure. She'll reward every hour you invest.</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer-note">
+  ⚠️ <strong style="color:#666">Important:</strong> Protection/bite commands should only be trained under the supervision of a certified protection dog trainer or IGP/Schutzhund club. Improper bite training on high-drive working breeds creates dangerous, unpredictable dogs. All obedience commands should be rock-solid before any protection work begins. Consult a professional trainer experienced with Malinois or Dutch Shepherds specifically.
+</div>
+
+</body>
+</html>

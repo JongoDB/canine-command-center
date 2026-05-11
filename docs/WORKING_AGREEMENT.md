@@ -52,11 +52,10 @@ build log.
 ## 3. What only you can unblock (front‑loaded — please knock these out)
 
 **Needed before Phase 1 ships (M1.3):**
-- 🔑 **Claude access.** Run `claude setup-token` and give me the OAuth token (it
-  goes in the API's `.env` as `ANTHROPIC_AUTH_TOKEN`, billed to your Claude
-  subscription) — *or* an `ANTHROPIC_API_KEY` if you'd rather. I cannot generate
-  either. Until then I'll wire everything against a stub LLM and the integration
-  test will be the only thing waiting.
+- ✅ **Claude access — received.** The `claude setup-token` OAuth token is stored
+  in the repo's git‑ignored `.env`; Phase 0 / M0.3 wires it into `apps/api/.env`
+  as `ANTHROPIC_AUTH_TOKEN` (billed to your Claude subscription; the SDK sends it
+  as `Authorization: Bearer …`). Nothing here is blocked.
 
 **Needed in Phase 3 (M3.4 — reminders/notifications):**
 - 🔑 **Push notifications.** For mobile push I'll use Expo's push service (no

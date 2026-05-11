@@ -41,6 +41,10 @@ own slice of the curriculum, and its own Claude tools (see `docs/AI.md`).
    editable plan: **Phases** (life‑stage chunks) → **Modules** (e.g. "Recall",
    "Crate", "Loose‑leash") → **Lessons / Tasks** (dated or age‑targeted, with
    step‑by‑step shaping plans, success criteria, prerequisites, troubleshooting).
+   Every module/task carries a **track** — *Obedience · Socialization & Life
+   Skills · Advanced / Working · Protection / Bite‑Sport (opt‑in, gated)* — which
+   the timeline, filters, progress charts and Scout all key off (these are the
+   colored command‑groups in your reference artifact; see `docs/DESIGN.md` §5).
 4. **Obedience & skills catalog** — the building blocks the curriculum draws
    from: name recognition, marker/clicker charging, sit, down, stand, stay/wait,
    recall, heel & loose‑leash, place/mat/settle, leave‑it & drop‑it, crate,
@@ -85,7 +89,13 @@ own slice of the curriculum, and its own Claude tools (see `docs/AI.md`).
     breed/age/health, activity log (walks, runs, fetch, flirt pole, hiking,
     swim, bikejor, canicross), and structured dog‑sport on‑ramps a working dog
     loves: scent work / nosework, agility, rally obedience, dock diving, herding
-    instinct, IGP/protection‑sport awareness (with safety framing), tracking.
+    instinct, tracking, and an **optional, opt‑in, professionally‑supervised
+    Protection / Bite‑Sport (IGP/Schutzhund) track** (it's in your reference
+    artifact) — engagement & drive channeling, a bomb‑proof "out", alert/quiet,
+    and sport‑bite work *only* behind explicit readiness gates and the owner's
+    affirmation that they're training under a certified decoy/club; guardrails in
+    `docs/DESIGN.md` §5/§7 and `docs/AI.md` §5. Scout coaches the foundation and
+    the sport's structure, never personal‑protection bite work in chat.
 16. **Enrichment & toys** — toy inventory (chew / puzzle / tug / fetch / plush /
     chase), durability notes ("will it survive a Malinois?"), a rotation
     scheduler, puzzle‑feeder ideas, snuffle mats, DIY enrichment, chew safety.
@@ -119,9 +129,10 @@ own slice of the curriculum, and its own Claude tools (see `docs/AI.md`).
 A short, friendly questionnaire on first run (and re‑runnable / addable later).
 It produces the **Dog profile** and seeds **curriculum generation**.
 
-**Section A — identity:** name, photo, breed(s) *(with the Mal × Dutch Shepherd
-mix as the prefilled example)*, "is this a guess?" toggle, DOB or estimated age,
-sex, spay/neuter status & date, weight, color/coat, microchip.
+**Section A — identity:** name, photo, breed(s) *(prefilled example: **Belgian
+Malinois × Dutch Shepherd mix · female · high‑drive**, matching the reference
+artifact's breed tags)*, "is this a guess?" toggle, DOB or estimated age, sex,
+spay/neuter status & date, weight, color/coat, microchip.
 
 **Section B — origin & history:** source (breeder / shelter / rescue / stray /
 bred by me), date you got the dog, age when you got them, anything known about
@@ -179,17 +190,22 @@ a realistic program; also a seeded entry in the breed library:
 > app and Scout always tell the user to confirm with their own veterinarian, and
 > the user can override anything.
 
-## 6. The interface reference
+## 6. The interface reference — received
 
-You mentioned a PDF / Claude artifact showing a "very simple interface." I
-currently can't access `claude.ai/public/artifacts/...` (Cloudflare bot
-challenge → 403). Until you get it to me (screenshots or pasted code into
-`~/Uploads/`), the working UI direction is: **clean, calm, chat‑first**,
-bottom‑tab navigation — **Today** (the "what now" view) · **Program** (the
-curriculum timeline) · **Scout** (chat) · **Health** · **More** (diet, grooming,
-activity, toys, profile, settings) — with Scout one tap away from every screen
-and "log it" actions everywhere. This gets reconciled with your reference at the
-first UI/UX checkpoint (see `docs/ROADMAP.md`).
+The reference you provided is the **"K9 Training Roadmap — Command Curriculum"**
+artifact (saved at `docs/design/reference/k9-roadmap-artifact.html`): a dark,
+**tactical working‑dog "field journal"** aesthetic — Bebas Neue / DM Sans / Space
+Mono; black + tan/khaki + steel + orange palette; a vertical **timeline of
+phases** (age‑staged: 8–12 wk → 3–4 mo → 4–6 mo → 6–9 mo → 9–12 mo), each phase
+expanding into **track‑grouped command cards** (Obedience / Socialization /
+Advanced / Protection) plus a per‑phase **"Trainer's Note"** and a footer safety
+warning. That one screen *is* the app's **Program** tab, and it sets the whole
+app's visual personality. The full design system (tokens, components, the
+four‑track model, screen‑by‑screen mapping, and the protection‑sport
+reconciliation) is in [`docs/DESIGN.md`](DESIGN.md). Navigation: bottom tabs —
+**Today** · **Program** · **Scout** (chat) · **Health** · **More** — Scout one
+tap from every screen, "log it" everywhere. Refined with you at UI/UX
+Checkpoint 1.
 
 ## 7. Out of scope for v1 (parked, not forgotten)
 

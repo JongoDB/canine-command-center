@@ -10,6 +10,11 @@ you want moved.
 Legend: 🧪 = your UI/UX testing checkpoint · 🔒 = needs something only you can
 provide (see WORKING_AGREEMENT → "What only you can unblock") · ⚙️ = infra.
 
+The UI follows [`docs/DESIGN.md`](DESIGN.md) (the tactical "K9 Training Roadmap"
+language from your reference artifact — dark theme, Bebas/DM Sans/Space Mono, the
+timeline‑of‑command‑cards, four training tracks: Obedience · Socialization ·
+Advanced · Protection [opt‑in, gated]). `packages/ui` carries the tokens from M0.6.
+
 ---
 
 ## Phase 0 — Foundations ⚙️
@@ -63,9 +68,10 @@ clients, deployable image. *(No checkpoint — nothing to "feel" yet.)*
 
 - **M1.1 — Dog profile + intake.** `dog` schema/migration/CRUD; the full intake
   questionnaire (sections A–E from `docs/PRODUCT.md`) as a stepper on both
-  clients, with the **Belgian Malinois × Dutch Shepherd mix** prefilled as the
-  example; profile screen (view/edit); photo upload (local‑fs storage provider,
-  thumbnails, EXIF stripped); multi‑dog support from the start.
+  clients, with **Belgian Malinois × Dutch Shepherd mix · female · high‑drive**
+  prefilled as the example (matching the reference artifact); profile screen
+  (view/edit); photo upload (local‑fs storage provider, thumbnails, EXIF
+  stripped); multi‑dog support from the start.
   *Accept:* create/edit a dog via UI on mobile + web; intake answers persist
   (versioned); photos upload & render; switching between dogs works; API tests
   cover CRUD + authz scoping.
@@ -119,10 +125,12 @@ into the design.
 *Goal: intake → a real, breed‑ and age‑aware, multi‑month/year training program you can follow and log against.*
 
 - **M2.1 — Program data model.** `program` / `program_phase` / `program_module` /
-  `program_task` schema/migrations + JSONB snapshots; CRUD + reorder/reschedule/
-  complete APIs; status & progress rollups.
-  *Accept:* a program tree can be created, edited, reordered, and progress‑rolled
-  up; API tests cover it.
+  `program_task` schema/migrations + JSONB snapshots; every module/task carries a
+  **track** (Obedience · Socialization · Advanced · Protection) and a state
+  (locked → working → fluent); CRUD + reorder/reschedule/complete APIs; status &
+  progress rollups (overall and per‑track).
+  *Accept:* a program tree can be created, edited, reordered, track‑filtered, and
+  progress‑rolled up (overall + per track); API tests cover it.
 - **M2.2 — Skill & trick catalog v1.** `skill` schema/migration + seed from the
   `knowledge/` modules: name recognition, marker charging, sit, down, stand,
   stay/wait, recall, heel/loose‑leash, place/mat/settle, leave‑it, drop‑it,
@@ -145,11 +153,17 @@ into the design.
   sequenced multi‑phase program; a custom "10‑yr‑old couch Lab" intake produces a
   very different, equally sensible one; "make it less intense" via chat visibly
   adjusts it; regeneration doesn't nuke logs.
-- **M2.4 — Program UI.** Timeline/phase view; "this week" and "today's tasks" on
-  the Today home; task detail (the shaping plan inline); complete / skip /
-  reschedule; phase progress & graduations; "ask Scout to adjust this" deep‑link.
-  *Accept:* a user can see their plan, work today's tasks, mark them done,
-  reschedule, and watch progress move — on both clients.
+- **M2.4 — Program UI.** The **timeline‑of‑command‑cards** screen from
+  `docs/DESIGN.md` — vertical phases with age markers, track‑grouped `CommandCard`s
+  (colored per track), per‑phase Scout‑authored `TrainerNote`, the Protection
+  track's standing `WarningNote`; card detail (the shaping plan inline, state,
+  "log a rep"); complete / skip / reschedule; phase progress & graduations;
+  per‑track filter; "ask Scout to adjust this phase" deep‑link; "this week" /
+  "today's tasks" feeding the Today home. Built on `packages/ui` tokens; matches
+  on mobile + web.
+  *Accept:* the default dog's generated program renders as the artifact‑style
+  timeline on both clients; a user can work today's cards, mark them done,
+  reschedule, filter by track, and watch progress (overall + per track) move.
 - **M2.5 — Training session logging.** `training_session` schema/migration; log a
   session (skill[s], duration, reps, success rating, mood, notes, optional
   photo/video) from a task, from the dog, or from chat (`log_training_session`
@@ -244,6 +258,21 @@ vet would).
   *Accept:* the working‑breed default shows an honest (high) daily target and a
   nosework on‑ramp module available; logging + summaries work; a hot‑day warning
   shows; Scout suggests breed‑appropriate outlets.
+- **M4.3a — Protection / Bite‑Sport (IGP) track** *(opt‑in)*. The fourth program
+  track from `docs/DESIGN.md` §5/§7: an opt‑in toggle on the Program screen that
+  unlocks the **foundation** modules (engagement/`WATCH`, drive channeling/`TUG`,
+  the bomb‑proof `OUT`/release, alert/`SPEAK`, `QUIET`, `GUARD`) and, only behind
+  explicit prerequisites (rock‑solid out + foundational obedience + age/temperament
+  checks) **and** a hard gate where the owner affirms *"I'm training under a
+  certified decoy / IGP‑Schutzhund club,"* the sport‑bite modules
+  (`FASS`/`GET IT`, `OUT`, `PASS`, `SIDE`/`COVER`, `SEARCH`); the standing
+  `WarningNote` (the artifact's footer); Scout coaches foundation + sport
+  structure only, never bite work in chat (the §5 rule); misuse requests refused.
+  *Accept:* the track is off by default; opting in shows the warning + foundation
+  modules; sport‑bite modules stay locked until the prerequisites + the
+  professional‑supervision affirmation are met; Scout never coaches bite work and
+  refuses "make my dog attack people" with an explanation; you've signed off on
+  the framing. *(Cuttable if you'd rather not ship a protection track at all.)*
 - **M4.4 — Enrichment & toys.** `toy` schema/migration; toy inventory by category
   (chew/puzzle/tug/fetch/chase/plush) with durability notes ("power‑chewer
   safe?"), a **rotation scheduler**, puzzle‑feeder & snuffle/scatter ideas, chew‑

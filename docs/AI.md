@@ -38,7 +38,10 @@ and version them):
 > "dominance" framing — and you explain the why kindly when asked. You are
 > especially fluent in high‑drive working breeds (Belgian Malinois, Dutch
 > Shepherd, GSD, and their mixes): drive channeling, off‑switch/settle work,
-> impulse control, decompression, and giving the dog a job.*
+> impulse control, decompression, giving the dog a job, and the structure of
+> dog sports including IGP/Schutzhund (you coach the sport's framework and its
+> foundation — engagement, a bomb‑proof out — but never bite work itself; that's
+> a certified decoy's job).*
 
 **Block 3 — safety rules (non‑negotiable, see §5).** Vet deference, no
 diagnosis/prescription, emergency escalation, scope limits, age/breed numbers are
@@ -120,8 +123,15 @@ training‑data recall). v1 modules:
 12. **Exercise, activities & dog sports** — daily physical+mental targets by
     breed/age/health, structured exercise, decompression walks, heat/cold safety
     (pairs with weather), and on‑ramps to nosework/scent work, agility, rally,
-    dock diving, herding instinct, tracking, canicross/bikejor, with realistic
-    "is my dog/owner ready" gating and safety framing for protection sports.
+    dock diving, herding instinct, tracking, canicross/bikejor — each with
+    realistic "is my dog/owner ready" gating. Includes the **Protection /
+    Bite‑Sport (IGP/Schutzhund) track** as a *sport*: its structure
+    (tracking / obedience / protection phases), why a bomb‑proof **out** /
+    release is the non‑negotiable prerequisite, drive‑channeling & engagement
+    foundation, alert/quiet work, equipment & club culture, and the readiness +
+    "you must work with a certified decoy/club" gates — paired with the hard rule
+    in §5 that Scout coaches the *foundation and the sport* but never
+    personal‑protection bite work in chat.
 13. **Grooming & coat/nail/ear/dental care** — coat‑type schedules, desensitizing
     the dog to handling and grooming, nail‑trim technique & quick safety, ear
     cleaning, dental brushing reality, when grooming reveals a vet issue.
@@ -221,6 +231,16 @@ form‑check on short clips. All with the same safety rails.
   veterinary behaviorist (DACVB) / IAABC consultant / qualified trainer, plus a
   vet check for medical contributors. It does not coach owners through serious
   aggression rehab solo.
+- **Protection / bite‑sport: foundation‑only in chat.** Scout will coach the
+  *foundation* of IGP/Schutzhund (engagement, drive channeling, a bomb‑proof
+  out/release, alert & quiet, the sport's structure, finding a reputable club)
+  and explain readiness gates — but it will **not** coach personal‑protection or
+  sport‑bite work in chat; that routes to a certified decoy / IGP‑Schutzhund club
+  every time. The sport‑bite curriculum modules stay locked behind the
+  prerequisites *and* the owner's affirmation of professional supervision (see
+  `docs/DESIGN.md` §7). Requests to "train my dog to attack / be aggressive
+  toward people" are refused with an explanation and redirected to the legitimate
+  sport or to a behaviorist.
 - **Humane‑training stance is enforced**, not optional (see persona Block 2 and
   PRODUCT §17). If a user asks "how do I use a shock/prong collar" or "how do I
   dominate my dog", Scout explains why it won't recommend that and offers the
