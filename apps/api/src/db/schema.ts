@@ -1,17 +1,32 @@
 /**
  * Drizzle schema.
  *
- * This first cut covers the **Better Auth** core tables (`user`, `session`,
- * `account`, `verification`) — the anchor everything else references. Column
- * names follow Better Auth's default (camelCase), so M0.4 can wire Better Auth's
- * Drizzle adapter onto these tables directly. App tables (dog, breed_profile,
- * program*, health_event, …) are added in their own milestones (M1.1 onward) —
- * see docs/ARCHITECTURE.md §4.
+ * Better Auth core tables (`user` / `session` / `account` / `verification`) +
+ * the app's domain tables, added per milestone:
+ *   - M1.1: `dog`, `intake_response`
+ *   - (later) `breed_profile`, `program*`, `health_event`, … — see docs/ARCHITECTURE.md §4.
  *
- * `created_at` / `updated_at` carry DB-side defaults too (harmless — Better Auth
- * still sets them in app code) so raw inserts and seeds don't have to.
+ * Better Auth column names follow its default (camelCase), so its Drizzle
+ * adapter binds onto them directly. The app's own tables use snake_case columns
+ * (the usual Postgres convention) — Drizzle maps the camelCase TS keys.
  */
-import { boolean, pgTable, text, timestamp } from 'drizzle-orm/pg-core';
+import {
+  boolean,
+  date,
+  integer,
+  jsonb,
+  pgEnum,
+  pgTable,
+  real,
+  text,
+  timestamp,
+  unique,
+  uuid,
+} from 'drizzle-orm/pg-core';
+
+// ---------------------------------------------------------------------------
+// Better Auth core
+// ---------------------------------------------------------------------------
 
 export const user = pgTable('user', {
   id: text('id').primaryKey(),
@@ -63,5 +78,87 @@ export const verification = pgTable('verification', {
   updatedAt: timestamp('updatedAt').notNull().defaultNow(),
 });
 
+// ---------------------------------------------------------------------------
+// Dogs + intake (M1.1)
+// ---------------------------------------------------------------------------
+
+export const breedKindEnum = pgEnum('breed_kind', ['pure', 'mix', 'unknown']);
+export const dogSexEnum = pgEnum('dog_sex', ['male', 'female', 'unknown']);
+export const neuterStatusEnum = pgEnum('neuter_status', [
+  'intact',
+  'neutered',
+  'spayed',
+  'unknown',
+]);
+export const dogSourceEnum = pgEnum('dog_source', [
+  'breeder',
+  'shelter',
+  'rescue',
+  'stray',
+  'bred_by_me',
+  'gift',
+  'other',
+  'unknown',
+]);
+
+export const dog = pgTable('dog', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: text('user_id')
+    .notNull()
+    .references(() => user.id, { onDelete: 'cascade' }),
+  name: text('name').notNull(),
+
+  // breed
+  breedKind: breedKindEnum('breed_kind').notNull().default('unknown'),
+  breedPrimary: text('breed_primary'), // e.g. "Belgian Malinois" (null if unknown)
+  breedSecondary: text('breed_secondary'), // for mixes, e.g. "Dutch Shepherd"
+  breedIsGuess: boolean('breed_is_guess').notNull().default(false),
+
+  // identity
+  sex: dogSexEnum('sex').notNull().default('unknown'),
+  neuterStatus: neuterStatusEnum('neuter_status').notNull().default('unknown'),
+  neuteredOn: date('neutered_on'),
+  birthDate: date('birth_date'), // DOB or estimate (see birthDateIsEstimate)
+  birthDateIsEstimate: boolean('birth_date_is_estimate').notNull().default(false),
+  weightKg: real('weight_kg'),
+  color: text('color'),
+  microchip: text('microchip'),
+
+  // origin / history
+  source: dogSourceEnum('source').notNull().default('unknown'),
+  acquiredOn: date('acquired_on'),
+  acquiredAtAgeWeeks: integer('acquired_at_age_weeks'),
+  notes: text('notes'),
+
+  // lifecycle
+  archivedAt: timestamp('archived_at'), // soft delete
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at')
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
+});
+
+export const intakeResponse = pgTable(
+  'intake_response',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    dogId: uuid('dog_id')
+      .notNull()
+      .references(() => dog.id, { onDelete: 'cascade' }),
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    /** 1, 2, 3 … — a new row each time intake is (re-)submitted; the highest is current. */
+    version: integer('version').notNull(),
+    /** The full structured intake (validated against @ccc/shared's IntakeAnswers). */
+    answers: jsonb('answers').notNull(),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  },
+  (t) => [unique('intake_dog_version_unique').on(t.dogId, t.version)],
+);
+
 export type User = typeof user.$inferSelect;
-export type NewUser = typeof user.$inferInsert;
+export type DogRow = typeof dog.$inferSelect;
+export type NewDogRow = typeof dog.$inferInsert;
+export type IntakeResponseRow = typeof intakeResponse.$inferSelect;

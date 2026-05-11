@@ -91,12 +91,31 @@ Status key: ✅ merged · 🚧 in flight · ⏳ pending · 🧪 awaiting your UI
   seeded with the design tokens from `docs/DESIGN.md`. App packages are stubs
   (real API in M0.3, clients in M0.6). Gate green on a clean checkout.
 
-## Phase 1 — MVP: the dog + Scout 🔜 _next_
+## Phase 1 — MVP: the dog + Scout 🚧 _in progress_
 
-- ⏳ **M1.1 — Dog profile + intake** (the next PR).
-- ⏳ M1.2 — Breed library v1 · M1.3 — Claude (Scout) integration · M1.4 — Scout
-  chat UI · M1.5 — onboarding glue → then **🧪 UI/UX Checkpoint 1** (deploy to
-  staging; first owner hands-on review of both clients + the Scout persona).
+- 🚧 **M1.1a — Dog data model + API** — _in flight_ (branch `feat/m1.1a-dog-data-model`).
+  `apps/api`: `dog` + `intake_response` tables + the pgEnums (`breed_kind`,
+  `dog_sex`, `neuter_status`, `dog_source`) + migration `0001_dog_intake.sql`;
+  dogs routes — `GET/POST /dogs`, `GET/PATCH/DELETE /dogs/:id` (DELETE =
+  soft-delete via `archived_at`), `GET /dogs/:id/intake` (latest version),
+  `PUT /dogs/:id/intake` (new version, in a transaction, optionally patching the
+  dog) — all `requireSession`-gated and scoped to the requester; Zod-validated
+  via `src/lib/validate.ts` (`parsed()` → 400 `{ error: { code: 'VALIDATION', … } }`).
+  `@ccc/shared` gained `dog.ts` — the Zod schemas (breed/sex/neuter/source enums,
+  `IntakeAnswers` covering PRODUCT §4's sections B–E, `DogProfileInput`,
+  `UpdateDogInput`, `SubmitIntakeInput`) + the `Dog`/`IntakeResponse` response
+  types + `ageMonthsFrom`/`breedLabel` helpers (`zod` is now a `@ccc/shared`
+  dep). `src/test-helpers.ts` (`createTestUser`, via the real
+  sign-up→verify→sign-in flow); `dogs.test.ts` — DB-backed: create the Mal ×
+  Dutch Shepherd default, list/get/patch/archive, ownership scoping (a 2nd user
+  can't see/touch the first's dogs), intake versioning. Verified: full gate
+  green; all 14 API tests pass against a Dockerised Postgres; migrations apply +
+  re-apply cleanly. (M1.1b — media/photos + the intake stepper UI + profile
+  screen on web + mobile — is the next PR.)
+- ⏳ **M1.1b — Intake UI + photos** · ⏳ M1.2 — Breed library v1 · ⏳ M1.3 —
+  Claude (Scout) integration · ⏳ M1.4 — Scout chat UI · ⏳ M1.5 — onboarding
+  glue → then **🧪 UI/UX Checkpoint 1** (deploy to staging; first owner hands-on
+  review of both clients + the Scout persona).
 
 ## Decisions
 

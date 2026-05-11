@@ -9,12 +9,16 @@
     ".": "./src/index.ts",
     "./branding": "./src/branding.ts",
     "./types": "./src/types.ts",
-    "./api-client": "./src/api-client.ts"
+    "./api-client": "./src/api-client.ts",
+    "./dog": "./src/dog.ts"
   },
   "scripts": {
     "build": "tsc --noEmit",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "zod": "^4.0.0"
   },
   "devDependencies": {
     "typescript": "^5.7.3",
