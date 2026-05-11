@@ -10,6 +10,7 @@ import { Onboard } from './screens/Onboard';
 import { ResetPassword } from './screens/ResetPassword';
 import { ScoutChat } from './screens/ScoutChat';
 import { ScoutList } from './screens/ScoutList';
+import { Settings } from './screens/Settings';
 import { SignIn } from './screens/SignIn';
 import { SignUp } from './screens/SignUp';
 import { VerifyEmail } from './screens/VerifyEmail';
@@ -83,6 +84,14 @@ export function App() {
         element={
           <RequireAuth>
             <ScoutChat />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/settings"
+        element={
+          <RequireAuth>
+            <Settings />
           </RequireAuth>
         }
       />

@@ -22,7 +22,12 @@ export function Home() {
       .catch(() => live && setHealth('down'));
     dogsApi
       .list()
-      .then((d) => live && setDogs(d))
+      .then((d) => {
+        if (!live) return;
+        setDogs(d);
+        // First run — no dogs yet → straight into intake.
+        if (d.length === 0) navigate('/onboard', { replace: true });
+      })
       .catch((e: unknown) => {
         if (!live) return;
         if (e instanceof ApiError && e.status === 401) navigate('/sign-in', { replace: true });
@@ -41,7 +46,9 @@ export function Home() {
           <span className={`pill ${health === 'ok' ? 'ok' : health === 'down' ? 'down' : ''}`}>
             API {health}
           </span>
-          <span className="muted">{data?.user?.email}</span>
+          <Link to="/settings" className="muted" style={{ fontSize: 13, textDecoration: 'none' }}>
+            {data?.user?.email}
+          </Link>
           <button
             className="ghost"
             style={{ width: 'auto', padding: '6px 12px' }}
