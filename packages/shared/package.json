@@ -10,7 +10,8 @@
     "./branding": "./src/branding.ts",
     "./types": "./src/types.ts",
     "./api-client": "./src/api-client.ts",
-    "./dog": "./src/dog.ts"
+    "./dog": "./src/dog.ts",
+    "./breed": "./src/breed.ts"
   },
   "scripts": {
     "build": "tsc --noEmit",

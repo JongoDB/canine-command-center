@@ -12,6 +12,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import path from 'node:path';
 import { migrate } from 'drizzle-orm/node-postgres/migrator';
 import { closeDb, getDb } from './client';
+import { applySeeds } from './seed';
 
 export const migrationsFolder = path.join(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -20,14 +21,16 @@ export const migrationsFolder = path.join(
   'drizzle',
 );
 
+/** Apply pending migrations, then upsert reference seeds. Idempotent. */
 export async function applyMigrations(): Promise<void> {
   await migrate(getDb(), { migrationsFolder });
+  await applySeeds();
 }
 
 async function runAsScript(): Promise<void> {
   await applyMigrations();
   await closeDb();
-  console.log('migrations applied — database is up to date');
+  console.log('migrations applied + seeds upserted — database is up to date');
 }
 
 // Only run when invoked directly (`tsx src/db/migrate.ts`), not when imported.

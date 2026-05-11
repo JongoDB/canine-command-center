@@ -114,6 +114,12 @@ export function Home() {
           </div>
         )}
 
+        <div style={{ marginTop: 4 }}>
+          <Link to="/breeds" style={{ fontSize: 13 }}>
+            Browse the breed library →
+          </Link>
+        </div>
+
         <div className="notice">
           The real Today / Program / {BRANDING.assistantName} / Health screens land in Phase 1 — see{' '}
           <code>docs/ROADMAP.md</code>.

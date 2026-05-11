@@ -1,5 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { RequireAuth } from './components/RequireAuth';
+import { BreedDetail } from './screens/BreedDetail';
+import { Breeds } from './screens/Breeds';
 import { DogProfile } from './screens/DogProfile';
 import { EditDog } from './screens/EditDog';
 import { ForgotPassword } from './screens/ForgotPassword';
@@ -47,6 +49,22 @@ export function App() {
         element={
           <RequireAuth>
             <EditDog />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/breeds"
+        element={
+          <RequireAuth>
+            <Breeds />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/breeds/:slug"
+        element={
+          <RequireAuth>
+            <BreedDetail />
           </RequireAuth>
         }
       />

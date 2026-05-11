@@ -93,8 +93,27 @@ Status key: ✅ merged · 🚧 in flight · ⏳ pending · 🧪 awaiting your UI
 
 ## Phase 1 — MVP: the dog + Scout 🚧 _in progress_
 
-- 🚧 **M1.1c — Mobile intake UI + dog list/profile** — _in flight_ (branch
-  `feat/m1.1c-mobile-intake-ui`). `apps/mobile`: home rewritten as a dog list
+- 🚧 **M1.2 — Breed library v1** — _in flight_ (branch `feat/m1.2-breed-library`).
+  `apps/api`: `breed_profile` table + the `breed_profile_kind`/`energy_level`/
+  `trainability` pgEnums + migration `0002_breed_profile.sql`; **10 seeded
+  breeds** in `src/data/breeds.ts` — Belgian Malinois, Dutch Shepherd, the
+  composite **Mal × Dutch Shepherd**, German Shepherd, Border Collie, Australian
+  Shepherd, Labrador, Golden, Standard Poodle, "Unknown mix" — with traits,
+  energy, trainability, weight/height/lifespan ranges, grooming, health
+  watch-list, daily exercise reality, and a notes paragraph; idempotent UPSERT
+  via `src/db/seed.ts` invoked from `applyMigrations()` (so `pnpm db:migrate` /
+  `pnpm db:check` end with a fully-seeded DB); `routes/breeds.ts` —
+  `GET /breeds?search` (name + AKA via jsonb-text ILIKE) + `GET /breeds/:slug`,
+  both `requireSession`-gated; `breeds.test.ts` (DB-backed: list, search by
+  name + alias, get by slug, composite carries `parentSlugs`, 404, 401). All 20
+  API tests pass against Postgres. `apps/web`: `/breeds` (list + debounced
+  search) and `/breeds/:slug` (detail — bred-for, energy / trainability,
+  size/lifespan ranges, temperament, parent breeds for composites, daily
+  exercise reality, health watch-list, grooming, notes). Linked from the dog
+  profile (`View breed profile →` for both pure and composite dogs) and from
+  Home. `@ccc/shared` gains `breed.ts` (`BreedProfile`, `BreedProfileSummary`,
+  `Range`, helpers). _(Mobile breed UI is a small follow-up.)_
+- ✅ **M1.1c — Mobile intake UI + dog list/profile** — PR #17, merged. `apps/mobile`: home rewritten as a dog list
   (or empty-state CTA → `/onboard`), refreshing on focus; `app/onboard.tsx` — RN
   intake form (Section A / identity, in full; the richer B–E sections are on web
   for the skeleton — the data model supports them and the user can re-run intake
