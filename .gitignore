@@ -23,9 +23,10 @@ apps/mobile/ios/
 apps/mobile/android/
 apps/mobile/web-build/
 
-# data / uploads (local dev volumes)
-data/
-uploads/
+# data / uploads (local dev volumes — repo-root-anchored so they don't shadow
+# in-tree directories like apps/api/src/data/).
+/data/
+/uploads/
 
 # OS / editor
 .DS_Store
