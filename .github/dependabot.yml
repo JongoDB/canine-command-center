@@ -1,0 +1,32 @@
+version: 2
+updates:
+  # JS/TS dependencies across the pnpm monorepo.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+    groups:
+      # Batch the noisy low-risk stuff into one PR a week.
+      dev-and-types:
+        patterns:
+          - '@types/*'
+          - 'eslint*'
+          - 'prettier'
+          - 'typescript'
+          - 'typescript-eslint'
+          - 'vitest'
+        update-types:
+          - minor
+          - patch
+    labels:
+      - dependencies
+
+  # GitHub Actions versions.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    labels:
+      - dependencies
+      - ci

@@ -9,14 +9,19 @@ Status key: ✅ merged · 🚧 in flight · ⏳ pending · 🧪 awaiting your UI
 
 ## Phase 0 — Foundations
 
-- ⏳ **M0.1 — Monorepo scaffold** — _in flight_ (branch `chore/m0.1-monorepo-scaffold`).
-  pnpm workspaces; `apps/{api,web,mobile}` + `packages/{shared,ui}` + `infra/`;
-  TypeScript (strict), ESLint 9 (flat config), Prettier, Vitest; root scripts
-  (`dev:*`, `build`, `typecheck`, `lint`, `test`, `format`, `db:*`); PR template;
-  this build log. `packages/shared` seeded with branding constants; `packages/ui`
+- 🚧 **M0.2 — CI + branch protection** — _in flight_ (branch
+  `ci/m0.2-ci-and-branch-protection`). GitHub Actions `CI` workflow (job `ci`:
+  install → typecheck → lint → format:check → test → build; advisory `audit`
+  job; runs on PRs and pushes to `main`); Dependabot (npm + github-actions,
+  weekly); branch protection on `main` requiring the `ci` check, enabled once
+  the workflow lands.
+- ✅ **M0.1 — Monorepo scaffold** — PR #1, merged. pnpm workspaces;
+  `apps/{api,web,mobile}` + `packages/{shared,ui}` + `infra/`; TypeScript
+  (strict), ESLint 9 (flat config), Prettier, Vitest; root scripts (`dev:*`,
+  `build`, `typecheck`, `lint`, `test`, `format`, `db:*`); PR template; this
+  build log. `packages/shared` seeded with `BRANDING` constants; `packages/ui`
   seeded with the design tokens from `docs/DESIGN.md`. App packages are stubs
-  (real builds land in M0.3 / M0.6).
-- ⏳ **M0.2 — CI + branch protection**
+  (real API in M0.3, clients in M0.6). Gate green on a clean checkout.
 - ⏳ **M0.3 — API skeleton + DB**
 - ⏳ **M0.4 — Auth**
 - ⏳ **M0.5 — Shared package v1** (started in M0.1; extended alongside M0.3/M0.4)
@@ -24,19 +29,24 @@ Status key: ✅ merged · 🚧 in flight · ⏳ pending · 🧪 awaiting your UI
 
 ## Decisions
 
-- **2026-05-11** — Stack confirmed by owner ("you choose" → as in `docs/ARCHITECTURE.md`):
-  pnpm monorepo, Fastify+Postgres+Drizzle+Better-Auth API, Expo mobile, Vite/React
-  PWA web, shared TS core. Owner gave the go and signed off on the humane-first
-  training stance + the gated opt-in Protection/Bite-Sport track.
+- **2026-05-11** — Stack confirmed by owner ("you choose" → as in
+  `docs/ARCHITECTURE.md`): pnpm monorepo, Fastify + Postgres + Drizzle +
+  Better-Auth API, Expo mobile, Vite/React PWA web, shared TS core. Owner gave
+  the go and signed off on the humane-first training stance + the gated opt-in
+  Protection / Bite-Sport track.
 - **2026-05-11** — npm scope `@ccc/*` for workspace packages (`@ccc/api`,
-  `@ccc/web`, `@ccc/mobile`, `@ccc/shared`, `@ccc/ui`); never published (`private`).
-- **2026-05-11** — `.npmrc` `node-linker=hoisted` for Metro/Expo compatibility
-  with pnpm (standard for RN + pnpm monorepos).
-- **2026-05-11** — TS base config: `module: ESNext` + `moduleResolution: Bundler`
-  - `verbatimModuleSyntax` (avoids the NodeNext `.js`-extension friction); the API
-    runs via `tsx` in dev and is bundled with `tsup` for prod; `packages/shared` &
-    `packages/ui` are consumed as TypeScript source (`main` → `src/index.ts`), so no
-    build step — their bundler/compiler does it.
+  `@ccc/web`, `@ccc/mobile`, `@ccc/shared`, `@ccc/ui`); never published
+  (`private`).
+- **2026-05-11** — `.npmrc` sets `node-linker=hoisted` for Metro/Expo
+  compatibility with pnpm (standard for RN + pnpm monorepos).
+- **2026-05-11** — TS base config uses `module: ESNext` with
+  `moduleResolution: Bundler` and `verbatimModuleSyntax` (avoids the NodeNext
+  `.js`-extension friction). The API runs via `tsx` in dev and is bundled with
+  `tsup` for prod; `packages/shared` and `packages/ui` are consumed as
+  TypeScript source (`main` → `src/index.ts`), so they need no build step —
+  each consumer's bundler/compiler builds them.
+- **2026-05-11** — Prettier formats Markdown too; the `docs/*.md` files were
+  reformatted on the first run after `.prettierrc.json` landed (M0.1).
 
 ## Open items / deferrals
 
