@@ -18,6 +18,9 @@ export default tseslint.config(
       'docs/design/reference/**',
       'apps/mobile/ios/**',
       'apps/mobile/android/**',
+      // CommonJS tooling configs that legitimately use require().
+      '**/babel.config.js',
+      '**/metro.config.js',
     ],
   },
   js.configs.recommended,

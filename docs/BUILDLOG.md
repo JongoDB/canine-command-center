@@ -7,23 +7,46 @@ Status key: ✅ merged · 🚧 in flight · ⏳ pending · 🧪 awaiting your UI
 
 ---
 
-## Phase 0 — Foundations
+## Phase 0 — Foundations ✅ **complete**
 
-- 🚧 **M0.6a — Web client skeleton** — _in flight_ (branch `feat/m0.6a-web-client`).
-  `apps/web`: Vite 6 + React 18 + React Router 6; static PWA manifest; the Better
-  Auth browser client (cookie sessions) + the `@ccc/shared` `ApiClient`; auth
-  screens — sign up / sign in / `/verify-email` (the email-link landing page,
-  hands the token to the API and lands the user back home auto-signed-in) /
+- ✅ **M0.6b — Mobile client skeleton (Expo) + `@ccc/ui` primitives** — PR #14,
+  merged. `apps/mobile`: Expo SDK 55 + Expo Router (`app/_layout.tsx` does the
+  session-gate redirect), React 19 / RN 0.83; `@better-auth/expo` client +
+  `expo-secure-store` (cookie-less mobile sessions, token in the keychain) +
+  `@ccc/shared` `ApiClient`; auth screens — sign in / sign up / forgot-password —
+  and an empty authenticated `/` (app shell + API-health pill + sign-out); the
+  dark "K9" theme via `@ccc/ui` tokens; RN UI helpers in `src/components/ui.tsx`;
+  monorepo `metro.config.js` (watch the workspace, resolve hoisted deps);
+  `app.json` (scheme `caninecommandcenter`, typed routes), `babel.config.js`,
+  `expo-env.d.ts`. `@ccc/ui` gained `styles.ts` — a small set of shared,
+  framework-agnostic style objects derived from the tokens (the seed of the
+  cross-platform primitive layer; full components come with the real screens in
+  Phase 1). Bumped `apps/web` to **React 19** to align with mobile (Expo 55
+  requires React 19) — kept the web gate green. Renamed the mobile `prebuild`
+  script → `native:prebuild` (the npm `prebuild` lifecycle hook was making
+  `pnpm build` run `expo prebuild`); added `expo-network` (a peer dep of the
+  Better Auth Expo plugin); extended `.gitignore` for the Expo-generated
+  `ios/`/`android/`. Verified: full gate green; `expo export --platform android`
+  bundles the whole app (entry → Expo Router → auth client → screens → `@ccc/*`)
+  to a 3.7 MB Hermes bundle. _(Can't device-test here — UI/UX Checkpoint 1, end
+  of Phase 1, is the real test of both clients.)_ Known follow-ups (Phase 1+):
+  mobile email-link verification/reset deep links (currently route via the web
+  app), forwarding the stored session token on authed API calls
+  (`authClient.getCookie()` in `api.ts` `headers`), loading the webfonts via
+  `expo-font`, push, app icon/splash.
+- ✅ **M0.6a — Web client skeleton** — PR #13, merged. `apps/web`: Vite 6 +
+  React 18 (later → 19 in M0.6b) + React Router 6; static PWA manifest; the
+  Better Auth browser client (cookie sessions) + the `@ccc/shared` `ApiClient`;
+  auth screens — sign up / sign in / `/verify-email` (the email-link landing
+  page; hands the token to the API and lands the user back home auto-signed-in) /
   forgot + reset password; an empty authenticated `/` (app shell + an API-health
-  pill + sign-out); dark "K9 field journal" theme (mirrors `@ccc/ui` tokens). Dev
-  proxy (`/api`, `/health`, `/me` → the Fastify server) so it's same-origin (no
-  CORS, cookie works). Touches `apps/api`: added `WEB_BASE_URL` so verification /
-  reset emails link to the web app, not the API. Removed unused `declaration`/
-  `declarationMap` from `tsconfig.base.json` (fixed TS2742 on the Better Auth
-  client). Verified: full gate green; built bundle (~66 KB gz JS); dev server +
-  API + proxy + mailpit smoke-tested (signup → verification email links to
-  `http://localhost:5173/verify-email?token=…`). _(M0.6b — the Expo mobile
-  client plus the shared `@ccc/ui` primitives — follows.)_
+  pill + sign-out); the dark "K9 field journal" theme (mirrors `@ccc/ui` tokens).
+  Dev proxy (`/api`, `/health`, `/me` → the Fastify server) so it's same-origin
+  (no CORS, the cookie works). Touched `apps/api`: added `WEB_BASE_URL` so
+  verification/reset emails link to the web app, not the API. Removed the unused
+  `declaration`/`declarationMap` from `tsconfig.base.json` (fixed TS2742 on the
+  Better Auth client). Verified: full gate green; built bundle ~66 KB gz JS; dev
+  server + API + proxy + mailpit smoke-tested end to end.
 - ✅ **M0.5 — Shared package v1** — delivered incrementally (not a standalone
   PR). The v1 cut — `BRANDING` (M0.1), `@ccc/ui` design tokens (M0.1), the
   auth-adjacent types + the typed `ApiClient` (M0.4, PR #12) — is in. The
@@ -67,7 +90,13 @@ Status key: ✅ merged · 🚧 in flight · ⏳ pending · 🧪 awaiting your UI
   build log. `packages/shared` seeded with `BRANDING` constants; `packages/ui`
   seeded with the design tokens from `docs/DESIGN.md`. App packages are stubs
   (real API in M0.3, clients in M0.6). Gate green on a clean checkout.
-- ⏳ **M0.6b — Mobile client skeleton (Expo)** + the shared `@ccc/ui` primitives.
+
+## Phase 1 — MVP: the dog + Scout 🔜 _next_
+
+- ⏳ **M1.1 — Dog profile + intake** (the next PR).
+- ⏳ M1.2 — Breed library v1 · M1.3 — Claude (Scout) integration · M1.4 — Scout
+  chat UI · M1.5 — onboarding glue → then **🧪 UI/UX Checkpoint 1** (deploy to
+  staging; first owner hands-on review of both clients + the Scout persona).
 
 ## Decisions
 
@@ -89,6 +118,12 @@ Status key: ✅ merged · 🚧 in flight · ⏳ pending · 🧪 awaiting your UI
   each consumer's bundler/compiler builds them.
 - **2026-05-11** — Prettier formats Markdown too; the `docs/*.md` files were
   reformatted on the first run after `.prettierrc.json` landed (M0.1).
+- **2026-05-11 (M0.6b)** — React aligned to **19** monorepo-wide (Expo SDK 55
+  requires it; web was on 18 — bumped to 19, gate stayed green). Don't name a
+  workspace script `prebuild`/`pretest`/etc. — npm/pnpm run those as lifecycle
+  hooks for `build`/`test` (the mobile `expo prebuild` script is now
+  `native:prebuild`). Expo plugins can pull optional deps via dynamic `import()`
+  that Metro still needs to resolve — `@better-auth/expo` needs `expo-network`.
 
 ## Open items / deferrals
 
@@ -96,7 +131,15 @@ Status key: ✅ merged · 🚧 in flight · ⏳ pending · 🧪 awaiting your UI
   `pnpm/action-setup@v4` log a deprecation warning (Node 20 → forced Node 24 from
   2026-06-02). Non-blocking; Dependabot (github-actions ecosystem) will bump them,
   or bump manually before then.
-- **`pnpm audit`** still reports 3 _moderate_ transitive advisories — surfaced by
+- **`pnpm audit`** reports a few _moderate_ transitive advisories — surfaced by
   the advisory `audit` CI job; Dependabot will chip at them. No high/critical open.
 - **M0.5 calculators** (calorie/portion, age-stage, vaccine-schedule) — deferred
   to the milestones that actually use them (M4.1 / M3.x) rather than stubbing now.
+- **Mobile follow-ups** (Phase 1+): email-link verification/reset deep links
+  (currently route through the web app); forward the stored session token on
+  authed API calls (`authClient.getCookie()` in `apps/mobile/src/lib/api.ts`);
+  load the Bebas/DM Sans/Space Mono webfonts via `expo-font`; push notifications;
+  app icon + splash.
+- **Cross-platform `@ccc/ui` component primitives** — only the tokens + a few
+  shared style objects exist; the real components (Badge, ScreenHeader,
+  TimelinePhase, CommandCard, …) build out alongside the real screens in Phase 1.
