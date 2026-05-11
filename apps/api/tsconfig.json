@@ -1,10 +1,10 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "dist",
     "noEmit": true,
-    "types": ["node"]
+    "types": ["node"],
+    "resolveJsonModule": true,
+    "allowImportingTsExtensions": true
   },
-  "include": ["src"]
+  "include": ["src", "drizzle.config.ts", "tsup.config.ts", "vitest.config.ts"]
 }

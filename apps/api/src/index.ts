@@ -1,11 +1,22 @@
-import { BRANDING } from '@ccc/shared';
+import { env } from './config/env';
+import { buildServer } from './server';
 
-// Placeholder entrypoint. The real Fastify server, env config, logging,
-// /health, Postgres/Drizzle, auth, and the Claude SSE proxy are built in
-// milestones M0.3 → M1.x (see docs/ROADMAP.md). This stub only proves the
-// @ccc/shared workspace link resolves.
-function main(): void {
-  console.log(`${BRANDING.appName} API — scaffold only. See docs/ROADMAP.md (M0.3).`);
+async function main(): Promise<void> {
+  const app = await buildServer();
+
+  for (const signal of ['SIGINT', 'SIGTERM'] as const) {
+    process.once(signal, () => {
+      app.log.info(`received ${signal}, shutting down`);
+      void app.close().then(() => process.exit(0));
+    });
+  }
+
+  try {
+    await app.listen({ host: env.HOST, port: env.PORT });
+  } catch (err) {
+    app.log.error(err, 'failed to start');
+    process.exit(1);
+  }
 }
 
-main();
+void main();

@@ -15,6 +15,21 @@ jobs:
     name: ci
     runs-on: ubuntu-latest
     timeout-minutes: 20
+
+    # Throwaway Postgres for the DB-migration check below.
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: ccc
+          POSTGRES_PASSWORD: ccc_ci
+          POSTGRES_DB: ccc_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U ccc -d ccc_ci"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+
     steps:
       - uses: actions/checkout@v4
 
@@ -45,8 +60,13 @@ jobs:
       - name: Build
         run: pnpm build
 
-      # DB migration check — wired in M0.3 once apps/api has Drizzle migrations
-      # and a `db:check` script that points at a Postgres service container.
+      - name: DB migrations apply on a fresh database
+        env:
+          DATABASE_URL: postgres://ccc:ccc_ci@localhost:5432/ccc_ci
+        run: |
+          pnpm --filter @ccc/api db:check
+          # Run again — migrations must be idempotent.
+          pnpm --filter @ccc/api db:check
 
   audit:
     name: audit

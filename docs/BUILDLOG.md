@@ -9,12 +9,25 @@ Status key: ✅ merged · 🚧 in flight · ⏳ pending · 🧪 awaiting your UI
 
 ## Phase 0 — Foundations
 
-- 🚧 **M0.2 — CI + branch protection** — _in flight_ (branch
-  `ci/m0.2-ci-and-branch-protection`). GitHub Actions `CI` workflow (job `ci`:
-  install → typecheck → lint → format:check → test → build; advisory `audit`
-  job; runs on PRs and pushes to `main`); Dependabot (npm + github-actions,
-  weekly); branch protection on `main` requiring the `ci` check, enabled once
-  the workflow lands.
+- 🚧 **M0.3 — API skeleton + DB** — _in flight_ (branch `feat/m0.3-api-skeleton-db`).
+  `apps/api`: Fastify 5 server (`buildServer()` — helmet, CORS, `{ error: {…} }`
+  envelope, graceful shutdown) with `GET /health` (liveness; DB sub-status) and
+  `GET /health/ready` (readiness, 503 if DB down); validated env (`src/config/env.ts`,
+  zod, `dotenv`); Postgres via Drizzle ORM (`src/db/client.ts` — lazy pool,
+  `pingDb()`); first migration (`drizzle/0000_init.sql` — Better Auth `user` /
+  `session` / `account` / `verification`); `pnpm db:up|migrate|check|generate|studio`;
+  `infra/docker-compose.yml` (postgres + mailpit + minio); CI `ci` job now runs
+  `db:check` against a throwaway Postgres service (idempotently). Verified
+  locally: migrations apply on a fresh Dockerised Postgres (and re-apply
+  cleanly); `pnpm dev` → `/health` returns `db: ok`, `/health/ready` 200, 404s
+  use the envelope; full gate green.
+- ✅ **M0.2 — CI + branch protection** — PR #2, merged. GitHub Actions `CI`
+  workflow (job `ci`: install → typecheck → lint → format:check → test → build —
+  later in M0.3 a `db:check` step + Postgres service were added; advisory
+  `audit` job; runs on PRs and pushes to `main`); Dependabot (npm +
+  github-actions, weekly); branch protection on `main` requiring the `ci` check
+  (+ strict / linear history / no force-push / no deletions; admins not enforced
+  so milestone PRs can self-merge after green CI).
 - ✅ **M0.1 — Monorepo scaffold** — PR #1, merged. pnpm workspaces;
   `apps/{api,web,mobile}` + `packages/{shared,ui}` + `infra/`; TypeScript
   (strict), ESLint 9 (flat config), Prettier, Vitest; root scripts (`dev:*`,
@@ -22,7 +35,6 @@ Status key: ✅ merged · 🚧 in flight · ⏳ pending · 🧪 awaiting your UI
   build log. `packages/shared` seeded with `BRANDING` constants; `packages/ui`
   seeded with the design tokens from `docs/DESIGN.md`. App packages are stubs
   (real API in M0.3, clients in M0.6). Gate green on a clean checkout.
-- ⏳ **M0.3 — API skeleton + DB**
 - ⏳ **M0.4 — Auth**
 - ⏳ **M0.5 — Shared package v1** (started in M0.1; extended alongside M0.3/M0.4)
 - ⏳ **M0.6 — Client skeletons (mobile + web)**
