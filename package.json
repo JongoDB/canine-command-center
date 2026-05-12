@@ -22,7 +22,8 @@
     "db:up": "pnpm --filter @ccc/api db:up",
     "db:down": "pnpm --filter @ccc/api db:down",
     "db:migrate": "pnpm --filter @ccc/api db:migrate",
-    "db:check": "pnpm --filter @ccc/api db:check"
+    "db:check": "pnpm --filter @ccc/api db:check",
+    "smoke:web": "node scripts/smoke-web.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -30,9 +31,17 @@
     "eslint": "^10.3.0",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.6.0",
+    "playwright": "^1.60.0",
     "prettier": "^3.4.2",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.20.0",
     "vitest": "^2.1.8"
+  },
+  "pnpm": {
+    "comment": "Pin react + react-dom to one exact version monorepo-wide — they must match exactly at runtime, and an optional react-dom peer (via @expo/metro-runtime) otherwise floats to a newer patch than react.",
+    "overrides": {
+      "react": "19.2.6",
+      "react-dom": "19.2.6"
+    }
   }
 }

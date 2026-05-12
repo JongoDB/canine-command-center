@@ -47,7 +47,11 @@ export class ApiClient {
   private get fetchImpl(): typeof fetch {
     const f = this.opts.fetch ?? globalThis.fetch;
     if (!f) throw new Error('ApiClient: no fetch available — pass one via options.fetch');
-    return f;
+    // Native `fetch` must be invoked with `this` === the global; held on an
+    // instance and called as `this.fetchImpl(...)`, the `this` becomes the
+    // ApiClient and browsers throw "Illegal invocation". Bind it. (Binding an
+    // injected test fetch to `globalThis` is harmless for typical impls.)
+    return f.bind(globalThis);
   }
 
   async request<T>(path: string, init: RequestInit = {}): Promise<T> {

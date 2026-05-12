@@ -49,5 +49,11 @@ export default tseslint.config(
     files: ['apps/mobile/**/*.{ts,tsx}'],
     rules: { '@typescript-eslint/no-require-imports': 'off' },
   },
+  {
+    // Node scripts that also ship browser-context callbacks (Playwright
+    // `page.evaluate` / `waitForFunction`) — allow both global sets.
+    files: ['scripts/**'],
+    languageOptions: { globals: { ...globals.node, ...globals.browser } },
+  },
   prettier,
 );
