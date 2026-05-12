@@ -11,7 +11,7 @@ import {
 } from '@ccc/shared';
 import { requireSession } from '../auth/requireSession';
 import { getDb } from '../db/client';
-import { dog as dogTable, intakeResponse } from '../db/schema';
+import { dog as dogTable, intakeResponse, media as mediaTable } from '../db/schema';
 import { parsed } from '../lib/validate';
 
 type DogRow = typeof dogTable.$inferSelect;
@@ -98,6 +98,29 @@ function notFound(reply: FastifyReply) {
   return reply.status(404).send({ error: { code: 'NOT_FOUND', message: 'Dog not found' } });
 }
 
+/**
+ * If `photoMediaId` is set, verify it points to a media row owned by `uid`.
+ * Throws `400 INVALID_PHOTO` otherwise — the dog write is well-formed, the photo
+ * reference just isn't one of the caller's uploads (or doesn't exist).
+ */
+async function assertOwnedPhoto(
+  uid: string,
+  photoMediaId: string | null | undefined,
+): Promise<void> {
+  if (!photoMediaId) return;
+  const rows = await getDb()
+    .select({ id: mediaTable.id })
+    .from(mediaTable)
+    .where(and(eq(mediaTable.id, photoMediaId), eq(mediaTable.userId, uid)))
+    .limit(1);
+  if (!rows[0]) {
+    throw Object.assign(new Error('photoMediaId does not reference one of your uploads'), {
+      statusCode: 400,
+      code: 'INVALID_PHOTO',
+    });
+  }
+}
+
 /** Fetch an active (non-archived) dog owned by the requester, or null. */
 async function findActiveDog(uid: string, dogId: string): Promise<DogRow | null> {
   const rows = await getDb()
@@ -131,6 +154,7 @@ export async function dogRoutes(app: FastifyInstance): Promise<void> {
   // Create a dog.
   app.post('/dogs', async (request, reply) => {
     const input = parsed(DogProfileInput, request.body);
+    await assertOwnedPhoto(userId(request), input.photoMediaId);
     const [row] = await getDb()
       .insert(dogTable)
       .values({
@@ -171,7 +195,9 @@ export async function dogRoutes(app: FastifyInstance): Promise<void> {
     const id = dogParam(request);
     const existing = await findActiveDog(uid, id);
     if (!existing) return notFound(reply);
-    const columns = profileToColumns(parsed(UpdateDogInput, request.body));
+    const patch = parsed(UpdateDogInput, request.body);
+    await assertOwnedPhoto(uid, patch.photoMediaId);
+    const columns = profileToColumns(patch);
     if (Object.keys(columns).length === 0) return { dog: toDog(existing) };
     const [row] = await getDb()
       .update(dogTable)
@@ -219,6 +245,7 @@ export async function dogRoutes(app: FastifyInstance): Promise<void> {
     const dogRow = await findActiveDog(uid, id);
     if (!dogRow) return notFound(reply);
     const input = parsed(SubmitIntakeInput, request.body);
+    await assertOwnedPhoto(uid, input.profile?.photoMediaId);
 
     const result = await getDb().transaction(async (tx) => {
       let updatedDog = dogRow;
