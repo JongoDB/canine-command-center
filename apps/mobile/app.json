@@ -21,7 +21,8 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Canine Command Center uses your photos so you can set a profile photo for your dog."
+          "photosPermission": "Canine Command Center uses your photos so you can set a profile photo for your dog.",
+          "cameraPermission": "Canine Command Center uses the camera so you can snap a profile photo for your dog."
         }
       ]
     ],

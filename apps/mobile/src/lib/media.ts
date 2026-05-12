@@ -25,20 +25,25 @@ export interface PickedPhoto {
 }
 
 /**
- * Let the user pick an image from their library, upload it to `POST /media`,
- * and return the stored Media plus the local uri for an immediate preview.
- * Resolves `null` if the user cancels. Throws on permission denial / upload error.
+ * Let the user pick (or, with `{ camera: true }`, capture) an image, upload it
+ * to `POST /media`, and return the stored Media plus the local uri for an
+ * immediate preview. Resolves `null` if the user cancels. Throws on permission
+ * denial / upload error.
  */
-export async function pickAndUploadPhoto(): Promise<PickedPhoto | null> {
-  const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
-  if (!perm.granted) throw new Error('Photo library access was denied.');
-
-  const result = await ImagePicker.launchImageLibraryAsync({
-    mediaTypes: ['images'],
-    allowsEditing: true,
-    aspect: [1, 1],
-    quality: 0.85,
-  });
+export async function pickAndUploadPhoto(
+  opts: { camera?: boolean } = {},
+): Promise<PickedPhoto | null> {
+  const editOpts = { allowsEditing: true, aspect: [1, 1] as [number, number], quality: 0.85 };
+  let result: ImagePicker.ImagePickerResult;
+  if (opts.camera) {
+    const perm = await ImagePicker.requestCameraPermissionsAsync();
+    if (!perm.granted) throw new Error('Camera access was denied.');
+    result = await ImagePicker.launchCameraAsync(editOpts);
+  } else {
+    const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!perm.granted) throw new Error('Photo library access was denied.');
+    result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], ...editOpts });
+  }
   if (result.canceled || result.assets.length === 0) return null;
   const asset = result.assets[0]!;
 
