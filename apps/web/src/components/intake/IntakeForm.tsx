@@ -10,6 +10,7 @@ import {
   type NeuterStatus,
   type SubmitIntakeInput,
 } from '@ccc/shared';
+import { mediaUrl, uploadPhoto } from '../../lib/media';
 
 // ---------------------------------------------------------------------------
 // State + defaults
@@ -178,8 +179,79 @@ export function SectionAIdentity({ state, set }: SectionProps) {
   const p = state.profile;
   const setP = (patch: Partial<DogProfileInput>) => set({ ...state, profile: { ...p, ...patch } });
   const setBreed = (patch: Partial<Breed>) => setP({ breed: { ...p.breed, ...patch } });
+  const [photoBusy, setPhotoBusy] = useState(false);
+  const [photoError, setPhotoError] = useState<string | null>(null);
+
+  async function onPhoto(file: File | undefined) {
+    if (!file) return;
+    setPhotoBusy(true);
+    setPhotoError(null);
+    try {
+      const media = await uploadPhoto(file);
+      setP({ photoMediaId: media.id });
+    } catch (e) {
+      setPhotoError(e instanceof Error ? e.message : 'Could not upload that image.');
+    } finally {
+      setPhotoBusy(false);
+    }
+  }
+
   return (
     <div className="stack">
+      <Field label="Photo">
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          {p.photoMediaId ? (
+            <img
+              src={mediaUrl(p.photoMediaId)}
+              alt=""
+              style={{
+                width: 56,
+                height: 56,
+                objectFit: 'cover',
+                border: '1px solid var(--steel-mid)',
+              }}
+            />
+          ) : (
+            <div
+              style={{
+                width: 56,
+                height: 56,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                border: '1px solid var(--steel-mid)',
+                color: 'var(--text-muted)',
+                fontSize: 20,
+              }}
+            >
+              🐾
+            </div>
+          )}
+          <input
+            type="file"
+            accept="image/*"
+            disabled={photoBusy}
+            onChange={(e) => void onPhoto(e.target.files?.[0])}
+            style={{ fontSize: 13 }}
+          />
+          {p.photoMediaId && (
+            <button
+              type="button"
+              className="ghost"
+              style={{ width: 'auto', padding: '4px 10px' }}
+              onClick={() => setP({ photoMediaId: null })}
+            >
+              Remove
+            </button>
+          )}
+        </div>
+        {photoBusy && (
+          <div className="muted" style={{ fontSize: 12 }}>
+            Uploading…
+          </div>
+        )}
+        {photoError && <div className="error">{photoError}</div>}
+      </Field>
       <Field label="Name">
         <input value={p.name} onChange={(e) => setP({ name: e.target.value })} required />
       </Field>

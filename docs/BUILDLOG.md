@@ -93,8 +93,23 @@ Status key: ✅ merged · 🚧 in flight · ⏳ pending · 🧪 awaiting your UI
 
 ## Phase 1 — MVP: the dog + Scout 🚧 _in progress_
 
-- 🚧 **M1.5 — Onboarding glue (web) → UI/UX Checkpoint 1** — _in flight_ (branch
-  `feat/m1.5-onboarding-glue`). `apps/web`: a brand-new owner now flows
+- 🚧 **M1.1d — Media / photos (backend + web)** — _in flight_ (branch `feat/m1.1d-media-photos`).
+  `apps/api`: generic `media` table (+ `media_kind` enum) + `dog.photoMediaId`
+  fk + migration `0004_media.sql`; `src/services/storage.ts` (`StorageProvider`
+  interface + `LocalFsStorageProvider` → `${UPLOADS_DIR}`, default `./uploads`);
+  `routes/media.ts` — `POST /media` (multipart image upload via
+  `@fastify/multipart`, ≤10 MiB, `image/*` only) + `GET /media/:id` (streams the
+  file), both `requireSession` + owner-scoped; `media.test.ts` (upload a 1×1 PNG,
+  serve it back, owner-scoping → 404 for another user, 401 unauth, non-image →
+  415). `@ccc/shared`: + `media.ts` (`Media`); `dog.ts` gains `photoMediaId` on
+  `DogProfileInput` + the `Dog` interface; the dog routes carry it. `apps/web`:
+  `lib/media.ts` (`uploadPhoto`, `mediaUrl`), a photo file-input + preview in
+  Section A of the intake form, the photo shown on the dog profile. 28 API tests
+  pass against Postgres. _(Mobile photo — `expo-image-picker` upload — is a small
+  follow-up.)_
+- ✅ **M1.5 — Onboarding glue (web)** — PR #21, merged; web app is at UI/UX
+  Checkpoint 1 (first-run sign-up → /onboard → intake → "meet Scout" → /scout/:id;
+  /settings with delete-account via Better Auth `user.deleteUser`). `apps/web`: a brand-new owner now flows
   **sign up → (Home detects zero dogs → redirects to) `/onboard` → intake → "meet
   Scout"** (lands straight in `/scout/:id`, a conversation anchored to the new
   dog with suggested prompts ready). New **`/settings`** screen (profile read-

@@ -4,6 +4,7 @@ import { ApiError, BRANDING, type Dog, type IntakeResponse, breedLabel } from '@
 import { conversations } from '../lib/conversations';
 import { dogs } from '../lib/dogs';
 import { nameToSlug } from '../lib/breeds';
+import { mediaUrl } from '../lib/media';
 import { signOut, useSession } from '../lib/auth-client';
 
 function pretty(value: unknown): string {
@@ -124,26 +125,40 @@ export function DogProfile() {
       </header>
 
       <main className="content stack" style={{ maxWidth: 720 }}>
-        <div>
-          <div className="eyebrow">Profile</div>
-          <h1>{dog.name}</h1>
-          <p className="muted">
-            {breedLabel(dog.breed)} {dog.sex !== 'unknown' ? `· ${dog.sex}` : ''}
-            {dog.ageMonths !== null
-              ? ` · ${Math.floor(dog.ageMonths / 12)}y ${dog.ageMonths % 12}mo`
-              : ''}
-          </p>
-          {dog.breed.kind === 'mix' && dog.breed.primary && dog.breed.secondary ? (
-            <p style={{ fontSize: 13, marginTop: 4 }}>
-              <Link to={`/breeds/${nameToSlug(`${dog.breed.primary} x ${dog.breed.secondary}`)}`}>
-                View breed profile →
-              </Link>
+        <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+          {dog.photoMediaId && (
+            <img
+              src={mediaUrl(dog.photoMediaId)}
+              alt=""
+              style={{
+                width: 96,
+                height: 96,
+                objectFit: 'cover',
+                border: '1px solid var(--steel-mid)',
+              }}
+            />
+          )}
+          <div>
+            <div className="eyebrow">Profile</div>
+            <h1>{dog.name}</h1>
+            <p className="muted">
+              {breedLabel(dog.breed)} {dog.sex !== 'unknown' ? `· ${dog.sex}` : ''}
+              {dog.ageMonths !== null
+                ? ` · ${Math.floor(dog.ageMonths / 12)}y ${dog.ageMonths % 12}mo`
+                : ''}
             </p>
-          ) : dog.breed.primary ? (
-            <p style={{ fontSize: 13, marginTop: 4 }}>
-              <Link to={`/breeds/${nameToSlug(dog.breed.primary)}`}>View breed profile →</Link>
-            </p>
-          ) : null}
+            {dog.breed.kind === 'mix' && dog.breed.primary && dog.breed.secondary ? (
+              <p style={{ fontSize: 13, marginTop: 4 }}>
+                <Link to={`/breeds/${nameToSlug(`${dog.breed.primary} x ${dog.breed.secondary}`)}`}>
+                  View breed profile →
+                </Link>
+              </p>
+            ) : dog.breed.primary ? (
+              <p style={{ fontSize: 13, marginTop: 4 }}>
+                <Link to={`/breeds/${nameToSlug(dog.breed.primary)}`}>View breed profile →</Link>
+              </p>
+            ) : null}
+          </div>
         </div>
 
         <div className="card stack">

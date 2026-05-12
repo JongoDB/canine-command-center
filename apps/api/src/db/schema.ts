@@ -101,6 +101,25 @@ export const dogSourceEnum = pgEnum('dog_source', [
   'unknown',
 ]);
 
+// Generic media table (M1.1d) — photos for now; video / chat-image attachments
+// hang off the same table later. `kind` + `storage_key` (the key in the storage
+// provider) + the mime/size. EXIF stripping + thumbnails come later (with sharp).
+export const mediaKindEnum = pgEnum('media_kind', ['photo', 'video']);
+export const media = pgTable('media', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: text('user_id')
+    .notNull()
+    .references(() => user.id, { onDelete: 'cascade' }),
+  kind: mediaKindEnum('kind').notNull().default('photo'),
+  mimeType: text('mime_type').notNull(),
+  sizeBytes: integer('size_bytes').notNull(),
+  width: integer('width'),
+  height: integer('height'),
+  /** The key under which the file lives in the storage provider. */
+  storageKey: text('storage_key').notNull(),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+});
+
 export const dog = pgTable('dog', {
   id: uuid('id').primaryKey().defaultRandom(),
   userId: text('user_id')
@@ -113,6 +132,9 @@ export const dog = pgTable('dog', {
   breedPrimary: text('breed_primary'), // e.g. "Belgian Malinois" (null if unknown)
   breedSecondary: text('breed_secondary'), // for mixes, e.g. "Dutch Shepherd"
   breedIsGuess: boolean('breed_is_guess').notNull().default(false),
+
+  /** Profile photo. */
+  photoMediaId: uuid('photo_media_id').references(() => media.id, { onDelete: 'set null' }),
 
   // identity
   sex: dogSexEnum('sex').notNull().default('unknown'),
@@ -252,3 +274,5 @@ export type BreedProfileRow = typeof breedProfile.$inferSelect;
 export type NewBreedProfileRow = typeof breedProfile.$inferInsert;
 export type ConversationRow = typeof conversation.$inferSelect;
 export type MessageRow = typeof message.$inferSelect;
+export type MediaRow = typeof media.$inferSelect;
+export type NewMediaRow = typeof media.$inferInsert;

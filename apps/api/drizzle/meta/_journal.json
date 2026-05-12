@@ -29,6 +29,13 @@
       "when": 1778538506277,
       "tag": "0003_conversation_message",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1778545474521,
+      "tag": "0004_media",
+      "breakpoints": true
     }
   ]
 }
