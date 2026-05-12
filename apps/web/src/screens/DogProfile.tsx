@@ -128,7 +128,7 @@ export function DogProfile() {
         <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
           {dog.photoMediaId && (
             <img
-              src={mediaUrl(dog.photoMediaId)}
+              src={mediaUrl(dog.photoMediaId, 'thumb')}
               alt=""
               style={{
                 width: 96,

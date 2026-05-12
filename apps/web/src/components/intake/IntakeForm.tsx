@@ -202,7 +202,7 @@ export function SectionAIdentity({ state, set }: SectionProps) {
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           {p.photoMediaId ? (
             <img
-              src={mediaUrl(p.photoMediaId)}
+              src={mediaUrl(p.photoMediaId, 'thumb')}
               alt=""
               style={{
                 width: 56,

@@ -297,6 +297,7 @@ export function IntakeSectionA({
 const s = StyleSheet.create({
   label: {
     color: theme.colors.textMuted,
+    fontFamily: theme.font.mono,
     fontSize: theme.fontSize.label,
     letterSpacing: theme.tracking.wide,
     textTransform: 'uppercase',
@@ -307,6 +308,7 @@ const s = StyleSheet.create({
     borderColor: theme.colors.steelMid,
     borderWidth: 1,
     color: theme.colors.cream,
+    fontFamily: theme.font.body,
     fontSize: theme.fontSize.body,
     paddingVertical: theme.space.md,
     paddingHorizontal: theme.space.md,
@@ -323,10 +325,12 @@ const s = StyleSheet.create({
   },
   pillText: {
     color: theme.colors.textMuted,
+    fontFamily: theme.font.body,
     fontSize: theme.fontSize.bodySm,
   },
   pillTextActive: {
     color: theme.colors.tanLight,
+    fontFamily: theme.font.body,
     fontWeight: theme.fontWeight.bold,
   },
 });

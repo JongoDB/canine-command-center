@@ -147,9 +147,10 @@ const s = StyleSheet.create({
   },
   brand: {
     color: theme.colors.cream,
-    fontSize: theme.fontSize.title,
-    fontWeight: theme.fontWeight.bold,
-    letterSpacing: theme.tracking.wide,
+    fontFamily: theme.font.display,
+    fontSize: theme.fontSize.title + 4,
+    letterSpacing: theme.tracking.normal,
+    textTransform: 'uppercase',
   },
   right: { flexDirection: 'row', alignItems: 'center', gap: theme.space.md },
   pill: {
@@ -162,6 +163,7 @@ const s = StyleSheet.create({
   pillDown: { borderColor: theme.colors.accent },
   pillText: {
     color: theme.colors.textMuted,
+    fontFamily: theme.font.mono,
     fontSize: theme.fontSize.micro,
     letterSpacing: theme.tracking.normal,
   },
@@ -176,16 +178,17 @@ const s = StyleSheet.create({
   },
   eyebrow: {
     color: theme.colors.tan,
+    fontFamily: theme.font.mono,
     fontSize: theme.fontSize.label,
     letterSpacing: theme.tracking.wider,
     textTransform: 'uppercase',
-    fontWeight: theme.fontWeight.bold,
   },
   title: {
     color: theme.colors.cream,
-    fontSize: 40,
-    fontWeight: theme.fontWeight.bold,
-    letterSpacing: theme.tracking.wide,
+    fontFamily: theme.font.display,
+    fontSize: 44,
+    letterSpacing: theme.tracking.normal,
+    textTransform: 'uppercase',
     marginTop: 2,
   },
   notice: {
@@ -206,9 +209,10 @@ const s = StyleSheet.create({
   },
   dogName: {
     color: theme.colors.cream,
-    fontSize: 24,
-    fontWeight: theme.fontWeight.bold,
-    letterSpacing: theme.tracking.wide,
+    fontFamily: theme.font.display,
+    fontSize: 28,
+    letterSpacing: theme.tracking.normal,
+    textTransform: 'uppercase',
     marginBottom: 4,
   },
 });

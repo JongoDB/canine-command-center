@@ -114,7 +114,11 @@ export default function DogProfile() {
         <Eyebrow>Profile</Eyebrow>
         <View style={{ height: theme.space.sm }} />
         {dog.photoMediaId ? (
-          <Image source={mediaSource(dog.photoMediaId)} style={s.photo} resizeMode="cover" />
+          <Image
+            source={mediaSource(dog.photoMediaId, 'thumb')}
+            style={s.photo}
+            resizeMode="cover"
+          />
         ) : null}
         <Title>{dog.name}</Title>
         <View style={{ height: 4 }} />
@@ -223,6 +227,7 @@ const s = StyleSheet.create({
   },
   rowLabel: {
     color: theme.colors.textMuted,
+    fontFamily: theme.font.mono,
     fontSize: theme.fontSize.label,
     letterSpacing: theme.tracking.normal,
     textTransform: 'uppercase',
@@ -230,6 +235,7 @@ const s = StyleSheet.create({
   },
   rowValue: {
     color: theme.colors.cream,
+    fontFamily: theme.font.body,
     fontSize: theme.fontSize.bodySm,
     flex: 1,
     flexWrap: 'wrap',
