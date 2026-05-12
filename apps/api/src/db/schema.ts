@@ -103,7 +103,8 @@ export const dogSourceEnum = pgEnum('dog_source', [
 
 // Generic media table (M1.1d) — photos for now; video / chat-image attachments
 // hang off the same table later. `kind` + `storage_key` (the key in the storage
-// provider) + the mime/size. EXIF stripping + thumbnails come later (with sharp).
+// provider) + the mime/size + pixel dimensions. Uploads are auto-oriented and
+// re-encoded (EXIF/GPS stripped) by `lib/images.ts`; thumbnails come later.
 export const mediaKindEnum = pgEnum('media_kind', ['photo', 'video']);
 export const media = pgTable('media', {
   id: uuid('id').primaryKey().defaultRandom(),

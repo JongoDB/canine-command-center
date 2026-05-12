@@ -5,17 +5,19 @@ import type { Media } from '@ccc/shared';
 import { requireSession } from '../auth/requireSession';
 import { getDb } from '../db/client';
 import { media as mediaTable, type MediaRow } from '../db/schema';
+import { processUploadedImage } from '../lib/images';
 import { storage } from '../services/storage';
 
-/** Images we accept for now (photos). EXIF stripping + thumbnails come later. */
-const ALLOWED_IMAGE_TYPES: Record<string, string> = {
-  'image/jpeg': '.jpg',
-  'image/png': '.png',
-  'image/webp': '.webp',
-  'image/gif': '.gif',
-  'image/heic': '.heic',
-  'image/heif': '.heif',
-};
+/** Images we accept for now (photos). On upload they're decoded, auto-oriented
+ *  and re-encoded (which strips EXIF/GPS) by `processUploadedImage`. */
+const ALLOWED_IMAGE_TYPES = new Set([
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'image/gif',
+  'image/heic',
+  'image/heif',
+]);
 const MAX_MIB = 10; // keep in sync with the @fastify/multipart limit in server.ts
 
 function toMedia(row: MediaRow): Media {
@@ -41,15 +43,14 @@ export async function mediaRoutes(app: FastifyInstance): Promise<void> {
         .status(400)
         .send({ error: { code: 'NO_FILE', message: 'No file in the upload.' } });
     }
-    const ext = ALLOWED_IMAGE_TYPES[file.mimetype];
-    if (!ext) {
+    if (!ALLOWED_IMAGE_TYPES.has(file.mimetype)) {
       return reply.status(415).send({
         error: { code: 'UNSUPPORTED_TYPE', message: `Unsupported image type: ${file.mimetype}` },
       });
     }
-    let buf: Buffer;
+    let raw: Buffer;
     try {
-      buf = await file.toBuffer();
+      raw = await file.toBuffer();
     } catch {
       return reply
         .status(413)
@@ -60,21 +61,32 @@ export async function mediaRoutes(app: FastifyInstance): Promise<void> {
         .status(413)
         .send({ error: { code: 'TOO_LARGE', message: `Image too large (max ${MAX_MIB} MiB).` } });
     }
-    if (buf.length === 0) {
+    if (raw.length === 0) {
       return reply.status(400).send({ error: { code: 'EMPTY_FILE', message: 'Empty file.' } });
     }
 
+    let img;
+    try {
+      img = await processUploadedImage(raw, file.mimetype);
+    } catch {
+      return reply
+        .status(400)
+        .send({ error: { code: 'BAD_IMAGE', message: "Couldn't read that image." } });
+    }
+
     const id = randomUUID();
-    const key = `media/${id}${ext}`;
-    await storage.put(key, buf);
+    const key = `media/${id}${img.ext}`;
+    await storage.put(key, img.buf);
     const [row] = await getDb()
       .insert(mediaTable)
       .values({
         id,
         userId: request.auth!.user.id,
         kind: 'photo',
-        mimeType: file.mimetype,
-        sizeBytes: buf.length,
+        mimeType: img.mimeType,
+        sizeBytes: img.buf.length,
+        width: img.width,
+        height: img.height,
         storageKey: key,
       })
       .returning();
