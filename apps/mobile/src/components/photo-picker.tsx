@@ -46,7 +46,7 @@ export function PhotoPickerRow({
   }
 
   const has = !!mediaId;
-  const thumb = localUri ? { uri: localUri } : mediaId ? mediaSource(mediaId) : null;
+  const thumb = localUri ? { uri: localUri } : mediaId ? mediaSource(mediaId, 'thumb') : null;
 
   return (
     <View>

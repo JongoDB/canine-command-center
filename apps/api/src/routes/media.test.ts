@@ -82,6 +82,7 @@ suite('Media API — upload, fetch, owner scoping', () => {
     expect(media.sizeBytes).toBeGreaterThan(0); // sharp re-encodes, so not == the input length
     expect(media.width).toBe(1);
     expect(media.height).toBe(1);
+    expect(media.hasThumbnail).toBe(true);
 
     // Owner can fetch the bytes — it's a valid PNG (just not byte-identical to the upload).
     const get = await app.inject({
@@ -97,6 +98,16 @@ suite('Media API — upload, fetch, owner scoping', () => {
         .subarray(0, 8)
         .equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])),
     ).toBe(true); // PNG magic
+
+    // ...and the thumbnail variant — a JPEG.
+    const thumb = await app.inject({
+      method: 'GET',
+      url: `/media/${media.id}?variant=thumb`,
+      headers: { cookie: alice.cookie },
+    });
+    expect(thumb.statusCode).toBe(200);
+    expect(thumb.headers['content-type']).toContain('image/jpeg');
+    expect(thumb.rawPayload.subarray(0, 2).equals(Buffer.from([0xff, 0xd8]))).toBe(true); // JPEG SOI
 
     // Bob cannot.
     expect(
@@ -200,6 +211,29 @@ suite('Media API — upload, fetch, owner scoping', () => {
     });
     expect(res.statusCode).toBe(400);
     expect((res.json() as { error: { code: string } }).error.code).toBe('BAD_IMAGE');
+  });
+
+  it('enforces the per-user upload quota (413 QUOTA_EXCEEDED)', async () => {
+    const quotaUser = await createTestUser(app, 'Quota'); // MEDIA_MAX_PER_USER=5 in vitest.setup.ts
+    for (let i = 0; i < 5; i += 1) {
+      const { body, contentType } = multipartImageBody(PNG_1x1, 'image/png', `q${i}.png`);
+      const res = await app.inject({
+        method: 'POST',
+        url: '/media',
+        headers: { cookie: quotaUser.cookie, 'content-type': contentType },
+        payload: body,
+      });
+      expect(res.statusCode).toBe(201);
+    }
+    const { body, contentType } = multipartImageBody(PNG_1x1, 'image/png', 'q-over.png');
+    const over = await app.inject({
+      method: 'POST',
+      url: '/media',
+      headers: { cookie: quotaUser.cookie, 'content-type': contentType },
+      payload: body,
+    });
+    expect(over.statusCode).toBe(413);
+    expect((over.json() as { error: { code: string } }).error.code).toBe('QUOTA_EXCEEDED');
   });
 
   it('404 on an unknown media id', async () => {
