@@ -60,6 +60,9 @@ const EnvSchema = z.object({
   ANTHROPIC_API_KEY: z.string().optional(),
   /** Override the default Claude model (defaults to claude-opus-4-7). */
   ANTHROPIC_MODEL: z.string().optional(),
+
+  /** Where uploaded media is stored by the local-fs storage provider (dev/self-host). */
+  UPLOADS_DIR: z.string().default('./uploads'),
 });
 
 export type Env = z.infer<typeof EnvSchema>;

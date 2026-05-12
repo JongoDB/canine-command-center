@@ -41,6 +41,7 @@ function toDog(row: DogRow): Dog {
     acquiredOn: row.acquiredOn ?? null,
     acquiredAtAgeWeeks: row.acquiredAtAgeWeeks ?? null,
     notes: row.notes ?? null,
+    photoMediaId: row.photoMediaId ?? null,
     archivedAt: row.archivedAt ? row.archivedAt.toISOString() : null,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
@@ -79,6 +80,7 @@ function profileToColumns(p: UpdateDogInputType): Partial<DogRow> {
   if (p.acquiredOn !== undefined) c.acquiredOn = p.acquiredOn ?? null;
   if (p.acquiredAtAgeWeeks !== undefined) c.acquiredAtAgeWeeks = p.acquiredAtAgeWeeks ?? null;
   if (p.notes !== undefined) c.notes = p.notes ?? null;
+  if (p.photoMediaId !== undefined) c.photoMediaId = p.photoMediaId ?? null;
   return c;
 }
 
@@ -150,6 +152,7 @@ export async function dogRoutes(app: FastifyInstance): Promise<void> {
         acquiredOn: input.acquiredOn ?? null,
         acquiredAtAgeWeeks: input.acquiredAtAgeWeeks ?? null,
         notes: input.notes ?? null,
+        photoMediaId: input.photoMediaId ?? null,
       })
       .returning();
     return reply.status(201).send({ dog: toDog(row!) });

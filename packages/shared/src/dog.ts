@@ -143,6 +143,8 @@ export const DogProfileInput = z.object({
   acquiredOn: IsoDate.nullish(),
   acquiredAtAgeWeeks: z.number().int().min(0).max(2000).nullish(),
   notes: z.string().max(4000).nullish(),
+  /** id of an uploaded photo (POST /media) — the dog's profile photo. */
+  photoMediaId: z.string().uuid().nullish(),
 });
 export type DogProfileInput = z.infer<typeof DogProfileInput>;
 
@@ -176,6 +178,7 @@ export interface Dog {
   acquiredOn: string | null;
   acquiredAtAgeWeeks: number | null;
   notes: string | null;
+  photoMediaId: string | null;
   archivedAt: string | null;
   createdAt: string;
   updatedAt: string;

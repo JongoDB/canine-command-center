@@ -1,5 +1,6 @@
 import cors from '@fastify/cors';
 import helmet from '@fastify/helmet';
+import multipart from '@fastify/multipart';
 import sensible from '@fastify/sensible';
 import Fastify, { type FastifyError, type FastifyInstance } from 'fastify';
 import { BRANDING } from '@ccc/shared';
@@ -11,6 +12,7 @@ import { breedRoutes } from './routes/breeds';
 import { chatRoutes } from './routes/chat';
 import { dogRoutes } from './routes/dogs';
 import { healthRoutes } from './routes/health';
+import { mediaRoutes } from './routes/media';
 import { meRoutes } from './routes/me';
 
 export interface BuildServerOpts {
@@ -54,6 +56,9 @@ export async function buildServer(opts: BuildServerOpts = {}): Promise<FastifyIn
 
   await app.register(sensible);
 
+  // Multipart uploads (images for now) — capped at 10 MiB, one file per request.
+  await app.register(multipart, { limits: { fileSize: 10 * 1024 * 1024, files: 1 } });
+
   // Consistent error envelope: { error: { code, message, details? } }.
   app.setErrorHandler((err: FastifyError, req, reply) => {
     const status =
@@ -83,6 +88,7 @@ export async function buildServer(opts: BuildServerOpts = {}): Promise<FastifyIn
   await app.register(meRoutes);
   await app.register(dogRoutes);
   await app.register(breedRoutes);
+  await app.register(mediaRoutes);
   await app.register(chatRoutes(opts.llm ? { llm: opts.llm } : {}));
 
   // Close the shared DB pool when the server shuts down. Skipped in tests

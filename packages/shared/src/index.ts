@@ -7,3 +7,4 @@ export { ApiClient, ApiError, type ApiClientOptions } from './api-client';
 export * from './dog';
 export * from './breed';
 export * from './conversation';
+export * from './media';
