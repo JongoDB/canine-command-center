@@ -35,7 +35,7 @@
     "prettier": "^3.4.2",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.20.0",
-    "vitest": "^2.1.8"
+    "vitest": "^4.1.6"
   },
   "pnpm": {
     "comment": "Pin react + react-dom to one exact version monorepo-wide — they must match exactly at runtime, and an optional react-dom peer (via @expo/metro-runtime) otherwise floats to a newer patch than react.",
