@@ -8,7 +8,7 @@ import {
   type Dog,
   type Message,
 } from '@ccc/shared';
-import { conversations, sendMessage } from '../../src/lib/conversations';
+import { conversations, streamScout } from '../../src/lib/conversations';
 import { dogs as dogsApi } from '../../src/lib/dogs';
 import {
   ErrorText,
@@ -59,8 +59,14 @@ export default function ScoutChat() {
   const [anchoredDog, setAnchoredDog] = useState<Dog | null>(null);
   const [draft, setDraft] = useState('');
   const [busy, setBusy] = useState(false);
+  // Live assistant turn while streaming: `null` when idle, otherwise the text
+  // so far (may be '' between turns / before the first delta).
+  const [streamText, setStreamText] = useState<string | null>(null);
+  const [streamTools, setStreamTools] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const scrollRef = useRef<ScrollView | null>(null);
+
+  const bumpScroll = () => setTimeout(() => scrollRef.current?.scrollToEnd({ animated: true }), 30);
 
   useEffect(() => {
     if (!id) return;
@@ -96,9 +102,12 @@ export default function ScoutChat() {
     setDraft('');
     setBusy(true);
     setError(null);
+    setStreamText(''); // show the live assistant bubble straight away
+    setStreamTools([]);
     // Optimistic user bubble.
+    const optimisticId = `pending-${Date.now()}`;
     const optimistic: Message = {
-      id: `pending-${Date.now()}`,
+      id: optimisticId,
       conversationId: id,
       role: 'user',
       content: text,
@@ -107,31 +116,63 @@ export default function ScoutChat() {
       createdAt: new Date().toISOString(),
     };
     setConvo({ ...convo, messages: [...convo.messages, optimistic] });
-    setTimeout(() => scrollRef.current?.scrollToEnd({ animated: true }), 50);
+    bumpScroll();
 
-    const res = await sendMessage(id, text);
+    let gotAnyMessage = false;
+    let hadError = false;
+    await streamScout(id, text, (ev) => {
+      switch (ev.type) {
+        case 'user_message_persisted':
+          gotAnyMessage = true;
+          setConvo((prev) =>
+            prev
+              ? {
+                  ...prev,
+                  messages: prev.messages.map((m) => (m.id === optimisticId ? ev.message : m)),
+                }
+              : prev,
+          );
+          break;
+        case 'assistant_message_start':
+          setStreamText('');
+          setStreamTools([]);
+          break;
+        case 'text_delta':
+          setStreamText((t) => (t ?? '') + ev.text);
+          bumpScroll();
+          break;
+        case 'tool_use_start':
+          setStreamTools((ts) => [...ts, ev.name]);
+          break;
+        case 'assistant_message_persisted':
+          gotAnyMessage = true;
+          setConvo((prev) => (prev ? { ...prev, messages: [...prev.messages, ev.message] } : prev));
+          setStreamText(''); // ready for a possible next turn
+          setStreamTools([]);
+          break;
+        case 'error':
+          hadError = true;
+          setError(ev.message);
+          break;
+        case 'done':
+          break;
+        default:
+          break;
+      }
+    });
+
     setBusy(false);
-    if (res.error) setError(res.error);
-    // Replace the optimistic message + append the persisted turn(s).
-    if (res.messages.length > 0) {
-      setConvo((prev) =>
-        prev
-          ? {
-              ...prev,
-              messages: [...prev.messages.filter((m) => m.id !== optimistic.id), ...res.messages],
-            }
-          : prev,
-      );
-    } else if (!res.error) {
-      // Fall back to a re-fetch if we somehow got no message events.
+    setStreamText(null);
+    setStreamTools([]);
+    if (!gotAnyMessage && !hadError) {
+      // No message events at all — fall back to a re-fetch.
       try {
-        const fresh = await conversations.get(id);
-        setConvo(fresh);
+        setConvo(await conversations.get(id));
       } catch {
         /* keep what we have */
       }
     }
-    setTimeout(() => scrollRef.current?.scrollToEnd({ animated: true }), 50);
+    bumpScroll();
   }
 
   const messages = convo?.messages ?? [];
@@ -163,7 +204,22 @@ export default function ScoutChat() {
         ) : (
           messages.map((m) => <Bubble key={m.id} m={m} assistantName={BRANDING.assistantName} />)
         )}
-        {busy ? <Muted>{BRANDING.assistantName} is thinking…</Muted> : null}
+        {streamText !== null ? (
+          <View style={{ marginBottom: theme.space.md, alignItems: 'flex-start' }}>
+            <Text style={[s.who, { color: theme.colors.tan }]}>{BRANDING.assistantName}</Text>
+            <View style={[s.bubble, { backgroundColor: theme.colors.steelMid }]}>
+              <Text style={s.bubbleText}>
+                {streamText ||
+                  (streamTools.length > 0 ? `Using ${streamTools[streamTools.length - 1]}…` : '…')}
+              </Text>
+            </View>
+            {streamTools.length > 0 ? (
+              <Text style={s.toolNote}>Used: {streamTools.join(' · ')}</Text>
+            ) : null}
+          </View>
+        ) : busy ? (
+          <Muted>{BRANDING.assistantName} is thinking…</Muted>
+        ) : null}
         {error ? <ErrorText>{error}</ErrorText> : null}
       </ScrollView>
 
