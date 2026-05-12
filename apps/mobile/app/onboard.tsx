@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ScrollView, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import {
   ApiError,
@@ -8,6 +8,7 @@ import {
   MAL_DUTCH_DEFAULT_PROFILE,
 } from '@ccc/shared';
 import { dogs } from '../src/lib/dogs';
+import { pickAndUploadPhoto } from '../src/lib/media';
 import { IntakeSectionA } from '../src/components/intake-section-a';
 import {
   Body,
@@ -16,6 +17,7 @@ import {
   Eyebrow,
   GhostButton,
   Link,
+  Muted,
   PrimaryButton,
   Screen,
   Title,
@@ -32,12 +34,36 @@ export default function Onboard() {
   const router = useRouter();
   const [useDefault, setUseDefault] = useState(true);
   const [profile, setProfile] = useState<DogProfileInput>(MAL_DUTCH_DEFAULT_PROFILE);
+  const [photoUri, setPhotoUri] = useState<string | null>(null);
+  const [photoBusy, setPhotoBusy] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   function toggleDefault(next: boolean) {
     setUseDefault(next);
     setProfile(next ? MAL_DUTCH_DEFAULT_PROFILE : EMPTY_DEFAULT_PROFILE);
+    setPhotoUri(null);
+  }
+
+  async function onPickPhoto() {
+    setPhotoBusy(true);
+    setError(null);
+    try {
+      const picked = await pickAndUploadPhoto();
+      if (picked) {
+        setPhotoUri(picked.localUri);
+        setProfile((p) => ({ ...p, photoMediaId: picked.media.id }));
+      }
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Could not add that photo.');
+    } finally {
+      setPhotoBusy(false);
+    }
+  }
+
+  function onRemovePhoto() {
+    setPhotoUri(null);
+    setProfile((p) => ({ ...p, photoMediaId: null }));
   }
 
   async function onSave() {
@@ -58,6 +84,8 @@ export default function Onboard() {
     }
   }
 
+  const hasPhoto = !!profile.photoMediaId;
+
   return (
     <Screen>
       <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
@@ -76,6 +104,34 @@ export default function Onboard() {
           />
         </View>
         <Card>
+          {/* Profile photo */}
+          <View style={s.photoRow}>
+            <View style={s.photoThumb}>
+              {photoUri ? (
+                <Image source={{ uri: photoUri }} style={s.photoImg} />
+              ) : (
+                <Text style={s.photoPlaceholder}>🐾</Text>
+              )}
+            </View>
+            <View style={{ flex: 1, gap: theme.space.xs }}>
+              <Muted>Profile photo (optional)</Muted>
+              <View style={{ flexDirection: 'row', gap: theme.space.sm }}>
+                <View style={{ flex: 1 }}>
+                  <GhostButton
+                    label={photoBusy ? 'Uploading…' : hasPhoto ? 'Change' : 'Add photo'}
+                    onPress={onPickPhoto}
+                  />
+                </View>
+                {hasPhoto ? (
+                  <View style={{ flex: 1 }}>
+                    <GhostButton label="Remove" onPress={onRemovePhoto} />
+                  </View>
+                ) : null}
+              </View>
+            </View>
+          </View>
+
+          <View style={{ height: theme.space.md }} />
           <IntakeSectionA profile={profile} setProfile={setProfile} />
           {error ? <ErrorText>{error}</ErrorText> : null}
           <View style={{ flexDirection: 'row', gap: theme.space.md, marginTop: theme.space.md }}>
@@ -87,7 +143,7 @@ export default function Onboard() {
                 label={busy ? 'Saving…' : 'Create dog'}
                 onPress={onSave}
                 loading={busy}
-                disabled={profile.name.trim() === ''}
+                disabled={profile.name.trim() === '' || photoBusy}
               />
             </View>
           </View>
@@ -96,3 +152,19 @@ export default function Onboard() {
     </Screen>
   );
 }
+
+const s = StyleSheet.create({
+  photoRow: { flexDirection: 'row', alignItems: 'center', gap: theme.space.md },
+  photoThumb: {
+    width: 64,
+    height: 64,
+    backgroundColor: theme.colors.black,
+    borderColor: theme.colors.steelMid,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  photoImg: { width: '100%', height: '100%' },
+  photoPlaceholder: { fontSize: 24 },
+});
