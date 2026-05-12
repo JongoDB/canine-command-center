@@ -1,148 +1,14 @@
-import type { ComponentProps, ReactNode } from 'react';
-import { Pressable, StyleSheet, Switch, Text, TextInput, View } from 'react-native';
+import { View } from 'react-native';
 import type { Breed, DogProfileInput, DogSex, DogSource, NeuterStatus } from '@ccc/shared';
+import {
+  FieldRow,
+  MultilineInput,
+  NumberFieldInput,
+  OptionRow,
+  StringInput,
+  ToggleRow,
+} from './intake-fields';
 import { theme } from '../theme';
-
-// ---------------------------------------------------------------------------
-// Tiny field helpers (RN flavour)
-// ---------------------------------------------------------------------------
-
-function FieldLabel({ children }: { children: ReactNode }) {
-  return <Text style={s.label}>{children}</Text>;
-}
-
-function FieldRow({ label, children }: { label: string; children: ReactNode }) {
-  return (
-    <View style={{ marginTop: theme.space.md }}>
-      <FieldLabel>{label}</FieldLabel>
-      {children}
-    </View>
-  );
-}
-
-function StringInput({
-  value,
-  onChangeText,
-  ...rest
-}: {
-  value: string | null | undefined;
-  onChangeText: (s: string | null) => void;
-} & Omit<ComponentProps<typeof TextInput>, 'value' | 'onChangeText' | 'style'>) {
-  return (
-    <TextInput
-      value={value ?? ''}
-      onChangeText={(t) => onChangeText(t === '' ? null : t)}
-      placeholderTextColor={theme.colors.textMuted}
-      autoCapitalize="none"
-      {...rest}
-      style={s.input}
-    />
-  );
-}
-
-function NumberFieldInput({
-  value,
-  onChange,
-  ...rest
-}: {
-  value: number | null | undefined;
-  onChange: (n: number | null) => void;
-} & Omit<
-  ComponentProps<typeof TextInput>,
-  'value' | 'onChange' | 'onChangeText' | 'style' | 'keyboardType'
->) {
-  return (
-    <TextInput
-      value={value === null || value === undefined ? '' : String(value)}
-      keyboardType="decimal-pad"
-      onChangeText={(t) => {
-        if (t === '') return onChange(null);
-        const n = Number(t.replace(',', '.'));
-        if (Number.isFinite(n)) onChange(n);
-      }}
-      placeholderTextColor={theme.colors.textMuted}
-      {...rest}
-      style={s.input}
-    />
-  );
-}
-
-function MultilineInput({
-  value,
-  onChange,
-  rows = 3,
-}: {
-  value: string | null | undefined;
-  onChange: (s: string | null) => void;
-  rows?: number;
-}) {
-  return (
-    <TextInput
-      value={value ?? ''}
-      onChangeText={(t) => onChange(t === '' ? null : t)}
-      placeholderTextColor={theme.colors.textMuted}
-      multiline
-      numberOfLines={rows}
-      style={[s.input, { minHeight: rows * 22 + 24, textAlignVertical: 'top' }]}
-    />
-  );
-}
-
-function OptionRow<T extends string>({
-  value,
-  onChange,
-  options,
-}: {
-  value: T;
-  onChange: (v: T) => void;
-  options: ReadonlyArray<{ value: T; label: string }>;
-}) {
-  return (
-    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.space.xs, marginTop: 4 }}>
-      {options.map((o) => {
-        const active = o.value === value;
-        return (
-          <Pressable
-            key={o.value}
-            onPress={() => onChange(o.value)}
-            style={[s.pill, active && s.pillActive]}
-          >
-            <Text style={[s.pillText, active && s.pillTextActive]}>{o.label}</Text>
-          </Pressable>
-        );
-      })}
-    </View>
-  );
-}
-
-function ToggleRow({
-  label,
-  value,
-  onChange,
-}: {
-  label: string;
-  value: boolean;
-  onChange: (b: boolean) => void;
-}) {
-  return (
-    <View
-      style={{
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        marginTop: theme.space.md,
-      }}
-    >
-      <FieldLabel>{label}</FieldLabel>
-      <Switch
-        value={value}
-        onValueChange={onChange}
-        trackColor={{ false: theme.colors.steelMid, true: theme.colors.tan }}
-        thumbColor={theme.colors.cream}
-      />
-    </View>
-  );
-}
 
 // ---------------------------------------------------------------------------
 // Section A — identity
@@ -290,47 +156,9 @@ export function IntakeSectionA({
       <FieldRow label="Notes (anything else about identity / origin)">
         <MultilineInput value={profile.notes} onChange={(t) => setP({ notes: t })} rows={4} />
       </FieldRow>
+
+      {/* spacer */}
+      <View style={{ height: theme.space.xs }} />
     </View>
   );
 }
-
-const s = StyleSheet.create({
-  label: {
-    color: theme.colors.textMuted,
-    fontFamily: theme.font.mono,
-    fontSize: theme.fontSize.label,
-    letterSpacing: theme.tracking.wide,
-    textTransform: 'uppercase',
-    marginBottom: 6,
-  },
-  input: {
-    backgroundColor: theme.colors.black,
-    borderColor: theme.colors.steelMid,
-    borderWidth: 1,
-    color: theme.colors.cream,
-    fontFamily: theme.font.body,
-    fontSize: theme.fontSize.body,
-    paddingVertical: theme.space.md,
-    paddingHorizontal: theme.space.md,
-  },
-  pill: {
-    borderColor: theme.colors.steelMid,
-    borderWidth: 1,
-    paddingVertical: 6,
-    paddingHorizontal: 10,
-  },
-  pillActive: {
-    borderColor: theme.colors.tan,
-    backgroundColor: theme.colors.steel,
-  },
-  pillText: {
-    color: theme.colors.textMuted,
-    fontFamily: theme.font.body,
-    fontSize: theme.fontSize.bodySm,
-  },
-  pillTextActive: {
-    color: theme.colors.tanLight,
-    fontFamily: theme.font.body,
-    fontWeight: theme.fontWeight.bold,
-  },
-});
