@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Alert, Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ApiError, BRANDING, breedLabel, type Dog, type IntakeResponse } from '@ccc/shared';
 import { conversations } from '../../src/lib/conversations';
 import { dogs as dogsApi } from '../../src/lib/dogs';
+import { mediaSource } from '../../src/lib/media';
 import {
   Body,
   Card,
@@ -112,6 +113,9 @@ export default function DogProfile() {
         </View>
         <Eyebrow>Profile</Eyebrow>
         <View style={{ height: theme.space.sm }} />
+        {dog.photoMediaId ? (
+          <Image source={mediaSource(dog.photoMediaId)} style={s.photo} resizeMode="cover" />
+        ) : null}
         <Title>{dog.name}</Title>
         <View style={{ height: 4 }} />
         <Muted>
@@ -202,6 +206,14 @@ export default function DogProfile() {
 }
 
 const s = StyleSheet.create({
+  photo: {
+    width: '100%',
+    height: 220,
+    backgroundColor: theme.colors.black,
+    borderColor: theme.colors.steelMid,
+    borderWidth: 1,
+    marginBottom: theme.space.md,
+  },
   row: {
     flexDirection: 'row',
     paddingVertical: 8,
