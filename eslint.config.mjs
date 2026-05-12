@@ -43,5 +43,11 @@ export default tseslint.config(
       '@typescript-eslint/no-explicit-any': 'warn',
     },
   },
+  {
+    // React Native loads bundled assets (fonts, images, …) via `require()` —
+    // that's the idiom Metro understands, so allow it in the mobile app.
+    files: ['apps/mobile/**/*.{ts,tsx}'],
+    rules: { '@typescript-eslint/no-require-imports': 'off' },
+  },
   prettier,
 );

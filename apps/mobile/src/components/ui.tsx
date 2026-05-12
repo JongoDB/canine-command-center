@@ -21,7 +21,7 @@ export function Screen({ children }: { children: ReactNode }) {
 }
 
 export function Eyebrow({ children }: { children: ReactNode }) {
-  return <Text style={uiStyles.eyebrow}>{children}</Text>;
+  return <Text style={[uiStyles.eyebrow, s.mono]}>{children}</Text>;
 }
 
 export function Title({ children }: { children: ReactNode }) {
@@ -33,7 +33,7 @@ export function Body({ children }: { children: ReactNode }) {
 }
 
 export function Muted({ children }: { children: ReactNode }) {
-  return <Text style={uiStyles.muted}>{children}</Text>;
+  return <Text style={[uiStyles.muted, s.bodyFont]}>{children}</Text>;
 }
 
 export function ErrorText({ children }: { children: ReactNode }) {
@@ -52,7 +52,7 @@ export function Field({ label, ...props }: { label: string } & TextInputProps) {
         placeholderTextColor={theme.colors.textMuted}
         autoCapitalize="none"
         {...props}
-        style={[uiStyles.input, props.style]}
+        style={[uiStyles.input, s.bodyFont, props.style]}
       />
     </View>
   );
@@ -82,7 +82,7 @@ export function PrimaryButton({
       {loading ? (
         <ActivityIndicator color={theme.colors.black} />
       ) : (
-        <Text style={uiStyles.buttonText}>{label}</Text>
+        <Text style={[uiStyles.buttonText, s.mono]}>{label}</Text>
       )}
     </Pressable>
   );
@@ -107,21 +107,30 @@ export function Link({ label, onPress }: { label: string; onPress: () => void })
 const s = StyleSheet.create({
   screenPad: { flex: 1, paddingHorizontal: theme.space.xl, paddingVertical: theme.space.lg },
   gap: { gap: theme.space.md },
+  // Reusable font-family overlays.
+  mono: { fontFamily: theme.font.mono },
+  bodyFont: { fontFamily: theme.font.body },
   title: {
     color: theme.colors.cream,
-    fontSize: theme.fontSize.title,
-    fontWeight: theme.fontWeight.bold,
-    letterSpacing: theme.tracking.wide,
+    fontFamily: theme.font.display,
+    fontSize: theme.fontSize.title + 6, // Bebas Neue is condensed — give titles a little more
+    letterSpacing: theme.tracking.normal,
+    textTransform: 'uppercase',
   },
   body: {
     color: theme.colors.cream,
+    fontFamily: theme.font.body,
     fontSize: theme.fontSize.body,
     lineHeight: 21,
-    fontWeight: theme.fontWeight.light,
   },
-  error: { color: theme.colors.accentLight, fontSize: theme.fontSize.bodySm },
+  error: {
+    color: theme.colors.accentLight,
+    fontFamily: theme.font.body,
+    fontSize: theme.fontSize.bodySm,
+  },
   label: {
     color: theme.colors.textMuted,
+    fontFamily: theme.font.mono,
     fontSize: theme.fontSize.label,
     letterSpacing: theme.tracking.wide,
     textTransform: 'uppercase',
@@ -139,10 +148,10 @@ const s = StyleSheet.create({
   },
   ghostText: {
     color: theme.colors.tan,
+    fontFamily: theme.font.mono,
     fontSize: theme.fontSize.bodySm,
-    fontWeight: theme.fontWeight.bold,
     letterSpacing: theme.tracking.wide,
     textTransform: 'uppercase',
   },
-  link: { color: theme.colors.tan, fontSize: theme.fontSize.bodySm },
+  link: { color: theme.colors.tan, fontFamily: theme.font.body, fontSize: theme.fontSize.bodySm },
 });

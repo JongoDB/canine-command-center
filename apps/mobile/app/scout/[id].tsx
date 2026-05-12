@@ -262,7 +262,7 @@ const s = StyleSheet.create({
   anchor: {
     color: theme.colors.tanLight,
     fontSize: theme.fontSize.micro,
-    fontFamily: undefined,
+    fontFamily: theme.font.mono,
     letterSpacing: theme.tracking.normal,
     borderColor: theme.colors.tan,
     borderWidth: 1,
