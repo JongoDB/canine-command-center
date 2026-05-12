@@ -4,6 +4,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ApiError, type Dog, type DogProfileInput } from '@ccc/shared';
 import { dogs } from '../../../src/lib/dogs';
 import { IntakeSectionA } from '../../../src/components/intake-section-a';
+import { PhotoPickerRow } from '../../../src/components/photo-picker';
 import {
   Card,
   ErrorText,
@@ -33,6 +34,7 @@ function dogToProfile(d: Dog): DogProfileInput {
     acquiredOn: d.acquiredOn,
     acquiredAtAgeWeeks: d.acquiredAtAgeWeeks,
     notes: d.notes,
+    photoMediaId: d.photoMediaId,
   };
 }
 
@@ -96,6 +98,11 @@ export default function EditDog() {
         <Title>{profile.name || 'Edit dog'}</Title>
         <View style={{ height: theme.space.lg }} />
         <Card>
+          <PhotoPickerRow
+            mediaId={profile.photoMediaId}
+            onChange={(mid) => setProfile((p) => (p ? { ...p, photoMediaId: mid } : p))}
+          />
+          <View style={{ height: theme.space.md }} />
           <IntakeSectionA profile={profile} setProfile={setProfile} />
           {error ? <ErrorText>{error}</ErrorText> : null}
           <View style={{ flexDirection: 'row', gap: theme.space.md, marginTop: theme.space.md }}>
