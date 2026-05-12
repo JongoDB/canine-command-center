@@ -14,7 +14,7 @@ import {
   Screen,
   Title,
 } from '../src/components/ui';
-import { API_BASE_URL } from '../src/lib/config';
+import { APP_SCHEME } from '../src/lib/config';
 import { theme } from '../src/theme';
 
 export default function ForgotPassword() {
@@ -29,8 +29,11 @@ export default function ForgotPassword() {
     setError(null);
     const res = await authClient.requestPasswordReset({
       email,
-      // The link in the email points at the web app's /reset-password page.
-      redirectTo: `${API_BASE_URL}/reset-password`,
+      // Where the link in the email should land — this app's reset screen,
+      // via the custom scheme (expo-router routes `/reset-password` here).
+      // (The API currently builds the email link from WEB_BASE_URL, so this is
+      // honoured once the server switches to the client-supplied target.)
+      redirectTo: `${APP_SCHEME}://reset-password`,
     });
     setBusy(false);
     if (res.error) {

@@ -10,7 +10,14 @@ import { theme } from '../src/theme';
 // Keep the native splash up until our fonts have loaded (no flash of system type).
 void SplashScreen.preventAutoHideAsync();
 
-const AUTH_ROUTES = new Set(['sign-in', 'sign-up', 'forgot-password']);
+// Routes reachable without a session (including the email deep-link landings).
+const AUTH_ROUTES = new Set([
+  'sign-in',
+  'sign-up',
+  'forgot-password',
+  'reset-password',
+  'verify-email',
+]);
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
