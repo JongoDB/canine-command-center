@@ -91,9 +91,29 @@ Status key: ✅ merged · 🚧 in flight · ⏳ pending · 🧪 awaiting your UI
   seeded with the design tokens from `docs/DESIGN.md`. App packages are stubs
   (real API in M0.3, clients in M0.6). Gate green on a clean checkout.
 
-## Phase 1 — MVP: the dog + Scout 🚧 _in progress_
+## Phase 1 — MVP: the dog + Scout ✅ **complete** — tagged `v0.1.0` (2026-05-11)
 
-- 🚧 **M1.4b — Mobile Scout chat UI** — _in flight_ (branch `feat/m1.4b-mobile-scout-chat`).
+All 15 Phase-1 milestones merged; CI green throughout; the dev stack runs for
+the owner; **`v0.1.0`** tagged. The web app is at **🧪 UI/UX Checkpoint 1** —
+holding the Phase-2 start until the owner's hands-on feedback. (Real Scout
+replies are quota-gated on the owner's Claude OAuth token — 429; the chat UI
+and the rest of the app are fully exercised.)
+
+Post-v0.1.0 follow-ups merged so far: **#25** (`fix(api)` — `POST /dogs` /
+`PATCH /dogs/:id` / `PUT /dogs/:id/intake` now reject a `photoMediaId` that
+isn't one of the caller's uploads → `400 INVALID_PHOTO`; pulls a slice of the
+M6 hardening forward) · **#26** (`feat(mobile)` — photo picker:
+`expo-image-picker` + `src/lib/media.ts` [`pickAndUploadPhoto()`,
+`mediaSource()` — an `<Image source>` that forwards the session cookie since
+`GET /media/:id` is owner-scoped and RN has no cookie jar]; profile-photo row
+in onboard + photo on the dog profile screen — finishes the mobile half of
+M1.1d). Earlier: **#22** (`fix(web)` — the Vite dev proxy now covers _all_ the
+API path prefixes `/api /health /me /dogs /breeds /v1 /media` → `:4000`).
+Still open: live mobile chat streaming (XHR `onprogress`); mobile camera
+capture + photo edit-after-create; the rich B–E intake on mobile; EXIF-strip +
+thumbnails (sharp, server-side — applies to web uploads too).
+
+- ✅ **M1.4b — Mobile Scout chat UI** — PR #24, merged.
   `apps/mobile`: `app/scout/index.tsx` (conversation list + new-chat),
   `app/scout/[id].tsx` (the chat — bubbles, suggested prompts when empty, send
   box, optimistic user bubble, anchored-dog pill), `src/lib/conversations.ts`
@@ -102,9 +122,7 @@ Status key: ✅ merged · 🚧 in flight · ⏳ pending · 🧪 awaiting your UI
   the persisted message turns; **non-streaming** for v1 — live token-by-token
   on mobile via XHR `onprogress` is a follow-up). `app/dogs/[id].tsx` gained a
   "Talk to {Scout} about <name>" button → `POST /v1/conversations { dogId }` →
-  `/scout/[id]`. Full gate green; mobile `tsc` clean. _(After this: tag `0.1.0`
-  — Phase 1 done. Follow-ups: live mobile streaming; mobile photo picker
-  (`expo-image-picker`); the rich B–E intake on mobile.)_
+  `/scout/[id]`. Full gate green; mobile `tsc` clean.
 - ✅ **M1.1d — Media / photos (backend + web)** — PR #23, merged. `apps/api`:
   generic `media` table (+ `media_kind` enum) + `dog.photoMediaId` fk + migration
   `0004_media.sql`; `src/services/storage.ts` (`StorageProvider` +
@@ -243,11 +261,8 @@ Status key: ✅ merged · 🚧 in flight · ⏳ pending · 🧪 awaiting your UI
   `dogs.test.ts` — DB-backed: create the Mal × Dutch Shepherd default, list/
   get/patch/archive, ownership scoping (a 2nd user can't see/touch the first's
   dogs), intake versioning. 14 API tests pass against Postgres.
-- ⏳ **M1.1d — Media / photos** (storage provider + upload route + photo display
-  on both clients) · ⏳ M1.2 — Breed library v1 · ⏳ M1.3 — Claude (Scout)
-  integration · ⏳ M1.4 — Scout chat UI · ⏳ M1.5 — onboarding glue → then
-  **🧪 UI/UX Checkpoint 1** (deploy to staging; first owner hands-on review of
-  both clients + the Scout persona).
+  _(Entries for M1.1b/c, M1.2–M1.5, M1.1d and M1.4b are above; all merged — see
+  the Phase-1 header.)_
 
 ## Decisions
 
@@ -286,11 +301,16 @@ Status key: ✅ merged · 🚧 in flight · ⏳ pending · 🧪 awaiting your UI
   the advisory `audit` CI job; Dependabot will chip at them. No high/critical open.
 - **M0.5 calculators** (calorie/portion, age-stage, vaccine-schedule) — deferred
   to the milestones that actually use them (M4.1 / M3.x) rather than stubbing now.
-- **Mobile follow-ups** (Phase 1+): email-link verification/reset deep links
-  (currently route through the web app); forward the stored session token on
-  authed API calls (`authClient.getCookie()` in `apps/mobile/src/lib/api.ts`);
-  load the Bebas/DM Sans/Space Mono webfonts via `expo-font`; push notifications;
-  app icon + splash.
+- **Mobile follow-ups** (post-v0.1.0): live Scout chat streaming (XHR
+  `onprogress` parsing `responseText` — RN `fetch` ReadableStream support is
+  spotty); camera capture + edit-a-dog's-photo-after-create (#26 added library
+  pick on onboard only); the rich B–E intake on mobile (the data model already
+  supports it; today a re-run on web fills it in); email-link verification/reset
+  deep links (currently route through the web app); load the Bebas/DM Sans/Space
+  Mono webfonts via `expo-font`; push notifications; app icon + splash.
+- **Media hardening** — EXIF strip + auto-orient + thumbnails (server-side via
+  `sharp`; applies to web uploads too); per-user/total upload quotas.
+  (`photoMediaId`-ownership on dog writes landed in #25.)
 - **Cross-platform `@ccc/ui` component primitives** — only the tokens + a few
   shared style objects exist; the real components (Badge, ScreenHeader,
-  TimelinePhase, CommandCard, …) build out alongside the real screens in Phase 1.
+  TimelinePhase, CommandCard, …) build out in Phase 2 alongside the Program UI.
