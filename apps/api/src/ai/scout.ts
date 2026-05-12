@@ -97,7 +97,7 @@ export async function* runTurn(input: RunTurnInput): AsyncGenerator<ChatEvent, v
       } else if (ev.type === 'tool_use_end') {
         const b = buildingTools.get(ev.id);
         if (b) {
-          let parsed: unknown = {};
+          let parsed: unknown;
           try {
             parsed = b.input ? JSON.parse(b.input) : {};
           } catch {

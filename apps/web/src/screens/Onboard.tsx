@@ -85,7 +85,8 @@ export function Onboard() {
                   });
                   navigate(`/scout/${convo.id}`, { replace: true });
                 } catch (e) {
-                  if (e instanceof ApiError) throw new Error(`${e.code}: ${e.message}`);
+                  if (e instanceof ApiError)
+                    throw new Error(`${e.code}: ${e.message}`, { cause: e });
                   throw e;
                 }
               }}
