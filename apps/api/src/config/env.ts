@@ -63,6 +63,14 @@ const EnvSchema = z.object({
 
   /** Where uploaded media is stored by the local-fs storage provider (dev/self-host). */
   UPLOADS_DIR: z.string().default('./uploads'),
+
+  /** Per-user upload quota: max number of media items, and max total bytes. */
+  MEDIA_MAX_PER_USER: z.coerce.number().int().positive().default(100),
+  MEDIA_MAX_BYTES_PER_USER: z.coerce
+    .number()
+    .int()
+    .positive()
+    .default(200 * 1024 * 1024), // 200 MiB
 });
 
 export type Env = z.infer<typeof EnvSchema>;

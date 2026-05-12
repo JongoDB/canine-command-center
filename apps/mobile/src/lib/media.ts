@@ -12,10 +12,15 @@ function cookieHeader(): Record<string, string> {
 /**
  * An `<Image source={…}>` value for a stored Media id. `GET /media/:id` is
  * owner-scoped, so we have to forward the session cookie — RN's `Image`
- * accepts a `headers` map on the source for exactly this.
+ * accepts a `headers` map on the source for exactly this. Pass `'thumb'` for
+ * the small JPEG thumbnail variant.
  */
-export function mediaSource(id: string): { uri: string; headers: Record<string, string> } {
-  return { uri: `${API_BASE_URL}/media/${id}`, headers: cookieHeader() };
+export function mediaSource(
+  id: string,
+  variant?: 'thumb',
+): { uri: string; headers: Record<string, string> } {
+  const q = variant === 'thumb' ? '?variant=thumb' : '';
+  return { uri: `${API_BASE_URL}/media/${id}${q}`, headers: cookieHeader() };
 }
 
 export interface PickedPhoto {

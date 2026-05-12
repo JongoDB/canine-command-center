@@ -7,3 +7,6 @@ process.env.LOG_LEVEL ??= 'silent';
 // suites (auth) detect this and skip.
 process.env.DATABASE_URL ??= 'postgres://ccc:ccc@127.0.0.1:1/ccc_test';
 process.env.BETTER_AUTH_SECRET ??= 'test-secret-do-not-use-in-prod-0123456789';
+// Low so the upload-quota path is testable; the per-user uploads elsewhere in
+// the suite stay well under this.
+process.env.MEDIA_MAX_PER_USER ??= '5';

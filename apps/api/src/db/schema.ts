@@ -104,7 +104,8 @@ export const dogSourceEnum = pgEnum('dog_source', [
 // Generic media table (M1.1d) — photos for now; video / chat-image attachments
 // hang off the same table later. `kind` + `storage_key` (the key in the storage
 // provider) + the mime/size + pixel dimensions. Uploads are auto-oriented and
-// re-encoded (EXIF/GPS stripped) by `lib/images.ts`; thumbnails come later.
+// re-encoded (EXIF/GPS stripped) by `lib/images.ts`, which also produces a
+// JPEG thumbnail (`thumb_storage_key`). `size_bytes` is the main object only.
 export const mediaKindEnum = pgEnum('media_kind', ['photo', 'video']);
 export const media = pgTable('media', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -116,8 +117,10 @@ export const media = pgTable('media', {
   sizeBytes: integer('size_bytes').notNull(),
   width: integer('width'),
   height: integer('height'),
-  /** The key under which the file lives in the storage provider. */
+  /** The key under which the (full-size) file lives in the storage provider. */
   storageKey: text('storage_key').notNull(),
+  /** Key of the JPEG thumbnail, if one was generated (null for pre-thumbnail rows). */
+  thumbStorageKey: text('thumb_storage_key'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
 });
 

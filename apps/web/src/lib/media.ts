@@ -1,9 +1,10 @@
 import type { Media } from '@ccc/shared';
 import { API_BASE_URL } from './config';
 
-/** URL the browser fetches the stored image from (owner-scoped on the server). */
-export function mediaUrl(id: string): string {
-  return `${API_BASE_URL}/media/${id}`;
+/** URL the browser fetches the stored image from (owner-scoped on the server).
+ *  Pass `'thumb'` for the small JPEG thumbnail variant. */
+export function mediaUrl(id: string, variant?: 'thumb'): string {
+  return `${API_BASE_URL}/media/${id}${variant === 'thumb' ? '?variant=thumb' : ''}`;
 }
 
 /** Upload an image file → returns the stored Media. Throws on failure. */

@@ -1,5 +1,8 @@
 import sharp from 'sharp';
 
+/** Longest side of the generated thumbnail, in pixels. */
+export const THUMBNAIL_MAX_PX = 320;
+
 /** What we hand back to the upload route after normalising an uploaded image. */
 export interface ProcessedImage {
   buf: Buffer;
@@ -8,6 +11,8 @@ export interface ProcessedImage {
   ext: string;
   width: number | null;
   height: number | null;
+  /** A small JPEG thumbnail (≤ `THUMBNAIL_MAX_PX` on the longest side). */
+  thumb: Buffer;
 }
 
 /** Output encoding per input mime type. HEIC/HEIF get re-encoded to JPEG (not
@@ -42,11 +47,20 @@ export async function processUploadedImage(buf: Buffer, mimeType: string): Promi
   const { data, info } = await out.encode(pipeline).toBuffer({ resolveWithObject: true });
   // For animated GIFs `info.height` is the full filmstrip height; divide by pages.
   const pages = animated ? (info.pages ?? 1) : 1;
+
+  // Thumbnail — always a static JPEG, scaled to fit (never enlarged).
+  const thumb = await sharp(buf)
+    .rotate()
+    .resize(THUMBNAIL_MAX_PX, THUMBNAIL_MAX_PX, { fit: 'inside', withoutEnlargement: true })
+    .jpeg({ quality: 80 })
+    .toBuffer();
+
   return {
     buf: data,
     mimeType: out.mimeType,
     ext: out.ext,
     width: info.width || null,
     height: info.height ? Math.round(info.height / pages) : null,
+    thumb,
   };
 }

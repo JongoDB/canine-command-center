@@ -1,8 +1,9 @@
 import { randomUUID } from 'node:crypto';
-import { and, eq } from 'drizzle-orm';
+import { and, count, eq, sql } from 'drizzle-orm';
 import type { FastifyInstance } from 'fastify';
 import type { Media } from '@ccc/shared';
 import { requireSession } from '../auth/requireSession';
+import { env } from '../config/env';
 import { getDb } from '../db/client';
 import { media as mediaTable, type MediaRow } from '../db/schema';
 import { processUploadedImage } from '../lib/images';
@@ -28,8 +29,21 @@ function toMedia(row: MediaRow): Media {
     sizeBytes: row.sizeBytes,
     width: row.width ?? null,
     height: row.height ?? null,
+    hasThumbnail: !!row.thumbStorageKey,
     createdAt: row.createdAt.toISOString(),
   };
+}
+
+/** Current per-user media usage (count + total bytes of the full-size objects). */
+async function usageFor(userId: string): Promise<{ items: number; bytes: number }> {
+  const [row] = await getDb()
+    .select({
+      items: count(),
+      bytes: sql<number>`coalesce(sum(${mediaTable.sizeBytes}), 0)::bigint`,
+    })
+    .from(mediaTable)
+    .where(eq(mediaTable.userId, userId));
+  return { items: Number(row?.items ?? 0), bytes: Number(row?.bytes ?? 0) };
 }
 
 export async function mediaRoutes(app: FastifyInstance): Promise<void> {
@@ -74,9 +88,25 @@ export async function mediaRoutes(app: FastifyInstance): Promise<void> {
         .send({ error: { code: 'BAD_IMAGE', message: "Couldn't read that image." } });
     }
 
+    // Per-user upload quota (count + total bytes).
+    const usage = await usageFor(request.auth!.user.id);
+    if (
+      usage.items >= env.MEDIA_MAX_PER_USER ||
+      usage.bytes + img.buf.length > env.MEDIA_MAX_BYTES_PER_USER
+    ) {
+      return reply.status(413).send({
+        error: {
+          code: 'QUOTA_EXCEEDED',
+          message: `Upload quota reached (max ${env.MEDIA_MAX_PER_USER} files / ${Math.round(env.MEDIA_MAX_BYTES_PER_USER / (1024 * 1024))} MiB). Remove some media first.`,
+        },
+      });
+    }
+
     const id = randomUUID();
     const key = `media/${id}${img.ext}`;
+    const thumbKey = `media/${id}-thumb.jpg`;
     await storage.put(key, img.buf);
+    await storage.put(thumbKey, img.thumb);
     const [row] = await getDb()
       .insert(mediaTable)
       .values({
@@ -88,25 +118,37 @@ export async function mediaRoutes(app: FastifyInstance): Promise<void> {
         width: img.width,
         height: img.height,
         storageKey: key,
+        thumbStorageKey: thumbKey,
       })
       .returning();
     return reply.status(201).send({ media: toMedia(row!) });
   });
 
-  // Stream a stored image (owner-scoped).
+  // Stream a stored image (owner-scoped). `?variant=thumb` serves the JPEG
+  // thumbnail when one exists (falls back to the full-size object otherwise).
   app.get('/media/:id', async (request, reply) => {
     const id = (request.params as { id: string }).id;
+    const wantThumb = (request.query as { variant?: string }).variant === 'thumb';
     const rows = await getDb()
       .select()
       .from(mediaTable)
       .where(and(eq(mediaTable.id, id), eq(mediaTable.userId, request.auth!.user.id)))
       .limit(1);
     const m = rows[0];
-    if (!m || !(await storage.exists(m.storageKey))) {
+    if (!m) {
       return reply.status(404).send({ error: { code: 'NOT_FOUND', message: 'Media not found' } });
     }
-    void reply.header('content-type', m.mimeType);
+    let key = m.storageKey;
+    let mimeType = m.mimeType;
+    if (wantThumb && m.thumbStorageKey && (await storage.exists(m.thumbStorageKey))) {
+      key = m.thumbStorageKey;
+      mimeType = 'image/jpeg';
+    }
+    if (!(await storage.exists(key))) {
+      return reply.status(404).send({ error: { code: 'NOT_FOUND', message: 'Media not found' } });
+    }
+    void reply.header('content-type', mimeType);
     void reply.header('cache-control', 'private, max-age=86400');
-    return reply.send(storage.getStream(m.storageKey));
+    return reply.send(storage.getStream(key));
   });
 }

@@ -9,8 +9,10 @@ export interface Media {
   kind: MediaKind;
   mimeType: string;
   sizeBytes: number;
-  /** Pixel dimensions if known (null until we add image processing). */
+  /** Pixel dimensions (null for media uploaded before image processing existed). */
   width: number | null;
   height: number | null;
+  /** Whether a thumbnail variant is available (request it with `?variant=thumb`). */
+  hasThumbnail: boolean;
   createdAt: string;
 }
