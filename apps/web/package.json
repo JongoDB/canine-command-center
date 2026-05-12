@@ -15,7 +15,7 @@
     "@ccc/shared": "workspace:*",
     "@ccc/ui": "workspace:*",
     "better-auth": "^1.6.0",
-    "react": "^19.2.0",
+    "react": "^19.2.6",
     "react-dom": "^19.2.0",
     "react-router-dom": "^6.28.1"
   },
