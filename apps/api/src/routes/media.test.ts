@@ -67,7 +67,7 @@ suite('Media API — upload, fetch, owner scoping', () => {
     ).toBe(401);
   });
 
-  it('uploads a PNG and serves it back to the owner; another user gets a 404', async () => {
+  it('uploads a PNG (re-encoded, EXIF-stripped) and serves it back to the owner; another user gets a 404', async () => {
     const { body, contentType } = multipartImageBody(PNG_1x1, 'image/png', 'pixel.png');
     const up = await app.inject({
       method: 'POST',
@@ -79,9 +79,11 @@ suite('Media API — upload, fetch, owner scoping', () => {
     const { media } = up.json() as { media: Media };
     expect(media.kind).toBe('photo');
     expect(media.mimeType).toBe('image/png');
-    expect(media.sizeBytes).toBe(PNG_1x1.length);
+    expect(media.sizeBytes).toBeGreaterThan(0); // sharp re-encodes, so not == the input length
+    expect(media.width).toBe(1);
+    expect(media.height).toBe(1);
 
-    // Owner can fetch the bytes.
+    // Owner can fetch the bytes — it's a valid PNG (just not byte-identical to the upload).
     const get = await app.inject({
       method: 'GET',
       url: `/media/${media.id}`,
@@ -89,7 +91,12 @@ suite('Media API — upload, fetch, owner scoping', () => {
     });
     expect(get.statusCode).toBe(200);
     expect(get.headers['content-type']).toContain('image/png');
-    expect(get.rawPayload.equals(PNG_1x1)).toBe(true);
+    expect(get.rawPayload.length).toBeGreaterThan(0);
+    expect(
+      get.rawPayload
+        .subarray(0, 8)
+        .equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])),
+    ).toBe(true); // PNG magic
 
     // Bob cannot.
     expect(
@@ -177,6 +184,22 @@ suite('Media API — upload, fetch, owner scoping', () => {
     });
     expect(res.statusCode).toBe(415);
     expect((res.json() as { error: { code: string } }).error.code).toBe('UNSUPPORTED_TYPE');
+  });
+
+  it('rejects garbage bytes claiming to be an image with 400 BAD_IMAGE', async () => {
+    const { body, contentType } = multipartImageBody(
+      Buffer.from('definitely not a PNG'),
+      'image/png',
+      'fake.png',
+    );
+    const res = await app.inject({
+      method: 'POST',
+      url: '/media',
+      headers: { cookie: alice.cookie, 'content-type': contentType },
+      payload: body,
+    });
+    expect(res.statusCode).toBe(400);
+    expect((res.json() as { error: { code: string } }).error.code).toBe('BAD_IMAGE');
   });
 
   it('404 on an unknown media id', async () => {
