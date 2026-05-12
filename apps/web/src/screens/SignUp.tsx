@@ -28,11 +28,14 @@ export function SignUp() {
     return (
       <Centered title="Check your email">
         <p className="notice">
-          We sent a verification link to <strong>{email}</strong>. Click it to activate your
-          account, then sign in.
+          We emailed a 6-digit code (and a link) to <strong>{email}</strong>. Enter the code to
+          activate your account.
         </p>
-        <Link to="/sign-in">
-          <button className="ghost">Back to sign in</button>
+        <Link to={`/verify-email?email=${encodeURIComponent(email)}`}>
+          <button>Enter your code</button>
+        </Link>
+        <Link to="/sign-in" style={{ fontSize: 13 }}>
+          Back to sign in
         </Link>
       </Centered>
     );

@@ -18,9 +18,9 @@ export interface TestUser {
 }
 
 /**
- * Sign up a fresh user, verify the email (via the captured link's token), and
- * sign in — returns the user id/email and the session cookie. For DB-backed
- * tests that need an authenticated request.
+ * Sign up a fresh user, verify the email (with the 6-digit code from the
+ * captured verification email), and sign in — returns the user id/email and the
+ * session cookie. For DB-backed tests that need an authenticated request.
  */
 export async function createTestUser(app: FastifyInstance, name = 'Test User'): Promise<TestUser> {
   const email = `t-${Date.now()}-${Math.floor(Math.random() * 1e9).toString(36)}@example.test`;
@@ -38,12 +38,15 @@ export async function createTestUser(app: FastifyInstance, name = 'Test User'): 
   const verifyMail = sentEmails
     .slice(before)
     .find((m) => m.to === email && /verify/i.test(m.subject));
-  const token = verifyMail ? /[?&]token=([^&\s"']+)/.exec(verifyMail.text)?.[1] : undefined;
-  if (!token) throw new Error('no verification token in the captured email');
-  await app.inject({
-    method: 'GET',
-    url: `/api/auth/verify-email?token=${encodeURIComponent(token)}&callbackURL=/`,
+  const otp = verifyMail ? /\b(\d{6})\b/.exec(verifyMail.text)?.[1] : undefined;
+  if (!otp) throw new Error('no verification code in the captured email');
+  const verifyRes = await app.inject({
+    method: 'POST',
+    url: '/api/auth/email-otp/verify-email',
+    payload: { email, otp },
   });
+  if (verifyRes.statusCode !== 200)
+    throw new Error(`email verification failed: ${verifyRes.statusCode} ${verifyRes.body}`);
 
   const signIn = await app.inject({
     method: 'POST',
