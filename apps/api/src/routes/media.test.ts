@@ -113,6 +113,56 @@ suite('Media API — upload, fetch, owner scoping', () => {
     expect((dogRes.json() as { dog: Dog }).dog.photoMediaId).toBe(media.id);
   });
 
+  it("rejects a dog write that references another user's media (400 INVALID_PHOTO)", async () => {
+    // Alice uploads a photo.
+    const { body, contentType } = multipartImageBody(PNG_1x1, 'image/png', 'a.png');
+    const up = await app.inject({
+      method: 'POST',
+      url: '/media',
+      headers: { cookie: alice.cookie, 'content-type': contentType },
+      payload: body,
+    });
+    expect(up.statusCode).toBe(201);
+    const aliceMediaId = (up.json() as { media: Media }).media.id;
+
+    // Bob can't create a dog pointing at it.
+    const create = await app.inject({
+      method: 'POST',
+      url: '/dogs',
+      headers: { cookie: bob.cookie },
+      payload: { name: 'Borrowed', photoMediaId: aliceMediaId },
+    });
+    expect(create.statusCode).toBe(400);
+    expect((create.json() as { error: { code: string } }).error.code).toBe('INVALID_PHOTO');
+
+    // ...nor patch one of his own dogs to use it.
+    const bobDog = await app.inject({
+      method: 'POST',
+      url: '/dogs',
+      headers: { cookie: bob.cookie },
+      payload: { name: 'Rex' },
+    });
+    expect(bobDog.statusCode).toBe(201);
+    const patch = await app.inject({
+      method: 'PATCH',
+      url: `/dogs/${(bobDog.json() as { dog: Dog }).dog.id}`,
+      headers: { cookie: bob.cookie },
+      payload: { photoMediaId: aliceMediaId },
+    });
+    expect(patch.statusCode).toBe(400);
+    expect((patch.json() as { error: { code: string } }).error.code).toBe('INVALID_PHOTO');
+
+    // A nonexistent media id is rejected the same way.
+    const ghost = await app.inject({
+      method: 'POST',
+      url: '/dogs',
+      headers: { cookie: bob.cookie },
+      payload: { name: 'Ghost', photoMediaId: '00000000-0000-0000-0000-000000000000' },
+    });
+    expect(ghost.statusCode).toBe(400);
+    expect((ghost.json() as { error: { code: string } }).error.code).toBe('INVALID_PHOTO');
+  });
+
   it('rejects a non-image upload with 415', async () => {
     const { body, contentType } = multipartImageBody(
       Buffer.from('not an image'),
