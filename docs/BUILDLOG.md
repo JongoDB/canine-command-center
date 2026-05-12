@@ -93,20 +93,41 @@ Status key: ✅ merged · 🚧 in flight · ⏳ pending · 🧪 awaiting your UI
 
 ## Phase 1 — MVP: the dog + Scout 🚧 _in progress_
 
-- 🚧 **M1.1d — Media / photos (backend + web)** — _in flight_ (branch `feat/m1.1d-media-photos`).
-  `apps/api`: generic `media` table (+ `media_kind` enum) + `dog.photoMediaId`
-  fk + migration `0004_media.sql`; `src/services/storage.ts` (`StorageProvider`
-  interface + `LocalFsStorageProvider` → `${UPLOADS_DIR}`, default `./uploads`);
-  `routes/media.ts` — `POST /media` (multipart image upload via
-  `@fastify/multipart`, ≤10 MiB, `image/*` only) + `GET /media/:id` (streams the
-  file), both `requireSession` + owner-scoped; `media.test.ts` (upload a 1×1 PNG,
-  serve it back, owner-scoping → 404 for another user, 401 unauth, non-image →
-  415). `@ccc/shared`: + `media.ts` (`Media`); `dog.ts` gains `photoMediaId` on
-  `DogProfileInput` + the `Dog` interface; the dog routes carry it. `apps/web`:
-  `lib/media.ts` (`uploadPhoto`, `mediaUrl`), a photo file-input + preview in
-  Section A of the intake form, the photo shown on the dog profile. 28 API tests
-  pass against Postgres. _(Mobile photo — `expo-image-picker` upload — is a small
-  follow-up.)_
+- 🚧 **M1.4b — Mobile Scout chat UI** — _in flight_ (branch `feat/m1.4b-mobile-scout-chat`).
+  `apps/mobile`: `app/scout/index.tsx` (conversation list + new-chat),
+  `app/scout/[id].tsx` (the chat — bubbles, suggested prompts when empty, send
+  box, optimistic user bubble, anchored-dog pill), `src/lib/conversations.ts`
+  (API wrappers + `sendMessage()` — POSTs to the SSE endpoint and consumes the
+  **whole** response body via `fetch().text()`, parsing every `data:` frame for
+  the persisted message turns; **non-streaming** for v1 — live token-by-token
+  on mobile via XHR `onprogress` is a follow-up). `app/dogs/[id].tsx` gained a
+  "Talk to {Scout} about <name>" button → `POST /v1/conversations { dogId }` →
+  `/scout/[id]`. Full gate green; mobile `tsc` clean. _(After this: tag `0.1.0`
+  — Phase 1 done. Follow-ups: live mobile streaming; mobile photo picker
+  (`expo-image-picker`); the rich B–E intake on mobile.)_
+- ✅ **M1.1d — Media / photos (backend + web)** — PR #23, merged. `apps/api`:
+  generic `media` table (+ `media_kind` enum) + `dog.photoMediaId` fk + migration
+  `0004_media.sql`; `src/services/storage.ts` (`StorageProvider` +
+  `LocalFsStorageProvider` → `${UPLOADS_DIR}`); `routes/media.ts` —
+  `POST /media` (multipart image upload, ≤10 MiB, `image/*` only, owner-scoped)
+  - `GET /media/:id` (streams), both `requireSession`; `media.test.ts` (28 API
+    tests now). `@ccc/shared` + `media.ts`; `dog.ts` `photoMediaId`. `apps/web`:
+    `lib/media.ts`, photo input + preview in intake Section A (reused by EditDog),
+    photo on the dog profile. EXIF/thumbnails (sharp) + mobile photo picker are
+    follow-ups.
+    `apps/api`: generic `media` table (+ `media_kind` enum) + `dog.photoMediaId`
+    fk + migration `0004_media.sql`; `src/services/storage.ts` (`StorageProvider`
+    interface + `LocalFsStorageProvider` → `${UPLOADS_DIR}`, default `./uploads`);
+    `routes/media.ts` — `POST /media` (multipart image upload via
+    `@fastify/multipart`, ≤10 MiB, `image/*` only) + `GET /media/:id` (streams the
+    file), both `requireSession` + owner-scoped; `media.test.ts` (upload a 1×1 PNG,
+    serve it back, owner-scoping → 404 for another user, 401 unauth, non-image →
+    415). `@ccc/shared`: + `media.ts` (`Media`); `dog.ts` gains `photoMediaId` on
+    `DogProfileInput` + the `Dog` interface; the dog routes carry it. `apps/web`:
+    `lib/media.ts` (`uploadPhoto`, `mediaUrl`), a photo file-input + preview in
+    Section A of the intake form, the photo shown on the dog profile. 28 API tests
+    pass against Postgres. _(Mobile photo — `expo-image-picker` upload — is a small
+    follow-up.)_
 - ✅ **M1.5 — Onboarding glue (web)** — PR #21, merged; web app is at UI/UX
   Checkpoint 1 (first-run sign-up → /onboard → intake → "meet Scout" → /scout/:id;
   /settings with delete-account via Better Auth `user.deleteUser`). `apps/web`: a brand-new owner now flows

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { ApiError, breedLabel, type Dog, type IntakeResponse } from '@ccc/shared';
+import { ApiError, BRANDING, breedLabel, type Dog, type IntakeResponse } from '@ccc/shared';
+import { conversations } from '../../src/lib/conversations';
 import { dogs as dogsApi } from '../../src/lib/dogs';
 import {
   Body,
@@ -166,7 +167,21 @@ export default function DogProfile() {
           </View>
         ) : null}
 
-        <View style={{ flexDirection: 'row', gap: theme.space.md, marginTop: theme.space.lg }}>
+        <View style={{ marginTop: theme.space.lg }}>
+          <PrimaryButton
+            label={`Talk to ${BRANDING.assistantName} about ${dog.name}`}
+            onPress={async () => {
+              try {
+                const c = await conversations.create({ dogId: dog.id });
+                router.push({ pathname: '/scout/[id]', params: { id: c.id } });
+              } catch (e) {
+                setError(e instanceof Error ? e.message : 'Could not start a chat.');
+              }
+            }}
+          />
+        </View>
+
+        <View style={{ flexDirection: 'row', gap: theme.space.md, marginTop: theme.space.md }}>
           <View style={{ flex: 1 }}>
             <GhostButton
               label="Edit"
