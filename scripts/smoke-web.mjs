@@ -129,30 +129,37 @@ async function main() {
     await page.getByText(/check your email/i).waitFor();
   });
 
-  // (a) The /verify-email SPA screen mounts cleanly (it then hops to the API;
-  //     a bogus token just gets rejected → no uncaught error).
+  // (a) The /verify-email screen renders its email + code form cleanly.
   await withPage(ctx, '/verify-email screen renders', async (page) => {
-    await page.goto(`${BASE}/verify-email?token=not-a-real-token`, { waitUntil: 'load' });
+    await page.goto(`${BASE}/verify-email`, { waitUntil: 'load' });
     await page.waitForFunction(() => document.body.innerText.trim().length > 0);
-    await page.waitForTimeout(2500); // settle the location.replace + API round-trip
   });
 
-  // (b) Actually verify + establish the session via the API's GET endpoint
-  //     (exactly what the SPA navigates to) → lands on /onboard for a fresh user.
-  await withPage(ctx, 'verify email → authed onboard', async (page) => {
+  // (b) Verify with the 6-digit code from the email. The email link pre-fills
+  //     ?email=&code= so the screen auto-submits; we navigate straight to that.
+  await withPage(ctx, 'verify email (code) → authed onboard', async (page) => {
     const text = await latestEmailText();
-    const m = text.match(/[?&]token=([^\s&"'<>)]+)/);
-    if (!m) throw new Error(`no verify token in email; body was: ${text.slice(0, 200)}`);
-    await page.goto(
-      `${BASE}/api/auth/verify-email?token=${encodeURIComponent(m[1])}&callbackURL=${encodeURIComponent(`${BASE}/`)}`,
-      { waitUntil: 'load' },
-    );
-    // → /  → (session resolves, 0 dogs) → /onboard. Wait for that terminal state.
+    const m = text.match(/\b(\d{6})\b/);
+    if (!m) throw new Error(`no 6-digit code in email; body was: ${text.slice(0, 200)}`);
+    await page.goto(`${BASE}/verify-email?email=${encodeURIComponent(email)}&code=${m[1]}`, {
+      waitUntil: 'load',
+    });
+    // Auto-submits → / → /onboard (signed in, 0 dogs), or /sign-in if the OTP
+    // verify didn't establish a session.
     await page
       .waitForURL((url) => ['/onboard', '/sign-in'].includes(new URL(url).pathname), {
         timeout: 25000,
       })
       .catch(() => {});
+    if (new URL(page.url()).pathname === '/sign-in') {
+      // The email is verified now — sign in to continue.
+      await page.getByLabel(/email/i).fill(email);
+      await page.getByLabel(/password/i).fill(password);
+      await page.getByRole('button', { name: /^sign in$/i }).click();
+      await page
+        .waitForURL((url) => ['/onboard', '/'].includes(new URL(url).pathname), { timeout: 15000 })
+        .catch(() => {});
+    }
     const path = new URL(page.url()).pathname;
     if (path !== '/onboard') {
       const cookies = (await page.context().cookies()).map((c) => c.name).join(',') || '(none)';

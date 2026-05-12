@@ -1,3 +1,4 @@
+import { emailOTPClient } from 'better-auth/client/plugins';
 import { createAuthClient } from 'better-auth/react';
 import { API_BASE_URL } from './config';
 
@@ -8,11 +9,14 @@ const authBaseUrl = `${API_BASE_URL || window.location.origin}/api/auth`;
 
 /**
  * Better Auth browser client. Sessions are cookie-based (the API sets an
- * httpOnly cookie); `credentials: 'include'` makes the browser send it.
+ * httpOnly cookie); `credentials: 'include'` makes the browser send it. The
+ * `emailOTPClient` plugin exposes `authClient.emailOtp.*` (verify-email by
+ * 6-digit code, resend code).
  */
 export const authClient = createAuthClient({
   baseURL: authBaseUrl,
   fetchOptions: { credentials: 'include' },
+  plugins: [emailOTPClient()],
 });
 
 export const { useSession, signIn, signUp, signOut } = authClient;

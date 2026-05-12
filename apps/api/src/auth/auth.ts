@@ -1,5 +1,6 @@
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
+import { emailOTP } from 'better-auth/plugins';
 import { BRANDING } from '@ccc/shared';
 import { appBaseUrl, corsOrigins, env, isProd, webBaseUrl } from '../config/env';
 import { getDb } from '../db/client';
@@ -10,6 +11,9 @@ import { sendEmail } from '../lib/email';
 function webLink(path: string, token: string): string {
   return `${webBaseUrl}${path}?token=${encodeURIComponent(token)}`;
 }
+
+/** How long an email-verification code stays valid. */
+const EMAIL_OTP_TTL_SECONDS = 60 * 10;
 
 /**
  * Better Auth instance. Email/password with email verification and password
@@ -51,17 +55,45 @@ export const auth = betterAuth({
     },
   },
 
+  // Email verification is OTP-based (the `emailOTP` plugin below sends the
+  // code on sign-up). This magic-link sender is kept for any explicit re-send
+  // of a link, but `sendOnSignUp` is off so it's dormant by default.
   emailVerification: {
-    sendOnSignUp: true,
+    sendOnSignUp: false,
     autoSignInAfterVerification: true,
     sendVerificationEmail: async ({ user, token }) => {
       await sendEmail({
         to: user.email,
         subject: `Verify your email for ${BRANDING.appName}`,
-        text: `Welcome to ${BRANDING.appName}! Confirm your email address:\n\n${webLink('/verify-email', token)}`,
+        text: `Confirm your email address for ${BRANDING.appName}:\n\n${webLink('/verify-email', token)}`,
       });
     },
   },
+
+  plugins: [
+    // 6-digit email-verification code, sent on sign-up. The email also carries
+    // a link that pre-fills the code (`/verify-email?email=…&code=…`) so the
+    // owner can either click it or type the code on another device/browser.
+    emailOTP({
+      otpLength: 6,
+      expiresIn: EMAIL_OTP_TTL_SECONDS,
+      sendVerificationOnSignUp: true,
+      sendVerificationOTP: async ({ email, otp, type }) => {
+        const linkSuffix =
+          type === 'email-verification'
+            ? `\n\nOr open this link to verify here:\n${webBaseUrl}/verify-email?email=${encodeURIComponent(email)}&code=${otp}`
+            : '';
+        await sendEmail({
+          to: email,
+          subject: `Verify your email for ${BRANDING.appName}`,
+          text:
+            `Your ${BRANDING.appName} verification code is:\n\n    ${otp}\n\n` +
+            `Enter it on the verification screen.${linkSuffix}\n\n` +
+            `This code expires in ${EMAIL_OTP_TTL_SECONDS / 60} minutes. If you didn't sign up, you can ignore this email.`,
+        });
+      },
+    }),
+  ],
 
   session: {
     expiresIn: 60 * 60 * 24 * 30, // 30 days

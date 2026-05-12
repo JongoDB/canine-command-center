@@ -64,17 +64,18 @@ suite('Auth (email/password) — sign-up → verify → sign-in → /me → sign
     expect(res.statusCode).toBeLessThan(500);
   });
 
-  it('verifying the email link works, then sign-in succeeds and /me returns the user', async () => {
+  it('verifying with the email code works, then sign-in succeeds and /me returns the user', async () => {
     const verifyEmail = sentEmails.find((m) => m.to === email && /verify/i.test(m.subject));
     expect(verifyEmail).toBeDefined();
-    const token = /[?&]token=([^&\s"']+)/.exec(verifyEmail!.text)?.[1];
-    expect(token, 'verification token in the email body').toBeTruthy();
+    const otp = /\b(\d{6})\b/.exec(verifyEmail!.text)?.[1];
+    expect(otp, '6-digit verification code in the email body').toBeTruthy();
 
     const verifyRes = await app.inject({
-      method: 'GET',
-      url: `/api/auth/verify-email?token=${encodeURIComponent(token!)}&callbackURL=/`,
+      method: 'POST',
+      url: '/api/auth/email-otp/verify-email',
+      payload: { email, otp },
     });
-    expect([200, 302]).toContain(verifyRes.statusCode);
+    expect(verifyRes.statusCode).toBe(200);
 
     const signInRes = await app.inject({
       method: 'POST',

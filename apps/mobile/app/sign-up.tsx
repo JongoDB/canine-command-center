@@ -50,8 +50,13 @@ export default function SignUp() {
           {done ? (
             <>
               <Body>
-                We sent a verification link to {email}. Confirm it (in your browser), then sign in.
+                We emailed a 6-digit code (and a link) to {email}. Enter the code to activate your
+                account.
               </Body>
+              <PrimaryButton
+                label="Enter your code"
+                onPress={() => router.push({ pathname: '/verify-email', params: { email } })}
+              />
               <GhostButton label="Back to sign in" onPress={() => router.replace('/sign-in')} />
             </>
           ) : (
