@@ -1,4 +1,10 @@
-import type { Dog, DogProfileInput, IntakeResponse, UpdateDogInput } from '@ccc/shared';
+import type {
+  Dog,
+  DogProfileInput,
+  IntakeAnswers,
+  IntakeResponse,
+  UpdateDogInput,
+} from '@ccc/shared';
 import { api } from './api';
 
 /** Thin wrappers around the @ccc/shared ApiClient for the dogs endpoints. */
@@ -14,4 +20,10 @@ export const dogs = {
     api.request<unknown>(`/dogs/${id}`, { method: 'DELETE' }).then(() => undefined),
   getIntake: (id: string) =>
     api.get<{ intake: IntakeResponse }>(`/dogs/${id}/intake`).then((r) => r.intake),
+  /** Submit a new intake version (and optionally patch the dog in the same call). */
+  submitIntake: (id: string, input: { answers: IntakeAnswers; profile?: UpdateDogInput }) =>
+    api.request<{ intake: IntakeResponse; dog: Dog }>(`/dogs/${id}/intake`, {
+      method: 'PUT',
+      body: JSON.stringify(input),
+    }),
 };
